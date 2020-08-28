@@ -1,0 +1,22 @@
+-   Using `#[inline(always)]` doesn't improve the quality of the generated code, but it does seem to help the dead-code-eliminator to remove the unused vtables (resulting in a marginally smaller binary)
+    -   Could be important in embedded applications
+-   The generated code for function pointers and the traits approach is nearly identical!
+    -   Same comments apply to the effect of using `#[inline(always)]` (i.e: the only difference is how much dead code gets eliminated)
+-   Removing `#[inline(never)]` from `Controller::run` really shows the magic of optimizing compilers.
+
+-   Benchmarks are tricky since results are dominated by IO, but by swapping out prints for dummy calls (using the advanced target)
+    -   TOTALLY UNSCIENTIFIC
+    -   debug (1024 \* 1024 \* 16)
+        -   opt - 7.94
+        -   fn - 9.53
+        -   trait - 8.85
+    -   release (1024 \* 1024 \* 128)
+        -   opt - 3.36
+        -   fn - 4.10
+        -   trait - 4.16
+    -   My guesses?
+        -   in debug mode
+            -   the overhead of calling through function-pointers (implicitly or explicitly) results in the options-based approach having the best performance
+        -   in release mode:
+            -   traits might be performing very slightly worse due to cache-locality (as the core code is identical)
+            -   I guess the optimizer does a good job with core opt code? even if it's larger...
