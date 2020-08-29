@@ -24,19 +24,35 @@ Ahh, the good 'ol C-style approach.
 
 ## Approach C - Using `dyn` Extension Traits
 
+i.e: downcasting trait objects
+
 Poking around, it looks like it's not a particularly well known technique.
 
 -   https://stackoverflow.com/questions/30274091/is-it-possible-to-check-if-an-object-implements-a-trait-at-runtime
--   (sort-of similar) https://stackoverflow.com/a/28664881
-    -   i.e: instead of statically validating an upcast, this approach is used to downcast into a known set of
+-   https://stackoverflow.com/a/55914318
+
+Similar to [interface conversion](https://golang.org/doc/effective_go.html#interface_conversions) in Go.
+
+-   https://stackoverflow.com/questions/27892375/can-i-do-type-introspection-with-trait-objects-and-then-downcast-it
 
 TODO: explore how this could be simplified with specialization
 
 -   https://www.reddit.com/r/rust/comments/8wbfi3/conditional_compilation_based_on_traits/
 
-TODO: explore how this could be solved with `Any`
+TODO: could this problem be solved with `Any`?
 
--   After all, this technique is pretty-much just down-casting a base type into a closed-set of known "derived" types
+-   After all, this technique is pretty-much just down-casting a base type into a closed-set of known "derived" types, right?
+    -   https://users.rust-lang.org/t/how-to-downcast-from-trait-object/5852
+-   According to https://www.reddit.com/r/rust/comments/85ki2p/downcasting_a_trait_object/, there isn't any way to downcast trait objects, but third-party crates can do it
+    -   maybe `traitcast`? https://docs.rs/traitcast/0.5.0/traitcast/index.html?
+        -   Looks like https://github.com/CodeChain-io/intertrait is a strict improvement over it?
+    -   `traitcast` seems to do pretty much this, albeit with some caveats
+        -   not `#![no_std]` compatible
+        -   relies on the `Any` trait
+        -   Uses link-time shenanigans to construct a map of valid conversions
+        -   (haven't benchmarked this), the use of lazy_static implies optimization won't be easy
+        -   still requires users to explicitly specify that the concrete type implements the various traits
+            -   `traitcast!` macro, or the `#[cast_to(...)]` marker
 
 ## Conclusion
 
