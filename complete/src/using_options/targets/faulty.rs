@@ -1,4 +1,4 @@
-use crate::target::{OptResult, Target};
+use super::super::target::{OptResult, Target};
 
 pub struct FaultyTarget {
     state: isize,

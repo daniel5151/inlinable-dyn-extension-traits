@@ -1,6 +1,6 @@
 use crate::commands::Command;
 
-use crate::target::Target;
+use super::target::Target;
 
 #[derive(Debug)]
 pub enum Error<E> {

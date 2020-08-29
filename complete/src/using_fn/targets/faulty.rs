@@ -1,4 +1,4 @@
-use crate::target::{Target, TargetBaseOps, TargetExtIncDecOps};
+use super::super::target::{Target, TargetBaseOps, TargetExtIncDecOps};
 
 pub struct FaultyTarget {
     state: isize,

@@ -1,7 +1,7 @@
 use crate::commands::Command;
 
 use super::opt_result::OptResultExt;
-use crate::target::Target;
+use super::target::Target;
 
 #[derive(Debug)]
 pub enum Error<E> {

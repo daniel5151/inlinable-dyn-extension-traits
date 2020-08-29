@@ -1,4 +1,4 @@
-use crate::target::{
+use super::super::target::{
     Target, TargetBase, TargetBaseOps, TargetExtIncDec, TargetExtIncDecOps, TargetExtMul,
     TargetExtMulOps,
 };

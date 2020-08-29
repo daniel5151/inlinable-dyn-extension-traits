@@ -4,4 +4,16 @@ version = "0.1.0"
 authors = ["Daniel Prilik <danielprilik@gmail.com>"]
 edition = "2018"
 
+[features]
+default = ["using_traits", "target_advanced"]
+
+using_options = []
+using_fn = []
+using_traits = []
+
+target_basic = []
+target_advanced = []
+target_faulty = []
+
 [dependencies]
+cfg-if = "0.1"

@@ -1,4 +1,4 @@
-use crate::target::{Target, TargetBaseOps, TargetExtIncDecOps, TargetExtMulOps};
+use super::super::target::{Target, TargetBaseOps, TargetExtIncDecOps, TargetExtMulOps};
 
 pub struct AdvancedTarget {
     state: isize,

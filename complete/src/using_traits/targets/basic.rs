@@ -1,4 +1,4 @@
-use crate::target::{Target, TargetBase, TargetBaseOps};
+use super::super::target::{Target, TargetBase, TargetBaseOps};
 
 pub struct BasicTarget {
     state: isize,
