@@ -16,19 +16,13 @@ pub(crate) mod libc {
 
     #[macro_export]
     macro_rules! println_str {
-        ($s:expr) => {
+        ($s:expr) => {{
+            let s = $s;
             unsafe {
-                crate::print_macros::libc::write(1, $s.as_ptr(), $s.len());
+                crate::print_macros::libc::write(1, s.as_ptr(), s.len());
                 crate::print_macros::libc::write(1, "\n".as_ptr(), 1);
             }
-        };
-    }
-
-    #[macro_export]
-    macro_rules! eprintln_debug {
-        ($($args:tt)*) => {
-            eprintln!($($args)*);
-        };
+        }};
     }
 }
 
@@ -68,13 +62,4 @@ pub(crate) mod libc {
 //         }};
 //     }
 
-//     #[macro_export]
-//     macro_rules! eprintln_debug {
-//         ($($args:tt)*) => {
-//             let _ = ($($args)*);
-//             unsafe {
-//                 crate::print_macros::bench::memcpy(&0u8 as *const u8 as  _,
-// &0u8 as *const u8 as _, 0);             }
-//         };
-//     }
 // }

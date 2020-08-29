@@ -5,7 +5,7 @@ authors = ["Daniel Prilik <danielprilik@gmail.com>"]
 edition = "2018"
 
 [features]
-default = ["using_traits", "target_advanced"]
+default = ["target_advanced", "using_traits"]
 
 using_options = []
 using_fn = []
@@ -17,3 +17,10 @@ target_faulty = []
 
 [dependencies]
 cfg-if = "0.1"
+libc = { version = "0.2", default-features = false }
+
+[profile.release]
+panic = "abort"
+
+[profile.dev]
+panic = "abort"

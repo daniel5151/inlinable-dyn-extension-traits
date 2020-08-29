@@ -2,12 +2,10 @@ use crate::commands::Command;
 
 use super::target::Target;
 
-#[derive(Debug)]
 pub enum Error<E> {
     Target(E),
 }
 
-#[derive(Default)]
 pub struct TargetController<T: Target> {
     target: T,
 }

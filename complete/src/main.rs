@@ -1,3 +1,13 @@
+#![no_std]
+#![no_main]
+
+extern crate libc;
+
+#[panic_handler]
+fn panic(_info: &core::panic::PanicInfo) -> ! {
+    loop {}
+}
+
 cfg_if::cfg_if! {
     if #[cfg(feature = "using_options")] {
         mod using_options;
@@ -17,9 +27,10 @@ mod commands;
 mod print_macros;
 
 use commands::Command;
-use controller::TargetController;
+use controller::{Error, TargetController};
 
-pub fn main() {
+#[no_mangle]
+pub extern "C" fn main(_argc: isize, _argv: *const *const u8) -> isize {
     cfg_if::cfg_if! {
         if #[cfg(feature = "target_basic")] {
             let target = targets::BasicTarget::new(0);
@@ -52,7 +63,20 @@ pub fn main() {
         Command::Mul(7), // <-- Advanced target doesn't like multiplying by 7
         Command::PrintState,
     ]) {
-        crate::eprintln_debug!("Error: {:?}", e);
+        cfg_if::cfg_if! {
+            if #[cfg(feature = "using_options")] {
+                match e {
+                    Error::Target(e) => crate::println_str!(e),
+                    Error::InvalidImpl => crate::println_str!("Invalid implementation!"),
+                }
+            } else {
+                match e {
+                    Error::Target(e) => crate::println_str!(e),
+                }
+            }
+        }
     }
     // }
+
+    0
 }

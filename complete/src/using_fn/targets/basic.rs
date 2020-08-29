@@ -11,7 +11,7 @@ impl BasicTarget {
 }
 
 impl Target for BasicTarget {
-    type Error = ();
+    type Error = &'static str;
 
     #[inline(always)]
     fn base(&mut self) -> &'static TargetBaseOps<Self> {
@@ -22,7 +22,7 @@ impl Target for BasicTarget {
 const BASE_OPS: TargetBaseOps<BasicTarget> = TargetBaseOps {
     get_state: |this| -> isize { this.state },
 
-    set_state: |this, n: isize| -> Result<(), ()> {
+    set_state: |this, n: isize| -> Result<(), &'static str> {
         this.state = n;
         Ok(())
     },

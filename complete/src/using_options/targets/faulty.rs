@@ -11,7 +11,7 @@ impl FaultyTarget {
 }
 
 impl Target for FaultyTarget {
-    type Error = ();
+    type Error = &'static str;
 
     fn get_state(&self) -> isize {
         self.state

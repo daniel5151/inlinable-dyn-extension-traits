@@ -3,13 +3,11 @@ use crate::commands::Command;
 use super::opt_result::OptResultExt;
 use super::target::Target;
 
-#[derive(Debug)]
 pub enum Error<E> {
     InvalidImpl,
     Target(E),
 }
 
-#[derive(Default)]
 pub struct TargetController<T: Target> {
     target: T,
 }

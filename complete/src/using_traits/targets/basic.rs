@@ -11,7 +11,7 @@ impl BasicTarget {
 }
 
 impl Target for BasicTarget {
-    type Error = ();
+    type Error = &'static str;
 
     #[inline(always)]
     fn base(&mut self) -> TargetBaseOps<Self> {
