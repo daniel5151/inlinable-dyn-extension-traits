@@ -80,3 +80,19 @@ pub extern "C" fn main(_argc: isize, _argv: *const *const u8) -> isize {
 
     0
 }
+
+#[allow(dead_code)]
+pub fn black_box<T>(dummy: T) -> T {
+    unsafe {
+        let ret = core::ptr::read_volatile(&dummy);
+        core::mem::forget(dummy);
+        ret
+    }
+}
+
+#[macro_export]
+macro_rules! __dead_code_marker {
+    ($marker:literal) => {{
+        crate::black_box($marker);
+    }};
+}

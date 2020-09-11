@@ -21,6 +21,7 @@ libc = { version = "0.2", default-features = false }
 
 [profile.release]
 panic = "abort"
+opt-level = "s"
 
 [profile.dev]
 panic = "abort"

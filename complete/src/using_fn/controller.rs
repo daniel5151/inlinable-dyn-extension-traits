@@ -15,6 +15,11 @@ impl<T: 'static + Target> TargetController<T> {
         TargetController { target }
     }
 
+    fn unsupported_cmd(&self) -> Result<(), Error<T::Error>> {
+        crate::println_str!("Unsupported cmd!");
+        Ok(())
+    }
+
     fn handle(&mut self, cmd: &Command) -> Result<(), Error<T::Error>> {
         match cmd {
             /* Base protocol */
@@ -26,15 +31,11 @@ impl<T: 'static + Target> TargetController<T> {
             }
 
             /* IncDec extension */
-            Command::Inc | Command::Dec | Command::IncDec => {
-                let ops = match self.target.ext_incdec() {
-                    Some(ops) => ops,
-                    None => {
-                        crate::println_str!("IncDec extension not supported!");
-                        return Ok(());
-                    }
-                };
+            // notice the "hint" match guard? try removing it, and check the asm output.
+            Command::Inc | Command::Dec | Command::IncDec if self.target.ext_incdec().is_some() => {
+                crate::__dead_code_marker!("IncDec extension");
 
+                let ops = self.target.ext_incdec().unwrap();
                 match cmd {
                     Command::Inc => (ops.inc)(&mut self.target).map_err(Error::Target)?,
                     Command::Dec => (ops.dec)(&mut self.target).map_err(Error::Target)?,
@@ -47,17 +48,13 @@ impl<T: 'static + Target> TargetController<T> {
             }
 
             /* Mul extension */
-            Command::Mul(n) => {
-                let ops = match self.target.ext_mul() {
-                    Some(ops) => ops,
-                    None => {
-                        crate::println_str!("Mul extension not supported!");
-                        return Ok(());
-                    }
-                };
+            Command::Mul(n) if self.target.ext_mul().is_some() => {
+                crate::__dead_code_marker!("Mul extension");
 
+                let ops = self.target.ext_mul().unwrap();
                 (ops.mul)(&mut self.target, *n).map_err(Error::Target)?;
             }
+            _ => self.unsupported_cmd()?,
         }
 
         Ok(())
