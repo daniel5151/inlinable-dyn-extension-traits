@@ -383,7 +383,7 @@ Similar to [interface conversion](https://golang.org/doc/effective_go.html#inter
 The basic principles behind Inlineable Dyn Extension Traits are best explained though example:
 
 -   (library) Create a new `trait MyFeat: Target { ... }`.
-    -   Making `MyFeat` a supertrait of `Target` enables using `Target`'s
+    -   Making `MyFeat` a subtrait of `Target` enables using `Target`'s
         associated types.
 -   (library) "Link" the `MyFeat` extension to the original `Target` trait
     though a new `Target` method. The signature varies depending on the kind
