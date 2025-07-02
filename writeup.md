@@ -391,10 +391,12 @@ The basic principles behind Inlineable Dyn Extension Traits are best explained t
 
 ```rust
 // Using a typedef for readability
-type MyFeatExt<T> =
-    &'a mut dyn MyFeat<Arch = <T as Target>::Arch, Error = <T as Target>::Error>;
+type MyFeatExt<'a, T> =
+    &'a mut dyn MyFeat<Error = <T as Target>::Error>;
 
 trait Target {
+    type Error;
+
     // Required extension
     fn ext_my_feat(&mut self) -> MyFeatExt<Self>;
     // Optional extension
@@ -402,12 +404,12 @@ trait Target {
         None
     }
     // Mutually-exclusive extensions
-    fn either_a_or_b(&mut self) -> EitherOrExt<Self::Arch, Self::Error>;
+    fn either_a_or_b(&mut self) -> EitherOrExt<Self::Error>;
 
 }
-enum EitherOrExt<A, E> {
-    MyFeatA(&'a mut dyn MyFeatA<Arch = A, Error = E>),
-    MyFeatB(&'a mut dyn MyFeatB<Arch = A, Error = E>),
+enum EitherOrExt<'a, E> {
+    MyFeatA(&'a mut dyn MyFeatA<Error = E>),
+    MyFeatB(&'a mut dyn MyFeatB<Error = E>),
 }
 ```
 
