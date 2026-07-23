@@ -7,6 +7,8 @@ edition = "2024"
 [features]
 default = ["target_advanced", "using_traits"]
 
+bench = []
+
 using_options = []
 using_fn = []
 using_traits = []

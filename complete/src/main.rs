@@ -48,39 +48,46 @@ pub extern "C" fn main(_argc: isize, _argv: *const *const u8) -> isize {
 
     let mut controller = TargetController::new(target);
 
-    // for _ in 0..(1024 * 1024 * 128) {
-    if let Err(e) = controller.run(core::hint::black_box(&[
-        Command::PrintState,
-        Command::SetState(2),
-        Command::PrintState,
-        Command::Inc,
-        Command::Inc,
-        Command::Inc,
-        Command::PrintState,
-        Command::IncDec, // <-- Faulty target will fail here
-        Command::PrintState,
-        Command::Dec,
-        Command::PrintState,
-        Command::Mul(2),
-        Command::PrintState,
-        Command::Mul(7), // <-- Advanced target doesn't like multiplying by 7
-        Command::PrintState,
-    ])) {
-        core::cfg_select! {
-            feature = "using_options" => {
-                match e {
-                    Error::Target(e) => crate::println_str!(e),
-                    Error::InvalidImpl => crate::println_str!("Invalid implementation!"),
+    // Read the BENCH_ITERATIONS environment variable at compile time.
+    // If not set or invalid, defaults to 1.
+    let iterations = match option_env!("BENCH_ITERATIONS") {
+        Some(val) => val.parse::<usize>().unwrap_or(1).max(1),
+        None => 1,
+    };
+
+    for _ in 0..iterations {
+        if let Err(e) = controller.run(core::hint::black_box(&[
+            Command::PrintState,
+            Command::SetState(2),
+            Command::PrintState,
+            Command::Inc,
+            Command::Inc,
+            Command::Inc,
+            Command::PrintState,
+            Command::IncDec, // <-- Faulty target will fail here
+            Command::PrintState,
+            Command::Dec,
+            Command::PrintState,
+            Command::Mul(2),
+            Command::PrintState,
+            Command::Mul(7), // <-- Advanced target doesn't like multiplying by 7
+            Command::PrintState,
+        ])) {
+            core::cfg_select! {
+                feature = "using_options" => {
+                    match e {
+                        Error::Target(e) => crate::println_str!(e),
+                        Error::InvalidImpl => crate::println_str!("Invalid implementation!"),
+                    }
                 }
-            }
-            _ => {
-                match e {
-                    Error::Target(e) => crate::println_str!(e),
+                _ => {
+                    match e {
+                        Error::Target(e) => crate::println_str!(e),
+                    }
                 }
             }
         }
     }
-    // }
 
     0
 }

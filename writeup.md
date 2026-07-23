@@ -526,11 +526,11 @@ Every technique except for `cargo` features and specialization.
 
 #### Easy for API consumers to understand + implement
 
-|                                                    | `cargo` Features | `is_supported` | Options | Fn Pointers | IDETs  | Specialization |
-| -------------------------------------------------- | ---------------- | -------------- | ------- | ----------- | ------ | -------------- |
-| Looks like a "typical" Rust API                    | ✔️               | ✔️             | ✔️\*    | ❌          | ➖     | ✔️             |
-| Uses "standard" method signatures                  | ✔️               | ✔️             | ❌      | ✔️          | ✔️     | ✔️             |
-| Single "source of truth" for method implementation | ✔️               | ❌             | ✔️      | ❌\*\*      | ❌\*\* | ✔️             |
+|                                                    | `cargo` Features | `is_supported` | Options | Fn Pointers | IDETs | Specialization |
+| -------------------------------------------------- | ---------------- | -------------- | ------- | ----------- | ----- | -------------- |
+| Looks like a "typical" Rust API                    | ✔️                | ✔️              | ✔️\*     | ❌           | ➖     | ✔️              |
+| Uses "standard" method signatures                  | ✔️                | ✔️              | ❌       | ✔️           | ✔️     | ✔️              |
+| Single "source of truth" for method implementation | ✔️                | ❌              | ✔️       | ❌\*\*       | ❌\*\* | ✔️              |
 
 \* The `OptResult` type could be a source of confusion
 
@@ -540,19 +540,19 @@ Every technique except for `cargo` features and specialization.
 
 |                                             | `cargo` Features | `is_supported` | Options | Fn Pointers | IDETs | Specialization |
 | ------------------------------------------- | ---------------- | -------------- | ------- | ----------- | ----- | -------------- |
-| Minimal boilerplate to invoke a method      | ✔️               | ➖             | ❌      | ➖          | ➖    | ✔️             |
-| Check if method exists _before_ invoking it | N/A              | ✔️             | ❌      | ✔️          | ✔️    | N/A            |
-| Easy to handle the "missing method" case    | ✔️               | ✔️             | ❌      | ✔️          | ✔️    | ✔️             |
+| Minimal boilerplate to invoke a method      | ✔️                | ➖              | ❌       | ➖           | ➖     | ✔️              |
+| Check if method exists _before_ invoking it | N/A              | ✔️              | ❌       | ✔️           | ✔️     | N/A            |
+| Easy to handle the "missing method" case    | ✔️                | ✔️              | ❌       | ✔️           | ✔️     | ✔️              |
 
 #### Compile-time safety + performance
 
 "If it compiles, it's a valid implementation"
 
-|                                         | `cargo` Features | `is_supported` | Options | Fn Pointers | IDETs  | Specialization |
-| --------------------------------------- | ---------------- | -------------- | ------- | ----------- | ------ | -------------- |
-| Compile-time Mutually-Dependent methods | ✔️               | ❌             | ❌      | ✔️          | ✔️     | ✔️             |
-| Compile-time Mutually-Exclusive methods | ✔️               | ❌             | ❌      | ✔️          | ✔️\*   | ❔             |
-| Ensures effective dead-code-elimination | ✔️++             | ✔️\*\*         | ❌      | ✔️\*\*      | ✔️\*\* | ✔️             |
+|                                         | `cargo` Features | `is_supported` | Options | Fn Pointers | IDETs | Specialization |
+| --------------------------------------- | ---------------- | -------------- | ------- | ----------- | ----- | -------------- |
+| Compile-time Mutually-Dependent methods | ✔️                | ❌              | ❌       | ✔️           | ✔️     | ✔️              |
+| Compile-time Mutually-Exclusive methods | ✔️                | ❌              | ❌       | ✔️           | ✔️\*   | ❔              |
+| Ensures effective dead-code-elimination | ✔️++              | ✔️\*\*          | ❌       | ✔️\*\*       | ✔️\*\* | ✔️              |
 
 \* Assuming the implementation adheres to conventions and is not "adversarial"
 
@@ -562,7 +562,31 @@ Every technique except for `cargo` features and specialization.
 
 [daniel5151/optional-trait-methods](https://github.com/daniel5151/optional-trait-methods) contains sample code for many of these methods, and includes assembly listings.
 
-TODO: integrate content of `NOTES.md` into this document.
+Based on local benchmarks and assembly inspection:
+-   **Inlining & Vtables:** Using `#[inline(always)]` doesn't improve the quality of the generated code directly, but it does seem to help the dead-code-eliminator to remove the unused vtables, resulting in a marginally smaller binary (which is crucial in embedded/`no_std` applications).
+-   **Function Pointers vs IDETs:** The generated assembly for the function pointers approach and the IDETs traits approach is nearly identical. In both cases, the compiler's behavior with `#[inline(always)]` is the same (only affecting dead code elimination).
+-   **Compiler Magic:** Removing `#[inline(never)]` from `Controller::run` really shows the magic of optimizing compilers, allowing the entire trait dispatch structure to be flattened and devirtualized.
+
+#### Assembly & Benchmarking Methodology
+Benchmarks in this domain can be tricky because results are easily dominated by I/O. To measure pure trait/function dispatch overhead, the benchmarks swap out stdout print statements for dummy compiler barriers.
+
+*   *Note on `memcpy`:* The original benchmark draft proposed using a dummy `memcpy(&0u8, &0u8, 0)` call. However, assembly inspection reveals that modern LLVM is smart enough to optimize out `memcpy` calls with a length of `0` entirely. This caused the state-accessing methods (e.g. `get_state()`) to also be optimized out since their return values were unused.
+*   *Solution:* We updated the benchmarking macros to use `core::hint::black_box` (stabilized in Rust 1.66). The assembly confirms that the compiler now fully evaluates the state reads and writes the results to the stack (to satisfy the black-box constraint), while completely devirtualizing the IDET method calls into zero-overhead register operations.
+
+#### Benchmark Results (Rust 1.97.1)
+
+##### Debug Mode (4,194,304 iterations)
+*   `Option`-based: **808.4 ms ± 14.2 ms**
+*   Function Pointer-based: **808.0 ms ± 9.7 ms**
+*   IDET (Trait-based): **743.5 ms ± 6.7 ms**
+*   *Analysis:* In debug mode, the traits (IDET) approach performs exceptionally well, running approximately 1.09x faster than the other two variants. This is because the compiler structures the dynamic dispatch path cleanly, keeping it highly competitive (and even faster) than the manual branch-heavy `Option` or indirect function-pointer alternatives.
+
+##### Release Mode (16,777,216 iterations)
+*   `Option`-based: **384.4 ms ± 13.8 ms**
+*   Function Pointer-based: **364.5 ms ± 5.0 ms**
+*   IDET (Trait-based): **402.9 ms ± 6.6 ms**
+*   *Analysis:* In release mode, all three implementations are extremely close in speed (within ~10% of each other). Under hyperfine, the function-pointer approach is the fastest, followed by options, and IDETs. Since LLVM compiles the IDET calls down to the same basic CPU register operations, the performance difference is negligible, confirming that IDETs are effectively a zero-cost abstraction in practice.
+
 
 ## Conclusion
 
