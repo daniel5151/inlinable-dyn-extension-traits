@@ -1,17 +1,18 @@
 pub(crate) mod libc {
     // use libc formatting to keep the assembly readable
-    extern "C" {
+    unsafe extern "C" {
         pub(crate) fn printf(format: *const u8, ...) -> i32;
         pub(crate) fn write(fd: i32, buf: *const u8, count: usize) -> isize;
     }
 
     #[macro_export]
     macro_rules! println_isize {
-        ($num:expr) => {
+        ($num:expr) => {{
+            let num = $num;
             unsafe {
-                crate::print_macros::libc::printf("%d\n\0".as_ptr(), $num);
+                $crate::print_macros::libc::printf("%d\n\0".as_ptr(), num);
             }
-        };
+        }};
     }
 
     #[macro_export]
@@ -19,8 +20,8 @@ pub(crate) mod libc {
         ($s:expr) => {{
             let s = $s;
             unsafe {
-                crate::print_macros::libc::write(1, s.as_ptr(), s.len());
-                crate::print_macros::libc::write(1, "\n".as_ptr(), 1);
+                $crate::print_macros::libc::write(1, s.as_ptr(), s.len());
+                $crate::print_macros::libc::write(1, "\n".as_ptr(), 1);
             }
         }};
     }
@@ -30,7 +31,7 @@ pub(crate) mod libc {
 // pub(crate) mod bench {
 //     // looks like giving memcpy a slightly different signature prevents it
 //     // from being inlined
-//     extern "C" {
+//     unsafe extern "C" {
 //         pub fn memcpy(dst: usize, dst: usize, n: usize) -> *const u8;
 //     }
 

@@ -16,12 +16,12 @@ impl Target for FaultyTarget {
     type Error = &'static str;
 
     #[inline(always)]
-    fn base(&mut self) -> TargetBaseOps<Self> {
+    fn base(&mut self) -> TargetBaseOps<'_, Self> {
         self
     }
 
     #[inline(always)]
-    fn ext_incdec(&mut self) -> Option<TargetExtIncDecOps<Self>> {
+    fn ext_incdec(&mut self) -> Option<TargetExtIncDecOps<'_, Self>> {
         Some(self)
     }
 }

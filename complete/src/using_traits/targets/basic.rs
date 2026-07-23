@@ -14,7 +14,7 @@ impl Target for BasicTarget {
     type Error = &'static str;
 
     #[inline(always)]
-    fn base(&mut self) -> TargetBaseOps<Self> {
+    fn base(&mut self) -> TargetBaseOps<'_, Self> {
         self
     }
 }

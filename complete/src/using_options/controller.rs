@@ -74,6 +74,7 @@ impl<T: Target> TargetController<T> {
 
     #[inline(never)]
     pub fn run(&mut self, cmds: &[Command]) -> Result<(), Error<T::Error>> {
+        let cmds = core::hint::black_box(cmds);
         for cmd in cmds.iter() {
             self.handle(cmd)?
         }

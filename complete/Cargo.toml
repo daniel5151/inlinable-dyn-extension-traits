@@ -2,7 +2,7 @@
 name = "optional-trait-methods"
 version = "0.1.0"
 authors = ["Daniel Prilik <danielprilik@gmail.com>"]
-edition = "2018"
+edition = "2024"
 
 [features]
 default = ["target_advanced", "using_traits"]
@@ -16,7 +16,6 @@ target_advanced = []
 target_faulty = []
 
 [dependencies]
-cfg-if = "0.1"
 libc = { version = "0.2", default-features = false }
 
 [profile.release]

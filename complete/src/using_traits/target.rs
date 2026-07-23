@@ -1,15 +1,15 @@
 pub trait Target {
     type Error;
 
-    fn base(&mut self) -> TargetBaseOps<Self>;
+    fn base(&mut self) -> TargetBaseOps<'_, Self>;
 
     #[inline(always)]
-    fn ext_incdec(&mut self) -> Option<TargetExtIncDecOps<Self>> {
+    fn ext_incdec(&mut self) -> Option<TargetExtIncDecOps<'_, Self>> {
         None
     }
 
     #[inline(always)]
-    fn ext_mul(&mut self) -> Option<TargetExtMulOps<Self>> {
+    fn ext_mul(&mut self) -> Option<TargetExtMulOps<'_, Self>> {
         None
     }
 }
