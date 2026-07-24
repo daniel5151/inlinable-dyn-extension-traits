@@ -20,10 +20,12 @@ impl Target for BasicTarget {
 }
 
 impl TargetBase for BasicTarget {
+    #[inline(never)]
     fn get_state(&self) -> isize {
         self.state
     }
 
+    #[inline(never)]
     fn set_state(&mut self, n: isize) -> Result<(), Self::Error> {
         self.state = n;
         Ok(())

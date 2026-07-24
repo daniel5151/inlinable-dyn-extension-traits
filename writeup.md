@@ -575,18 +575,7 @@ Benchmarks in this domain can be tricky because results are easily dominated by 
 
 #### Benchmark Results (Rust 1.97.1)
 
-##### Debug Mode (4,194,304 iterations)
-*   `Option`-based: **808.4 ms ± 14.2 ms**
-*   Function Pointer-based: **808.0 ms ± 9.7 ms**
-*   IDET (Trait-based): **743.5 ms ± 6.7 ms**
-*   *Analysis:* In debug mode, the traits (IDET) approach performs exceptionally well, running approximately 1.09x faster than the other two variants. This is because the compiler structures the dynamic dispatch path cleanly, keeping it highly competitive (and even faster) than the manual branch-heavy `Option` or indirect function-pointer alternatives.
-
-##### Release Mode (16,777,216 iterations)
-*   `Option`-based: **384.4 ms ± 13.8 ms**
-*   Function Pointer-based: **364.5 ms ± 5.0 ms**
-*   IDET (Trait-based): **402.9 ms ± 6.6 ms**
-*   *Analysis:* In release mode, all three implementations are extremely close in speed (within ~10% of each other). Under hyperfine, the function-pointer approach is the fastest, followed by options, and IDETs. Since LLVM compiles the IDET calls down to the same basic CPU register operations, the performance difference is negligible, confirming that IDETs are effectively a zero-cost abstraction in practice.
-
+TODO: fill this in
 
 ## Conclusion
 

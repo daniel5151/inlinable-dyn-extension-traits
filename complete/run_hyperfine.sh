@@ -2,9 +2,8 @@
 # run_hyperfine.sh
 set -e
 
-# Lowered iterations for faster benchmark runs
-ITERATIONS_DEBUG=$((1024 * 1024 * 4))
-ITERATIONS_RELEASE=$((1024 * 1024 * 16))
+ITERATIONS_DEBUG=131072
+ITERATIONS_RELEASE=262144
 
 if [ ! -f "Cargo.toml" ]; then
     echo "Error: Please run this script from the 'complete' directory."
@@ -17,15 +16,15 @@ build_bin() {
     local impl=$1
     local mode=$2
     local iterations=$3
-    
+
     local release_flag=""
     if [ "$mode" = "release" ]; then
         release_flag="--release"
     fi
-    
+
     touch src/main.rs
     BENCH_ITERATIONS=$iterations cargo build --no-default-features --features="target_advanced using_${impl} bench" $release_flag >/dev/null 2>&1
-    
+
     cp target/${mode}/optional-trait-methods target/${mode}/bench-${impl}
 }
 

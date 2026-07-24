@@ -24,25 +24,34 @@ impl Target for FaultyTarget {
     }
 }
 
-const BASE_OPS: TargetBaseOps<FaultyTarget> = TargetBaseOps {
-    get_state: |this| -> isize { this.state },
+#[inline(never)]
+fn get_state(this: &FaultyTarget) -> isize {
+    this.state
+}
 
-    set_state: |this, n: isize| -> Result<(), &'static str> {
-        this.state = n;
-        Ok(())
-    },
+#[inline(never)]
+fn set_state(this: &mut FaultyTarget, n: isize) -> Result<(), &'static str> {
+    this.state = n;
+    Ok(())
+}
+
+#[inline(never)]
+fn inc(this: &mut FaultyTarget) -> Result<(), &'static str> {
+    this.state += 1;
+    Ok(())
+}
+
+#[inline(never)]
+fn dec(_this: &mut FaultyTarget) -> Result<(), &'static str> {
+    Err("`dec` operations are not supported yet")
+}
+
+const BASE_OPS: TargetBaseOps<FaultyTarget> = TargetBaseOps {
+    get_state,
+    set_state,
 };
 
 const EXT_INC_DEC_OPS: TargetExtIncDecOps<FaultyTarget> = TargetExtIncDecOps {
-    inc: |this| -> Result<(), &'static str> {
-        this.state += 1;
-        Ok(())
-    },
-
-    // impossible to forget `dec` implementation, it'll be a compile error!
-    dec: |_this| -> Result<(), &'static str> {
-        // ...but there's no reason why a target can't add a stub implementation
-        // which will gracefully fail at runtime.
-        Err("`dec` operations are not supported yet")
-    },
+    inc,
+    dec,
 };

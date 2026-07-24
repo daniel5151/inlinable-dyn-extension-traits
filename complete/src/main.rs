@@ -39,6 +39,9 @@ use controller::{Error, TargetController};
 
 #[unsafe(no_mangle)]
 pub extern "C" fn main(_argc: isize, _argv: *const *const u8) -> isize {
+    use rand_chacha::ChaCha8Rng;
+    use rand_core::{RngCore, SeedableRng};
+
     let target = core::cfg_select! {
         feature = "target_basic" => targets::BasicTarget::new(0),
         feature = "target_advanced" => targets::AdvancedTarget::new(0),
@@ -55,24 +58,36 @@ pub extern "C" fn main(_argc: isize, _argv: *const *const u8) -> isize {
         None => 1,
     };
 
-    for _ in 0..iterations {
-        if let Err(e) = controller.run(core::hint::black_box(&[
-            Command::PrintState,
-            Command::SetState(2),
-            Command::PrintState,
-            Command::Inc,
-            Command::Inc,
-            Command::Inc,
-            Command::PrintState,
-            Command::IncDec, // <-- Faulty target will fail here
-            Command::PrintState,
-            Command::Dec,
-            Command::PrintState,
-            Command::Mul(2),
-            Command::PrintState,
-            Command::Mul(7), // <-- Advanced target doesn't like multiplying by 7
-            Command::PrintState,
-        ])) {
+    // Generate randomized commands ahead of time (outside the hot loop)
+    // We use SeedableRng::from_entropy() to securely source a random seed from
+    // the OS at runtime
+    let mut commands_pool = [Command::PrintState; 8192];
+    let mut rng = ChaCha8Rng::from_entropy();
+
+    for cmd in commands_pool.iter_mut() {
+        *cmd = match rng.next_u32() % 6 {
+            0 => Command::PrintState,
+            1 => Command::SetState((rng.next_u32() % 100) as isize),
+            2 => Command::Inc,
+            3 => Command::Dec,
+            4 => Command::IncDec,
+            _ => {
+                let mut mul_val = (rng.next_u32() % 10) as isize;
+                if mul_val == 7 {
+                    mul_val = 8; // Avoid unlucky 7 for target_advanced to run cleanly
+                }
+                Command::Mul(mul_val)
+            }
+        };
+    }
+
+    for i in 0..iterations {
+        // Calculate a shifting offset using coprime 17 to ensure each iteration
+        // processes a different slice of randomized operations from the pool.
+        let offset = (i * 17) % (8192 - 64);
+        let slice = &commands_pool[offset..offset + 64];
+
+        if let Err(e) = controller.run(core::hint::black_box(slice)) {
             core::cfg_select! {
                 feature = "using_options" => {
                     match e {

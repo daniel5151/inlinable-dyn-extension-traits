@@ -27,10 +27,12 @@ impl Target for FaultyTarget {
 }
 
 impl TargetBase for FaultyTarget {
+    #[inline(never)]
     fn get_state(&self) -> isize {
         self.state
     }
 
+    #[inline(never)]
     fn set_state(&mut self, n: isize) -> Result<(), Self::Error> {
         self.state = n;
         Ok(())
@@ -38,12 +40,14 @@ impl TargetBase for FaultyTarget {
 }
 
 impl TargetExtIncDec for FaultyTarget {
+    #[inline(never)]
     fn inc(&mut self) -> Result<(), Self::Error> {
         self.state += 1;
         Ok(())
     }
 
     // impossible to forget `dec` implementation, it'll be a compile error!
+    #[inline(never)]
     fn dec(&mut self) -> Result<(), Self::Error> {
         // ...but there's no reason why a target can't add a stub implementation
         // which will gracefully fail at runtime.

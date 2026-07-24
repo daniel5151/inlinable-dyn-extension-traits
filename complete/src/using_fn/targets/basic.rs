@@ -19,11 +19,18 @@ impl Target for BasicTarget {
     }
 }
 
-const BASE_OPS: TargetBaseOps<BasicTarget> = TargetBaseOps {
-    get_state: |this| -> isize { this.state },
+#[inline(never)]
+fn get_state(this: &BasicTarget) -> isize {
+    this.state
+}
 
-    set_state: |this, n: isize| -> Result<(), &'static str> {
-        this.state = n;
-        Ok(())
-    },
+#[inline(never)]
+fn set_state(this: &mut BasicTarget, n: isize) -> Result<(), &'static str> {
+    this.state = n;
+    Ok(())
+}
+
+const BASE_OPS: TargetBaseOps<BasicTarget> = TargetBaseOps {
+    get_state,
+    set_state,
 };

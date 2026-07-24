@@ -33,10 +33,12 @@ impl Target for AdvancedTarget {
 }
 
 impl TargetBase for AdvancedTarget {
+    #[inline(never)]
     fn get_state(&self) -> isize {
         self.state
     }
 
+    #[inline(never)]
     fn set_state(&mut self, n: isize) -> Result<(), Self::Error> {
         self.state = n;
         Ok(())
@@ -44,11 +46,13 @@ impl TargetBase for AdvancedTarget {
 }
 
 impl TargetExtIncDec for AdvancedTarget {
+    #[inline(never)]
     fn inc(&mut self) -> Result<(), Self::Error> {
         self.state += 1;
         Ok(())
     }
 
+    #[inline(never)]
     fn dec(&mut self) -> Result<(), Self::Error> {
         self.state -= 1;
         Ok(())
@@ -56,6 +60,7 @@ impl TargetExtIncDec for AdvancedTarget {
 }
 
 impl TargetExtMul for AdvancedTarget {
+    #[inline(never)]
     fn mul(&mut self, n: isize) -> Result<(), Self::Error> {
         match n {
             7 => Err("multiplying by 7 is unlucky!"),

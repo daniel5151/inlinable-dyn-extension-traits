@@ -29,35 +29,50 @@ impl Target for AdvancedTarget {
     }
 }
 
-const BASE_OPS: TargetBaseOps<AdvancedTarget> = TargetBaseOps {
-    get_state: |this| -> isize { this.state },
+#[inline(never)]
+fn get_state(this: &AdvancedTarget) -> isize {
+    this.state
+}
 
-    set_state: |this, n: isize| -> Result<(), &'static str> {
-        this.state = n;
-        Ok(())
-    },
+#[inline(never)]
+fn set_state(this: &mut AdvancedTarget, n: isize) -> Result<(), &'static str> {
+    this.state = n;
+    Ok(())
+}
+
+#[inline(never)]
+fn inc(this: &mut AdvancedTarget) -> Result<(), &'static str> {
+    this.state += 1;
+    Ok(())
+}
+
+#[inline(never)]
+fn dec(this: &mut AdvancedTarget) -> Result<(), &'static str> {
+    this.state -= 1;
+    Ok(())
+}
+
+#[inline(never)]
+fn mul(this: &mut AdvancedTarget, n: isize) -> Result<(), &'static str> {
+    match n {
+        7 => Err("multiplying by 7 is unlucky!"),
+        _ => {
+            this.state *= n;
+            Ok(())
+        }
+    }
+}
+
+const BASE_OPS: TargetBaseOps<AdvancedTarget> = TargetBaseOps {
+    get_state,
+    set_state,
 };
 
 const EXT_INC_DEC_OPS: TargetExtIncDecOps<AdvancedTarget> = TargetExtIncDecOps {
-    inc: |this| -> Result<(), &'static str> {
-        this.state += 1;
-        Ok(())
-    },
-
-    dec: |this| -> Result<(), &'static str> {
-        this.state -= 1;
-        Ok(())
-    },
+    inc,
+    dec,
 };
 
 const EXT_MUL_OPS: TargetExtMulOps<AdvancedTarget> = TargetExtMulOps {
-    mul: |this, n: isize| -> Result<(), &'static str> {
-        match n {
-            7 => Err("multiplying by 7 is unlucky!"),
-            _ => {
-                this.state *= n;
-                Ok(())
-            }
-        }
-    },
+    mul,
 };
