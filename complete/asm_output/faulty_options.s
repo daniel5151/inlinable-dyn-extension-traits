@@ -252,37 +252,46 @@ __rustc::rust_begin_unwind:
 
 optional_trait_methods::commands::parse_isize:
 	test	rsi, rsi
-	je	.LBB4_2
-	cmp	rsi, 1
-	jne	.LBB4_3
-.LBB4_2:
-	xor	eax, eax
-.LBB4_8:
-	ret
+	je	.LBB4_12
+	movzx	eax, byte ptr [rdi]
+	cmp	eax, 45
+	je	.LBB4_3
+	xor	ecx, ecx
+	cmp	eax, 43
+	je	.LBB4_4
+	jmp	.LBB4_6
 .LBB4_3:
-	mov	cl, byte ptr [rdi]
-	mov	r8d, 1
-	xor	eax, eax
-	xor	edx, edx
+	mov	cl, 1
 .LBB4_4:
+	dec	rsi
+	je	.LBB4_12
+	inc	rdi
+.LBB4_6:
+	xor	eax, eax
+	xor	r8d, r8d
+	xor	edx, edx
+.LBB4_7:
 	cmp	rsi, r8
-	je	.LBB4_9
+	je	.LBB4_13
 	mov	r9b, byte ptr [rdi + r8]
 	add	r9b, -48
 	cmp	r9b, 9
-	ja	.LBB4_8
+	ja	.LBB4_11
 	imul	rdx, rdx, 10
-	jo	.LBB4_8
+	jo	.LBB4_11
 	movzx	r9d, r9b
 	inc	r8
 	add	rdx, r9
-	jno	.LBB4_4
-	jmp	.LBB4_8
-.LBB4_9:
+	jno	.LBB4_7
+.LBB4_11:
+	ret
+.LBB4_12:
 	xor	eax, eax
-	cmp	cl, 45
-	setne	al
-	lea	rcx, [2*rax - 1]
+	ret
+.LBB4_13:
+	movzx	ecx, cl
+	neg	rcx
+	or	rcx, 1
 	xor	eax, eax
 	imul	rdx, rcx
 	setno	al

@@ -24,30 +24,31 @@ main:
 	push	r13
 	push	r12
 	push	rbx
-	sub	rsp, 1192
-	lea	rbx, [rsp + 144]
-	mov	qword ptr [rbx], 0
-	lea	r14, [rsp + 152]
+	sub	rsp, 1208
+	lea	rax, [rsp + 24]
+	mov	qword ptr [rax], 0
+	lea	r14, [rsp + 168]
 	mov	edx, 1040
 	mov	rdi, r14
 	xor	esi, esi
 	call	qword ptr [rip + memset@GOTPCREL]
 	xorps	xmm0, xmm0
-	movaps	xmmword ptr [rsp + 128], xmm0
-	movaps	xmmword ptr [rsp + 112], xmm0
-	movaps	xmmword ptr [rsp + 96], xmm0
-	movaps	xmmword ptr [rsp + 80], xmm0
-	movaps	xmmword ptr [rsp + 64], xmm0
-	movaps	xmmword ptr [rsp + 48], xmm0
-	movaps	xmmword ptr [rsp + 32], xmm0
-	movaps	xmmword ptr [rsp + 16], xmm0
-	mov	r13, rsp
-	mov	r15, qword ptr [rip + write@GOTPCREL]
-	mov	r12, qword ptr [rip + read@GOTPCREL]
+	lea	rbp, [rsp + 34]
+	movaps	xmmword ptr [rbp + 110], xmm0
+	movaps	xmmword ptr [rbp + 94], xmm0
+	movaps	xmmword ptr [rbp + 78], xmm0
+	movaps	xmmword ptr [rbp + 62], xmm0
+	movaps	xmmword ptr [rbp + 46], xmm0
+	movaps	xmmword ptr [rbp + 30], xmm0
+	movaps	xmmword ptr [rbp + 14], xmm0
+	movaps	xmmword ptr [rbp - 2], xmm0
+	lea	r15, [rsp + 8]
+	mov	r12, qword ptr [rip + write@GOTPCREL]
+	mov	r13, qword ptr [rip + read@GOTPCREL]
 	xor	edx, edx
 	xor	eax, eax
 .LBB3_1:
-	xor	ebp, ebp
+	xor	ebx, ebx
 .LBB3_2:
 	mov	rcx, rax
 	mov	rax, rdx
@@ -57,31 +58,31 @@ main:
 	mov	edx, 1024
 	xor	edi, edi
 	mov	rsi, r14
-	call	r12
+	call	r13
 	test	rax, rax
-	jle	.LBB3_62
-	mov	qword ptr [rsp + 1176], rax
-	mov	qword ptr [rsp + 1184], 0
+	jle	.LBB3_77
+	mov	qword ptr [rsp + 1192], rax
+	mov	qword ptr [rsp + 1200], 0
 	xor	ecx, ecx
 .LBB3_6:
 	cmp	rax, rcx
-	jb	.LBB3_63
+	jb	.LBB3_78
 	cmp	rax, 1024
-	ja	.LBB3_63
+	ja	.LBB3_78
 	cmp	rcx, rax
 	je	.LBB3_3
 	inc	rcx
 	mov	rdx, rax
 	neg	rdx
 .LBB3_10:
-	mov	sil, byte ptr [rsp + rcx + 151]
-	mov	qword ptr [rsp + 1184], rcx
+	mov	sil, byte ptr [rsp + rcx + 167]
+	mov	qword ptr [rsp + 1200], rcx
 	cmp	sil, 10
 	je	.LBB3_11
-	cmp	rbp, 127
+	cmp	rbx, 127
 	ja	.LBB3_19
-	mov	byte ptr [rsp + rbp + 16], sil
-	inc	rbp
+	mov	byte ptr [rsp + rbx + 32], sil
+	inc	rbx
 .LBB3_19:
 	lea	rsi, [rdx + rcx]
 	inc	rsi
@@ -90,220 +91,263 @@ main:
 	jne	.LBB3_10
 	mov	rdx, rax
 	jmp	.LBB3_2
-.LBB3_62:
-	lea	rax, [rbp - 129]
+.LBB3_77:
+	lea	rax, [rbx - 129]
 	cmp	rax, -128
-	jb	.LBB3_63
+	jb	.LBB3_78
 	jmp	.LBB3_13
 .LBB3_11:
-	cmp	rbp, 128
-	ja	.LBB3_63
-	test	rbp, rbp
-	je	.LBB3_61
+	cmp	rbx, 128
+	ja	.LBB3_78
+	test	rbx, rbx
+	je	.LBB3_76
 .LBB3_13:
 	lea	rax, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.1]
-	mov	qword ptr [rsp], rax
-	mov	qword ptr [rsp + 8], 22
+	mov	qword ptr [rsp + 8], rax
+	mov	qword ptr [rsp + 16], 22
 	#APP
 	#NO_APP
-	cmp	rbp, 1
+	cmp	rbx, 1
 	jne	.LBB3_21
-	movzx	eax, byte ptr [rsp + 16]
+	movzx	eax, byte ptr [rsp + 32]
 	cmp	eax, 43
-	je	.LBB3_56
+	je	.LBB3_71
 	cmp	eax, 45
 	jne	.LBB3_22
 	lea	rax, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.8]
-	mov	qword ptr [rsp], rax
-	mov	qword ptr [rsp + 8], 16
+	mov	qword ptr [rsp + 8], rax
+	mov	qword ptr [rsp + 16], 16
 	#APP
 	#NO_APP
-	jmp	.LBB3_60
+	jmp	.LBB3_75
 .LBB3_21:
-	cmp	rbp, 2
+	cmp	rbx, 2
 	sete	cl
-	movzx	eax, word ptr [rsp + 16]
+	movzx	eax, word ptr [rsp + 32]
 	movzx	edx, ax
 	cmp	edx, 11563
 	sete	dl
 	test	cl, dl
 	je	.LBB3_22
 	lea	rax, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.8]
-	mov	qword ptr [rsp], rax
-	mov	qword ptr [rsp + 8], 16
+	mov	qword ptr [rsp + 8], rax
+	mov	qword ptr [rsp + 16], 16
 	#APP
 	#NO_APP
-	jmp	.LBB3_60
+	jmp	.LBB3_75
 .LBB3_22:
 	lea	rcx, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.2]
-	mov	qword ptr [rsp], rcx
-	mov	qword ptr [rsp + 8], 19
+	mov	qword ptr [rsp + 8], rcx
+	mov	qword ptr [rsp + 16], 19
 	#APP
 	#NO_APP
-	cmp	rbp, 2
-	jb	.LBB3_32
-	cmp	word ptr [rsp + 16], 8234
-	jne	.LBB3_32
-	mov	rcx, rbp
+	cmp	rbx, 2
+	jb	.LBB3_37
+	cmp	word ptr [rsp + 32], 8234
+	jne	.LBB3_37
+	mov	rcx, rbx
 	add	rcx, -2
-	je	.LBB3_32
-	cmp	rcx, 1
-	jne	.LBB3_26
-.LBB3_32:
-	lea	rcx, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.3]
-	mov	qword ptr [rsp], rcx
-	mov	qword ptr [rsp + 8], 27
+	je	.LBB3_37
+	movzx	edx, byte ptr [rsp + 34]
+	cmp	edx, 45
+	je	.LBB3_26
+	cmp	edx, 43
+	jne	.LBB3_28
+	xor	edx, edx
+	jmp	.LBB3_30
+.LBB3_71:
+	lea	rax, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.8]
+	mov	qword ptr [rsp + 8], rax
+	mov	qword ptr [rsp + 16], 16
 	#APP
 	#NO_APP
-	cmp	rbp, 3
-	jb	.LBB3_42
-	mov	ecx, dword ptr [rsp + 16]
+	jmp	.LBB3_75
+.LBB3_26:
+	mov	dl, 1
+.LBB3_30:
+	mov	rcx, rbx
+	lea	rsi, [rsp + 35]
+	add	rcx, -3
+	jne	.LBB3_31
+	jmp	.LBB3_37
+.LBB3_28:
+	xor	edx, edx
+	mov	rsi, rbp
+.LBB3_31:
+	xor	r8d, r8d
+	xor	edi, edi
+.LBB3_32:
+	cmp	rcx, r8
+	je	.LBB3_36
+	mov	r9b, byte ptr [rsi + r8]
+	add	r9b, -48
+	cmp	r9b, 9
+	ja	.LBB3_37
+	imul	rdi, rdi, 10
+	jo	.LBB3_37
+	movzx	r9d, r9b
+	inc	r8
+	add	rdi, r9
+	jno	.LBB3_32
+	jmp	.LBB3_37
+.LBB3_36:
+	movzx	ecx, dl
+	neg	rcx
+	or	rcx, 1
+	imul	rdi, rcx
+	jno	.LBB3_73
+.LBB3_37:
+	lea	rcx, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.3]
+	mov	qword ptr [rsp + 8], rcx
+	mov	qword ptr [rsp + 16], 27
+	#APP
+	#NO_APP
+	cmp	rbx, 3
+	jb	.LBB3_52
+	mov	ecx, dword ptr [rsp + 32]
 	mov	edx, 32298
 	xor	ecx, edx
-	movzx	edx, byte ptr [rsp + 18]
+	movzx	edx, byte ptr [rsp + 34]
 	xor	edx, 32
 	or	dx, cx
-	jne	.LBB3_46
-	mov	rcx, rbp
+	jne	.LBB3_56
+	mov	rcx, rbx
 	add	rcx, -3
-	je	.LBB3_46
-	cmp	rcx, 1
-	je	.LBB3_46
-	mov	dl, byte ptr [rsp + 19]
-	mov	esi, 4
-	xor	ecx, ecx
-.LBB3_37:
-	cmp	rbp, rsi
+	je	.LBB3_56
+	movzx	edx, byte ptr [rsp + 35]
+	cmp	edx, 45
 	je	.LBB3_41
-	mov	dil, byte ptr [rsp + rsi + 16]
-	add	dil, -48
-	cmp	dil, 9
-	ja	.LBB3_42
-	imul	rcx, rcx, 10
-	jo	.LBB3_42
-	movzx	edi, dil
-	inc	rsi
-	add	rcx, rdi
-	jno	.LBB3_37
-	jmp	.LBB3_42
-.LBB3_56:
-	lea	rax, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.8]
-	mov	qword ptr [rsp], rax
-	mov	qword ptr [rsp + 8], 16
-	#APP
-	#NO_APP
-	jmp	.LBB3_60
-.LBB3_26:
-	mov	dl, byte ptr [rsp + 18]
-	mov	esi, 3
-	xor	ecx, ecx
-.LBB3_27:
-	cmp	rbp, rsi
-	je	.LBB3_31
-	mov	dil, byte ptr [rsp + rsi + 16]
-	add	dil, -48
-	cmp	dil, 9
-	ja	.LBB3_32
-	imul	rcx, rcx, 10
-	jo	.LBB3_32
-	movzx	edi, dil
-	inc	rsi
-	add	rcx, rdi
-	jno	.LBB3_27
-	jmp	.LBB3_32
-.LBB3_31:
-	xor	esi, esi
-	cmp	dl, 45
-	setne	sil
-	lea	rdx, [2*rsi - 1]
-	imul	rcx, rdx
-	jo	.LBB3_32
-	lea	rax, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.9]
-	mov	qword ptr [rsp], rax
-	mov	qword ptr [rsp + 8], 13
-	#APP
-	#NO_APP
-	jmp	.LBB3_60
+	cmp	edx, 43
+	jne	.LBB3_43
+	xor	edx, edx
+	jmp	.LBB3_45
 .LBB3_41:
-	xor	esi, esi
-	cmp	dl, 45
-	setne	sil
-	lea	rdx, [2*rsi - 1]
-	imul	rcx, rdx
-	jno	.LBB3_59
-.LBB3_42:
-	cmp	rbp, 1
-	jne	.LBB3_45
+	mov	dl, 1
+.LBB3_45:
+	mov	rcx, rbx
+	lea	rsi, [rsp + 36]
+	add	rcx, -4
+	jne	.LBB3_46
+	jmp	.LBB3_56
+.LBB3_43:
+	xor	edx, edx
+	lea	rsi, [rsp + 35]
+.LBB3_46:
+	xor	r8d, r8d
+	xor	edi, edi
+.LBB3_47:
+	cmp	rcx, r8
+	je	.LBB3_51
+	mov	r9b, byte ptr [rsi + r8]
+	add	r9b, -48
+	cmp	r9b, 9
+	ja	.LBB3_52
+	imul	rdi, rdi, 10
+	jo	.LBB3_52
+	movzx	r9d, r9b
+	inc	r8
+	add	rdi, r9
+	jno	.LBB3_47
+	jmp	.LBB3_52
+.LBB3_51:
+	movzx	ecx, dl
+	neg	rcx
+	or	rcx, 1
+	imul	rdi, rcx
+	jno	.LBB3_74
+.LBB3_52:
+	cmp	rbx, 1
+	jne	.LBB3_55
 	cmp	al, 112
-	jne	.LBB3_60
-	mov	rdi, rbx
+	jne	.LBB3_75
+	lea	rdi, [rsp + 24]
 	call	<optional_trait_methods::using_options::targets::basic::BasicTarget as optional_trait_methods::using_options::target::Target>::get_state
 	lea	rdi, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.7]
 	mov	rsi, rax
 	xor	eax, eax
 	call	qword ptr [rip + printf@GOTPCREL]
-	jmp	.LBB3_61
-.LBB3_45:
-	jbe	.LBB3_60
-.LBB3_46:
-	cmp	word ptr [rsp + 16], 8307
-	jne	.LBB3_60
-	mov	rax, rbp
-	add	rax, -2
-	je	.LBB3_60
-	cmp	rax, 1
-	jne	.LBB3_49
-.LBB3_60:
+	jmp	.LBB3_76
+.LBB3_55:
+	jbe	.LBB3_75
+.LBB3_56:
+	cmp	word ptr [rsp + 32], 8307
+	jne	.LBB3_75
+	mov	rcx, rbx
+	add	rcx, -2
+	je	.LBB3_75
+	movzx	eax, byte ptr [rsp + 34]
+	cmp	eax, 45
+	je	.LBB3_59
+	cmp	eax, 43
+	jne	.LBB3_61
+	xor	eax, eax
+	jmp	.LBB3_63
+.LBB3_59:
+	mov	al, 1
+.LBB3_63:
+	lea	rdx, [rsp + 35]
+	add	rbx, -3
+	mov	rcx, rbx
+	jne	.LBB3_64
+	jmp	.LBB3_75
+.LBB3_61:
+	xor	eax, eax
+	mov	rdx, rbp
+.LBB3_64:
+	xor	edi, edi
+	xor	esi, esi
+.LBB3_65:
+	cmp	rcx, rdi
+	je	.LBB3_69
+	mov	r8b, byte ptr [rdx + rdi]
+	add	r8b, -48
+	cmp	r8b, 9
+	ja	.LBB3_75
+	imul	rsi, rsi, 10
+	jo	.LBB3_75
+	movzx	r8d, r8b
+	inc	rdi
+	add	rsi, r8
+	jno	.LBB3_65
+	jmp	.LBB3_75
+.LBB3_69:
+	movzx	eax, al
+	neg	rax
+	or	rax, 1
+	imul	rsi, rax
+	jo	.LBB3_75
+	lea	rdi, [rsp + 24]
+	call	<optional_trait_methods::using_options::targets::basic::BasicTarget as optional_trait_methods::using_options::target::Target>::set_state
+	jmp	.LBB3_76
+.LBB3_73:
+	lea	rax, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.9]
+	mov	qword ptr [rsp + 8], rax
+	mov	qword ptr [rsp + 16], 13
+	#APP
+	#NO_APP
+	jmp	.LBB3_75
+.LBB3_74:
+	lea	rax, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.10]
+	mov	qword ptr [rsp + 8], rax
+	mov	qword ptr [rsp + 16], 21
+	#APP
+	#NO_APP
+.LBB3_75:
 	mov	edx, 16
 	mov	edi, 1
 	lea	rsi, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.5]
-	call	r15
+	call	r12
 	mov	edx, 1
 	mov	edi, 1
 	lea	rsi, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.6]
-	call	r15
-.LBB3_61:
-	mov	rdx, qword ptr [rsp + 1176]
-	mov	rax, qword ptr [rsp + 1184]
+	call	r12
+.LBB3_76:
+	mov	rdx, qword ptr [rsp + 1192]
+	mov	rax, qword ptr [rsp + 1200]
 	jmp	.LBB3_1
-.LBB3_49:
-	mov	al, byte ptr [rsp + 18]
-	mov	ecx, 3
-	xor	esi, esi
-.LBB3_50:
-	cmp	rbp, rcx
-	je	.LBB3_54
-	mov	dl, byte ptr [rsp + rcx + 16]
-	add	dl, -48
-	cmp	dl, 9
-	ja	.LBB3_60
-	imul	rsi, rsi, 10
-	jo	.LBB3_60
-	movzx	edx, dl
-	inc	rcx
-	add	rsi, rdx
-	jno	.LBB3_50
-	jmp	.LBB3_60
-.LBB3_54:
-	xor	ecx, ecx
-	cmp	al, 45
-	setne	cl
-	lea	rax, [2*rcx - 1]
-	imul	rsi, rax
-	jo	.LBB3_60
-	mov	rdi, rbx
-	call	<optional_trait_methods::using_options::targets::basic::BasicTarget as optional_trait_methods::using_options::target::Target>::set_state
-	jmp	.LBB3_61
-.LBB3_59:
-	lea	rax, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.10]
-	mov	qword ptr [rsp], rax
-	mov	qword ptr [rsp + 8], 21
-	#APP
-	#NO_APP
-	jmp	.LBB3_60
-.LBB3_63:
+.LBB3_78:
 	xor	eax, eax
-	add	rsp, 1192
+	add	rsp, 1208
 	pop	rbx
 	pop	r12
 	pop	r13

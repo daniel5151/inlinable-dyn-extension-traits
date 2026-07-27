@@ -35,7 +35,7 @@ pub fn parse_isize(bytes: &[u8]) -> Option<isize> {
     let (is_neg, digits) = match bytes.split_first()? {
         (b'-', rest) => (true, rest),
         (b'+', rest) => (false, rest),
-        (_, rest) => (false, rest),
+        _ => (false, bytes),
     };
     if digits.is_empty() {
         return None;
@@ -51,4 +51,22 @@ pub fn parse_isize(bytes: &[u8]) -> Option<isize> {
     }
     let sign = if is_neg { -1 } else { 1 };
     val.checked_mul(sign)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_parse_isize() {
+        assert_eq!(parse_isize(b"5"), Some(5));
+        assert_eq!(parse_isize(b"42"), Some(42));
+        assert_eq!(parse_isize(b"-42"), Some(-42));
+        assert_eq!(parse_isize(b"+42"), Some(42));
+        assert_eq!(parse_isize(b"0"), Some(0));
+        assert_eq!(parse_isize(b""), None);
+        assert_eq!(parse_isize(b"-"), None);
+        assert_eq!(parse_isize(b"+"), None);
+        assert_eq!(parse_isize(b"abc"), None);
+    }
 }

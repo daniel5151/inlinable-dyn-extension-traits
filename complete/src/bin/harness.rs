@@ -22,9 +22,9 @@ fn main() {
             3 => writeln!(handle, "-"),
             4 => writeln!(handle, "+-"),
             5 => {
-                let mut val = (rng.next_u32() % 10) as isize;
-                if val == 7 {
-                    val = 8;
+                let mut val = (rng.next_u32() % 9) as isize;
+                if val >= 7 {
+                    val += 1;
                 }
                 writeln!(handle, "* {}", val)
             }
