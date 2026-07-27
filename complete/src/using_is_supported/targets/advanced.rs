@@ -30,7 +30,7 @@ impl Target for AdvancedTarget {
         Ok(())
     }
 
-    #[inline(always)]
+    #[cfg_attr(feature = "always_inline", inline(always))]
     fn ext_incdec_supported(&self) -> bool {
         true
     }
@@ -47,7 +47,7 @@ impl Target for AdvancedTarget {
         Ok(())
     }
 
-    #[inline(always)]
+    #[cfg_attr(feature = "always_inline", inline(always))]
     fn ext_mul_supported(&self) -> bool {
         true
     }
@@ -63,7 +63,7 @@ impl Target for AdvancedTarget {
         }
     }
 
-    #[inline(always)]
+    #[cfg_attr(feature = "always_inline", inline(always))]
     fn ext_scale_factor_supported(&self) -> bool {
         true
     }

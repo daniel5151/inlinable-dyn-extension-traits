@@ -27,17 +27,17 @@ impl AdvancedTarget {
 impl Target for AdvancedTarget {
     type Error = &'static str;
 
-    #[inline(always)]
+    #[cfg_attr(feature = "always_inline", inline(always))]
     fn base(&mut self) -> TargetBaseOps<'_, Self> {
         self
     }
 
-    #[inline(always)]
+    #[cfg_attr(feature = "always_inline", inline(always))]
     fn ext_incdec(&mut self) -> Option<TargetExtIncDecOps<'_, Self>> {
         Some(self)
     }
 
-    #[inline(always)]
+    #[cfg_attr(feature = "always_inline", inline(always))]
     fn ext_mul(&mut self) -> Option<TargetExtMulOps<'_, Self>> {
         Some(self)
     }
@@ -82,7 +82,7 @@ impl TargetExtMul for AdvancedTarget {
         }
     }
 
-    #[inline(always)]
+    #[cfg_attr(feature = "always_inline", inline(always))]
     fn ext_scale_factor(&mut self) -> Option<TargetExtScaleFactorOps<'_, Self>> {
         Some(self)
     }

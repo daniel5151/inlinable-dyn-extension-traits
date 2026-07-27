@@ -15,7 +15,7 @@ impl BasicTarget {
 impl Target for BasicTarget {
     type Error = &'static str;
 
-    #[inline(always)]
+    #[cfg_attr(feature = "always_inline", inline(always))]
     fn base(&mut self) -> TargetBaseOps<'_, Self> {
         self
     }

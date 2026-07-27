@@ -3,12 +3,12 @@ pub trait Target {
 
     fn base(&mut self) -> TargetBaseOps<'_, Self>;
 
-    #[inline(always)]
+    #[cfg_attr(feature = "always_inline", inline(always))]
     fn ext_incdec(&mut self) -> Option<TargetExtIncDecOps<'_, Self>> {
         None
     }
 
-    #[inline(always)]
+    #[cfg_attr(feature = "always_inline", inline(always))]
     fn ext_mul(&mut self) -> Option<TargetExtMulOps<'_, Self>> {
         None
     }
@@ -27,7 +27,7 @@ pub trait TargetExtIncDec: Target {
 pub trait TargetExtMul: Target {
     fn mul(&mut self, n: isize) -> Result<(), Self::Error>;
 
-    #[inline(always)]
+    #[cfg_attr(feature = "always_inline", inline(always))]
     fn ext_scale_factor(&mut self) -> Option<TargetExtScaleFactorOps<'_, Self>> {
         None
     }

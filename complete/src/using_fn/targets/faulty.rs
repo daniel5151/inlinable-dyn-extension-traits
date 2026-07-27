@@ -19,12 +19,12 @@ impl FaultyTarget {
 impl Target for FaultyTarget {
     type Error = &'static str;
 
-    #[inline(always)]
+    #[cfg_attr(feature = "always_inline", inline(always))]
     fn base(&mut self) -> &'static TargetBaseOps<Self> {
         &BASE_OPS
     }
 
-    #[inline(always)]
+    #[cfg_attr(feature = "always_inline", inline(always))]
     fn ext_incdec(&mut self) -> Option<&'static TargetExtIncDecOps<Self>> {
         Some(&EXT_INC_DEC_OPS)
     }

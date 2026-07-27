@@ -3,12 +3,12 @@ pub trait Target {
 
     fn base(&mut self) -> &'static TargetBaseOps<Self>;
 
-    #[inline(always)]
+    #[cfg_attr(feature = "always_inline", inline(always))]
     fn ext_incdec(&mut self) -> Option<&'static TargetExtIncDecOps<Self>> {
         None
     }
 
-    #[inline(always)]
+    #[cfg_attr(feature = "always_inline", inline(always))]
     fn ext_mul(&mut self) -> Option<&'static TargetExtMulOps<Self>> {
         None
     }

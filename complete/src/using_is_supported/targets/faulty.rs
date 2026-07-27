@@ -28,7 +28,7 @@ impl Target for FaultyTarget {
         Ok(())
     }
 
-    #[inline(always)]
+    #[cfg_attr(feature = "always_inline", inline(always))]
     fn ext_incdec_supported(&self) -> bool {
         true
     }

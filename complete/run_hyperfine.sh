@@ -23,7 +23,7 @@ build_bin() {
     fi
 
     touch src/main.rs
-    cargo build --bin optional-trait-methods --no-default-features --features="target_advanced using_${impl}" $release_flag >/dev/null 2>&1
+    cargo build --bin optional-trait-methods --no-default-features --features="target_advanced using_${impl} always_inline" $release_flag >/dev/null 2>&1
 
     cp target/${mode}/optional-trait-methods target/${mode}/bench-${impl}
 }

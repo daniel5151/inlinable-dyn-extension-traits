@@ -5,8 +5,9 @@ authors = ["Daniel Prilik <danielprilik@gmail.com>"]
 edition = "2024"
 
 [features]
-default = ["target_advanced", "using_traits", "interpretable_asm"]
+default = ["target_advanced", "using_traits", "interpretable_asm", "always_inline"]
 
+always_inline = []
 interpretable_asm = []
 bench = []
 
