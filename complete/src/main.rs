@@ -6,7 +6,11 @@ extern crate libc;
 #[cfg(not(test))] // make rust-analyzer happy
 #[panic_handler]
 fn panic(_info: &core::panic::PanicInfo) -> ! {
-    loop {}
+    unsafe {
+        let msg = b"panic!\n";
+        libc::write(2, msg.as_ptr() as *const _, msg.len());
+        libc::abort();
+    }
 }
 
 #[cfg(not(test))]
@@ -65,18 +69,25 @@ pub extern "C" fn main(_argc: isize, _argv: *const *const u8) -> isize {
     let mut rng = ChaCha8Rng::from_entropy();
 
     for cmd in commands_pool.iter_mut() {
-        *cmd = match rng.next_u32() % 6 {
+        *cmd = match rng.next_u32() % 7 {
             0 => Command::PrintState,
             1 => Command::SetState((rng.next_u32() % 100) as isize),
             2 => Command::Inc,
             3 => Command::Dec,
             4 => Command::IncDec,
-            _ => {
+            5 => {
                 let mut mul_val = (rng.next_u32() % 10) as isize;
                 if mul_val == 7 {
                     mul_val = 8; // Avoid unlucky 7 for target_advanced to run cleanly
                 }
                 Command::Mul(mul_val)
+            }
+            _ => {
+                let mut scale_val = (rng.next_u32() % 5) as isize;
+                if scale_val == 0 {
+                    scale_val = 1; // Avoid scaling by 0 to keep state active
+                }
+                Command::ScaleFactor(scale_val)
             }
         };
     }

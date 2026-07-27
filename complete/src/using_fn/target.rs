@@ -24,6 +24,11 @@ pub struct TargetExtIncDecOps<T: Target + ?Sized> {
     pub dec: fn(&mut T) -> Result<(), T::Error>,
 }
 
-pub struct TargetExtMulOps<T: Target + ?Sized> {
+pub struct TargetExtMulOps<T: Target + ?Sized + 'static> {
     pub mul: fn(&mut T, n: isize) -> Result<(), T::Error>,
+    pub ext_scale_factor: fn(&T) -> Option<&'static TargetExtScaleFactorOps<T>>,
+}
+
+pub struct TargetExtScaleFactorOps<T: Target + ?Sized + 'static> {
+    pub scale_factor: fn(&mut T, factor: isize) -> Result<(), T::Error>,
 }

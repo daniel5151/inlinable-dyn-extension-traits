@@ -573,9 +573,27 @@ Benchmarks in this domain can be tricky because results are easily dominated by 
 *   *Note on `memcpy`:* The original benchmark draft proposed using a dummy `memcpy(&0u8, &0u8, 0)` call. However, assembly inspection reveals that modern LLVM is smart enough to optimize out `memcpy` calls with a length of `0` entirely. This caused the state-accessing methods (e.g. `get_state()`) to also be optimized out since their return values were unused.
 *   *Solution:* We updated the benchmarking macros to use `core::hint::black_box` (stabilized in Rust 1.66). The assembly confirms that the compiler now fully evaluates the state reads and writes the results to the stack (to satisfy the black-box constraint), while completely devirtualizing the IDET method calls into zero-overhead register operations.
 
-#### Benchmark Results (Rust 1.97.1)
+Below are the `hyperfine` benchmark results comparing **Options** (`using_options`), **Fn Pointers** (`using_fn`), and **IDETs** (`using_traits`) across 131,072 iterations in Debug mode and 262,144 iterations in Release mode:
 
-TODO: fill this in
+##### Debug Mode (131,072 iterations)
+
+| Implementation | Mean ± Std Dev | Min … Max | Speedup |
+| :--- | :--- | :--- | :--- |
+| **Options** (`using_options`) | **150.0 ms ± 3.3 ms** | 143.4 ms … 156.5 ms | **1.00x** (Fastest) |
+| **Fn Pointers** (`using_fn`) | **160.0 ms ± 3.0 ms** | 154.2 ms … 165.3 ms | 1.07x slower |
+| **IDETs** (`using_traits`) | **187.7 ms ± 50.6 ms** | 142.2 ms … 312.0 ms | 1.25x slower |
+
+*In Debug mode, `using_options` performs best due to reduced function call indirection overhead before compiler optimizations.*
+
+##### Release Mode (262,144 iterations)
+
+| Implementation | Mean ± Std Dev | Min … Max | Speedup |
+| :--- | :--- | :--- | :--- |
+| **Fn Pointers** (`using_fn`) | **95.6 ms ± 3.4 ms** | 90.5 ms … 106.4 ms | **1.00x** (Fastest) |
+| **Options** (`using_options`) | **97.5 ms ± 7.5 ms** | 87.4 ms … 114.6 ms | 1.02x slower |
+| **IDETs** (`using_traits`) | **97.5 ms ± 5.7 ms** | 90.4 ms … 117.1 ms | 1.02x slower |
+
+*In Release mode (`-O3`), LLVM completely devirtualizes and inlines the dynamic dispatch across all three approaches, rendering runtime performance virtually identical (all within statistical noise at ~95–97 ms).*
 
 ## Conclusion
 

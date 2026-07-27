@@ -1,14 +1,16 @@
+use core::num::Wrapping;
+
 use super::super::target::{
     Target, TargetBase, TargetBaseOps, TargetExtIncDec, TargetExtIncDecOps,
 };
 
 pub struct FaultyTarget {
-    state: isize,
+    state: Wrapping<isize>,
 }
 
 impl FaultyTarget {
     pub fn new(state: isize) -> FaultyTarget {
-        FaultyTarget { state }
+        FaultyTarget { state: Wrapping(state) }
     }
 }
 
@@ -29,12 +31,12 @@ impl Target for FaultyTarget {
 impl TargetBase for FaultyTarget {
     #[inline(never)]
     fn get_state(&self) -> isize {
-        self.state
+        self.state.0
     }
 
     #[inline(never)]
     fn set_state(&mut self, n: isize) -> Result<(), Self::Error> {
-        self.state = n;
+        self.state = Wrapping(n);
         Ok(())
     }
 }

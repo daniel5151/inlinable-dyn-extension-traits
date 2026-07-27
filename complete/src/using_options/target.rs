@@ -21,4 +21,10 @@ pub trait Target {
         let _ = n;
         Err(MaybeUnimpl::unimplemented())
     }
+
+    /// (feat: scale_factor)
+    fn scale_factor(&mut self, factor: isize) -> OptResult<(), Self::Error> {
+        let _ = factor;
+        Err(MaybeUnimpl::unimplemented())
+    }
 }

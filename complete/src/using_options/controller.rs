@@ -67,6 +67,15 @@ impl<T: Target> TargetController<T> {
                     None => self.unsupported_cmd()?,
                 };
             }
+            /* ScaleFactor extension */
+            Command::ScaleFactor(n) => {
+                crate::__dead_code_marker!("ScaleFactor extension");
+
+                match self.target.scale_factor(*n).map_unimpl().map_err(Error::Target)? {
+                    Some(_) => {}
+                    None => self.unsupported_cmd()?,
+                };
+            }
         }
 
         Ok(())

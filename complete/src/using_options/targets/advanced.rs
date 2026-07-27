@@ -1,12 +1,18 @@
+use core::num::Wrapping;
+
 use super::super::target::{OptResult, Target};
 
 pub struct AdvancedTarget {
-    state: isize,
+    state: Wrapping<isize>,
+    scale: Wrapping<isize>,
 }
 
 impl AdvancedTarget {
     pub fn new(state: isize) -> AdvancedTarget {
-        AdvancedTarget { state }
+        AdvancedTarget {
+            state: Wrapping(state),
+            scale: Wrapping(1),
+        }
     }
 }
 
@@ -15,12 +21,12 @@ impl Target for AdvancedTarget {
 
     #[inline(never)]
     fn get_state(&self) -> isize {
-        self.state
+        self.state.0
     }
 
     #[inline(never)]
     fn set_state(&mut self, n: isize) -> Result<(), Self::Error> {
-        self.state = n;
+        self.state = Wrapping(n);
         Ok(())
     }
 
@@ -41,9 +47,15 @@ impl Target for AdvancedTarget {
         match n {
             7 => Err("multiplying by 7 is unlucky!".into()),
             _ => {
-                self.state *= n;
+                self.state *= Wrapping(n) * self.scale;
                 Ok(())
             }
         }
+    }
+
+    #[inline(never)]
+    fn scale_factor(&mut self, factor: isize) -> OptResult<(), Self::Error> {
+        self.scale = Wrapping(factor);
+        Ok(())
     }
 }

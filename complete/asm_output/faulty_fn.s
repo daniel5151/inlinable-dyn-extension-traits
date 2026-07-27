@@ -11,39 +11,38 @@ __rustc::rust_begin_unwind:
 	push	r12
 	push	rbx
 	sub	rsp, 24
-	mov	rbx, rdi
-	lea	r13, [rsp + 8]
-	mov	qword ptr [r13], rsi
-	mov	qword ptr [r13 + 8], rdx
-	#APP
-	#NO_APP
-	mov	rbp, qword ptr [r13]
-	mov	r14, qword ptr [r13 + 8]
-	shl	r14, 4
-	lea	r15, [rip + .LJTI1_0]
-	xor	r12d, r12d
+	mov	rbx, rdx
+	mov	r14, rsi
+	mov	r15, rdi
+	shl	rbx, 4
+	lea	r12, [rip + .LJTI1_0]
+	mov	r13, qword ptr [rip + write@GOTPCREL]
+	xor	ebp, ebp
 .LBB1_1:
-	cmp	r14, r12
+	cmp	rbx, rbp
 	je	.LBB1_2
-	mov	rax, qword ptr [rbp + r12]
-	movsxd	rax, dword ptr [r15 + 4*rax]
-	add	rax, r15
+	mov	rax, qword ptr [r14 + rbp]
+	movsxd	rax, dword ptr [r12 + 4*rax]
+	add	rax, r12
 	jmp	rax
-.LBB1_4:
-	mov	rdi, rbx
-	call	optional_trait_methods::using_fn::targets::faulty::get_state
-	lea	rdi, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.2]
-	mov	rsi, rax
-	xor	eax, eax
-	call	qword ptr [rip + printf@GOTPCREL]
+.LBB1_7:
+	mov	edx, 16
+	mov	edi, 1
+	lea	rsi, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.0]
+	call	r13
+	mov	edx, 1
+	mov	edi, 1
+	lea	rsi, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.1]
+	call	r13
 	jmp	.LBB1_5
 .LBB1_9:
 	lea	rax, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.3]
 	mov	qword ptr [rsp + 8], rax
 	mov	qword ptr [rsp + 16], 16
+	lea	rax, [rsp + 8]
 	#APP
 	#NO_APP
-	mov	rdi, rbx
+	mov	rdi, r15
 	call	optional_trait_methods::using_fn::targets::faulty::inc
 	test	rax, rax
 	jne	.LBB1_13
@@ -52,38 +51,38 @@ __rustc::rust_begin_unwind:
 	lea	rax, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.3]
 	mov	qword ptr [rsp + 8], rax
 	mov	qword ptr [rsp + 16], 16
+	lea	rax, [rsp + 8]
 	#APP
 	#NO_APP
-	mov	rdi, rbx
+	mov	rdi, r15
 	call	optional_trait_methods::using_fn::targets::faulty::inc
 	jmp	.LBB1_12
 .LBB1_10:
 	lea	rax, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.3]
 	mov	qword ptr [rsp + 8], rax
 	mov	qword ptr [rsp + 16], 16
+	lea	rax, [rsp + 8]
 	#APP
 	#NO_APP
 .LBB1_11:
 	call	optional_trait_methods::using_fn::targets::faulty::dec
 	jmp	.LBB1_12
-.LBB1_6:
-	mov	rsi, qword ptr [rbp + r12 + 8]
-	mov	rdi, rbx
-	call	optional_trait_methods::using_fn::targets::faulty::set_state
-	jmp	.LBB1_12
-.LBB1_7:
-	mov	edx, 16
-	mov	edi, 1
-	lea	rsi, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.0]
-	call	qword ptr [rip + write@GOTPCREL]
-	mov	edx, 1
-	mov	edi, 1
-	lea	rsi, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.1]
-	call	qword ptr [rip + write@GOTPCREL]
+.LBB1_4:
+	mov	rdi, r15
+	call	optional_trait_methods::using_fn::targets::faulty::get_state
+	lea	rdi, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.2]
+	mov	rsi, rax
+	xor	eax, eax
+	call	qword ptr [rip + printf@GOTPCREL]
 .LBB1_5:
 	xor	eax, eax
+	jmp	.LBB1_12
+.LBB1_6:
+	mov	rsi, qword ptr [r14 + rbp + 8]
+	mov	rdi, r15
+	call	optional_trait_methods::using_fn::targets::faulty::set_state
 .LBB1_12:
-	add	r12, 16
+	add	rbp, 16
 	test	rax, rax
 	je	.LBB1_1
 	jmp	.LBB1_13
@@ -105,6 +104,7 @@ __rustc::rust_begin_unwind:
 	.long	.LBB1_8-.LJTI1_0
 	.long	.LBB1_10-.LJTI1_0
 	.long	.LBB1_9-.LJTI1_0
+	.long	.LBB1_7-.LJTI1_0
 	.long	.LBB1_7-.LJTI1_0
 
 optional_trait_methods::using_fn::targets::faulty::dec:
@@ -159,10 +159,10 @@ main:
 	mov	esi, 32
 	call	qword ptr [rip + getrandom::getrandom@GOTPCREL]
 	test	eax, eax
-	jne	.LBB6_24
+	jne	.LBB6_27
 	movaps	xmm0, xmmword ptr [rsp + 16]
 	movaps	xmm1, xmmword ptr [rsp + 32]
-	lea	rsi, [rsp + 48]
+	lea	rsi, [rsp + 368]
 	movaps	xmmword ptr [rsi + 16], xmm1
 	movaps	xmmword ptr [rsi], xmm0
 	lea	rdx, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.5]
@@ -181,76 +181,46 @@ main:
 	movaps	xmmword ptr [r14 + 272], xmm0
 	movaps	xmmword ptr [r14 + 288], xmm1
 	movaps	xmmword ptr [r14 + 304], xmm2
-	lea	rbx, [rsp + 80]
+	lea	rbx, [rsp + 48]
 	mov	edx, 320
 	mov	rdi, rbx
 	mov	rsi, r14
 	call	qword ptr [rip + memcpy@GOTPCREL]
-	lea	r14, [rsp + 352]
+	lea	r14, [rsp + 320]
 	mov	rax, qword ptr [r14 - 16]
 	mov	r12, qword ptr [rip + rand_chacha::guts::refill_wide::fn_impl::<ppv_lite86::x86_64::SseMachine<ppv_lite86::x86_64::NoS3, ppv_lite86::x86_64::NoS4, ppv_lite86::x86_64::NoNI>>@GOTPCREL]
-	mov	r13d, 2863311531
+	mov	r13d, 3435973837
 	lea	rbp, [rip + .LJTI6_0]
 .LBB6_6:
-	mov	rdx, rax
+	mov	rcx, rax
 	cmp	rax, 64
 	jb	.LBB6_8
 	mov	rdi, r14
 	mov	esi, 4
 	mov	rdx, rbx
 	call	r12
-	xor	edx, edx
+	xor	ecx, ecx
 .LBB6_8:
-	mov	ecx, dword ptr [rsp + 4*rdx + 80]
-	lea	rax, [rdx + 1]
-	mov	qword ptr [rsp + 336], rax
-	mov	rsi, rcx
-	imul	rsi, r13
-	shr	rsi, 34
-	add	esi, esi
-	lea	esi, [rsi + 2*rsi]
-	sub	ecx, esi
-	cmp	ecx, 4
-	ja	.LBB6_10
-	movsxd	rsi, dword ptr [rbp + 4*rcx]
+	mov	esi, dword ptr [rsp + 4*rcx + 48]
+	lea	rax, [rcx + 1]
+	mov	qword ptr [rsp + 304], rax
+	imul	rdi, rsi, 613566757
+	shr	rdi, 32
+	mov	edx, esi
+	sub	edx, edi
+	shr	edx
+	add	edx, edi
+	shr	edx, 2
+	lea	edi, [8*rdx]
+	sub	edx, edi
+	add	edx, esi
+	cmp	edx, 5
+	ja	.LBB6_20
+	movsxd	rsi, dword ptr [rbp + 4*rdx]
 	add	rsi, rbp
 	jmp	rsi
-.LBB6_13:
-	cmp	rdx, 63
-	jne	.LBB6_15
-	mov	rdi, r14
-	mov	esi, 4
-	mov	rdx, rbx
-	call	r12
-	xor	eax, eax
-.LBB6_15:
-	mov	edx, dword ptr [rsp + 4*rax + 80]
-	inc	rax
-	mov	qword ptr [rsp + 336], rax
-	imul	rcx, rdx, 1374389535
-	shr	rcx, 37
-	imul	ecx, ecx, 100
-	sub	edx, ecx
-	mov	ecx, 1
-	jmp	.LBB6_20
-.LBB6_18:
-	mov	ecx, 4
-	jmp	.LBB6_19
-.LBB6_16:
-	mov	ecx, 2
-	jmp	.LBB6_19
-.LBB6_17:
-	mov	ecx, 3
-.LBB6_19:
-.LBB6_20:
-	mov	qword ptr [rsp + r15 + 768], rcx
-	mov	qword ptr [rsp + r15 + 776], rdx
-	add	r15, 16
-	cmp	r15, 131080
-	jne	.LBB6_6
-	jmp	.LBB6_21
 .LBB6_10:
-	cmp	rdx, 63
+	cmp	rcx, 63
 	jne	.LBB6_12
 	mov	rdi, r14
 	mov	esi, 4
@@ -258,22 +228,76 @@ main:
 	call	r12
 	xor	eax, eax
 .LBB6_12:
-	mov	edx, dword ptr [rsp + 4*rax + 80]
+	mov	ecx, dword ptr [rsp + 4*rax + 48]
 	inc	rax
-	mov	qword ptr [rsp + 336], rax
-	mov	rcx, rdx
-	mov	esi, 3435973837
-	imul	rcx, rsi
-	shr	rcx, 35
-	add	ecx, ecx
-	lea	ecx, [rcx + 4*rcx]
-	sub	edx, ecx
-	cmp	edx, 7
-	mov	ecx, 8
-	cmove	edx, ecx
-	mov	ecx, 5
-	jmp	.LBB6_20
-.LBB6_21:
+	mov	qword ptr [rsp + 304], rax
+	imul	rdx, rcx, 1374389535
+	shr	rdx, 37
+	imul	edx, edx, 100
+	sub	ecx, edx
+	mov	edx, 1
+	jmp	.LBB6_23
+.LBB6_13:
+	mov	edx, 4
+	jmp	.LBB6_14
+.LBB6_15:
+	mov	edx, 2
+	jmp	.LBB6_14
+.LBB6_16:
+	mov	edx, 3
+.LBB6_14:
+.LBB6_23:
+	mov	qword ptr [rsp + r15 + 768], rdx
+	mov	qword ptr [rsp + r15 + 776], rcx
+	add	r15, 16
+	cmp	r15, 131080
+	jne	.LBB6_6
+	jmp	.LBB6_24
+.LBB6_17:
+	cmp	rcx, 63
+	jne	.LBB6_19
+	mov	rdi, r14
+	mov	esi, 4
+	mov	rdx, rbx
+	call	r12
+	xor	eax, eax
+.LBB6_19:
+	mov	ecx, dword ptr [rsp + 4*rax + 48]
+	inc	rax
+	mov	qword ptr [rsp + 304], rax
+	mov	rdx, rcx
+	imul	rdx, r13
+	shr	rdx, 35
+	add	edx, edx
+	lea	edx, [rdx + 4*rdx]
+	sub	ecx, edx
+	cmp	ecx, 7
+	mov	edx, 8
+	cmove	ecx, edx
+	mov	edx, 5
+	jmp	.LBB6_23
+.LBB6_20:
+	cmp	rcx, 63
+	jne	.LBB6_22
+	mov	rdi, r14
+	mov	esi, 4
+	mov	rdx, rbx
+	call	r12
+	xor	eax, eax
+.LBB6_22:
+	mov	ecx, dword ptr [rsp + 4*rax + 48]
+	inc	rax
+	mov	qword ptr [rsp + 304], rax
+	mov	rdx, rcx
+	imul	rdx, r13
+	shr	rdx, 34
+	lea	edx, [rdx + 4*rdx]
+	sub	ecx, edx
+	cmp	ecx, 1
+	adc	ecx, 0
+	mov	edx, 6
+	jmp	.LBB6_23
+.LBB6_24:
 	lea	rax, [rsp + 776]
 	lea	rcx, [rsp + 448]
 	mov	qword ptr [rcx], rax
@@ -285,7 +309,7 @@ main:
 	lea	rdi, [rsp + 8]
 	call	<optional_trait_methods::using_fn::controller::TargetController<optional_trait_methods::using_fn::targets::faulty::FaultyTarget>>::run
 	test	rax, rax
-	je	.LBB6_23
+	je	.LBB6_26
 	mov	rbx, qword ptr [rip + write@GOTPCREL]
 	mov	edi, 1
 	mov	rsi, rax
@@ -294,7 +318,7 @@ main:
 	mov	edx, 1
 	mov	edi, 1
 	call	rbx
-.LBB6_23:
+.LBB6_26:
 	xor	eax, eax
 	add	rsp, 131848
 	pop	rbx
@@ -304,8 +328,8 @@ main:
 	pop	r15
 	pop	rbp
 	ret
-.LBB6_24:
-	lea	rcx, [rsp + 80]
+.LBB6_27:
+	lea	rcx, [rsp + 48]
 	mov	dword ptr [rcx], eax
 	lea	rsi, [rsp + 448]
 	mov	qword ptr [rsi], rcx
@@ -316,11 +340,12 @@ main:
 	call	qword ptr [rip + core::panicking::panic_fmt@GOTPCREL]
 .Lfunc_end6:
 .LJTI6_0:
-	.long	.LBB6_19-.LJTI6_0
-	.long	.LBB6_13-.LJTI6_0
+	.long	.LBB6_14-.LJTI6_0
+	.long	.LBB6_10-.LJTI6_0
+	.long	.LBB6_15-.LJTI6_0
 	.long	.LBB6_16-.LJTI6_0
+	.long	.LBB6_13-.LJTI6_0
 	.long	.LBB6_17-.LJTI6_0
-	.long	.LBB6_18-.LJTI6_0
 
 rust_eh_personality:
 	ret

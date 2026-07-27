@@ -50,6 +50,14 @@ impl<T: Target> TargetController<T> {
                 let ops = self.target.ext_mul().unwrap();
                 ops.mul(*n).map_err(Error::Target)?;
             }
+            /* ScaleFactor nested extension */
+            Command::ScaleFactor(n) if self.target.ext_mul().and_then(|ops| ops.ext_scale_factor()).is_some() => {
+                crate::__dead_code_marker!("ScaleFactor nested extension");
+
+                let mul_ops = self.target.ext_mul().unwrap();
+                let scale_ops = mul_ops.ext_scale_factor().unwrap();
+                scale_ops.scale_factor(*n).map_err(Error::Target)?;
+            }
             _ => self.unsupported_cmd()?,
         }
 

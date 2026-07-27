@@ -26,6 +26,15 @@ pub trait TargetExtIncDec: Target {
 
 pub trait TargetExtMul: Target {
     fn mul(&mut self, n: isize) -> Result<(), Self::Error>;
+
+    #[inline(always)]
+    fn ext_scale_factor(&mut self) -> Option<TargetExtScaleFactorOps<'_, Self>> {
+        None
+    }
+}
+
+pub trait TargetExtScaleFactor: Target {
+    fn scale_factor(&mut self, factor: isize) -> Result<(), Self::Error>;
 }
 
 macro_rules! define_ops {
@@ -38,3 +47,4 @@ macro_rules! define_ops {
 define_ops!(TargetBase -> TargetBaseOps);
 define_ops!(TargetExtIncDec -> TargetExtIncDecOps);
 define_ops!(TargetExtMul -> TargetExtMulOps);
+define_ops!(TargetExtScaleFactor -> TargetExtScaleFactorOps);

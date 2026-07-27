@@ -9,4 +9,6 @@ pub enum Command {
     IncDec,
     // Requires Mul Extension
     Mul(isize),
+    // Requires Nested ScaleFactor Extension
+    ScaleFactor(isize),
 }
