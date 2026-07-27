@@ -2,8 +2,8 @@
 # run_hyperfine.sh
 set -e
 
-ITERATIONS_DEBUG=131072
-ITERATIONS_RELEASE=262144
+ITERATIONS_DEBUG=${ITERATIONS_DEBUG:-131072}
+ITERATIONS_RELEASE=${ITERATIONS_RELEASE:-262144}
 
 if [ ! -f "Cargo.toml" ]; then
     echo "Error: Please run this script from the 'complete' directory."
@@ -11,11 +11,11 @@ if [ ! -f "Cargo.toml" ]; then
 fi
 
 echo "Building binaries..."
+cargo build --release --bin harness
 
 build_bin() {
     local impl=$1
     local mode=$2
-    local iterations=$3
 
     local release_flag=""
     if [ "$mode" = "release" ]; then
@@ -23,25 +23,27 @@ build_bin() {
     fi
 
     touch src/main.rs
-    BENCH_ITERATIONS=$iterations cargo build --no-default-features --features="target_advanced using_${impl} bench" $release_flag >/dev/null 2>&1
+    cargo build --bin optional-trait-methods --no-default-features --features="target_advanced using_${impl}" $release_flag >/dev/null 2>&1
 
     cp target/${mode}/optional-trait-methods target/${mode}/bench-${impl}
 }
 
 for impl in "options" "fn" "traits"; do
-    build_bin "$impl" "debug" "$ITERATIONS_DEBUG"
-    build_bin "$impl" "release" "$ITERATIONS_RELEASE"
+    build_bin "$impl" "debug"
+    build_bin "$impl" "release"
 done
 
 echo "Running hyperfine benchmark for Debug Mode ($ITERATIONS_DEBUG iterations)..."
 hyperfine --warmup 3 \
-    "./target/debug/bench-options" \
-    "./target/debug/bench-fn" \
-    "./target/debug/bench-traits"
+    "./target/release/harness $ITERATIONS_DEBUG | ./target/debug/bench-options" \
+    "./target/release/harness $ITERATIONS_DEBUG | ./target/debug/bench-fn" \
+    "./target/release/harness $ITERATIONS_DEBUG | ./target/debug/bench-traits"
 
 echo ""
 echo "Running hyperfine benchmark for Release Mode ($ITERATIONS_RELEASE iterations)..."
 hyperfine --warmup 3 \
-    "./target/release/bench-options" \
-    "./target/release/bench-fn" \
-    "./target/release/bench-traits"
+    "./target/release/harness $ITERATIONS_RELEASE | ./target/release/bench-options" \
+    "./target/release/harness $ITERATIONS_RELEASE | ./target/release/bench-fn" \
+    "./target/release/harness $ITERATIONS_RELEASE | ./target/release/bench-traits"
+
+

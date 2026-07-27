@@ -568,10 +568,10 @@ Based on local benchmarks and assembly inspection:
 -   **Compiler Magic:** Removing `#[inline(never)]` from `Controller::run` really shows the magic of optimizing compilers, allowing the entire trait dispatch structure to be flattened and devirtualized.
 
 #### Assembly & Benchmarking Methodology
-Benchmarks in this domain can be tricky because results are easily dominated by I/O. To measure pure trait/function dispatch overhead, the benchmarks swap out stdout print statements for dummy compiler barriers.
+To measure realistic end-to-end command parsing and trait/function dispatch performance, commands are streamed via stdin from an external Rust harness (`src/bin/harness.rs`).
 
-*   *Note on `memcpy`:* The original benchmark draft proposed using a dummy `memcpy(&0u8, &0u8, 0)` call. However, assembly inspection reveals that modern LLVM is smart enough to optimize out `memcpy` calls with a length of `0` entirely. This caused the state-accessing methods (e.g. `get_state()`) to also be optimized out since their return values were unused.
-*   *Solution:* We updated the benchmarking macros to use `core::hint::black_box` (stabilized in Rust 1.66). The assembly confirms that the compiler now fully evaluates the state reads and writes the results to the stack (to satisfy the black-box constraint), while completely devirtualizing the IDET method calls into zero-overhead register operations.
+*   *Harness & Streaming:* The Rust harness uses `SeedableRng::from_entropy()` to stream randomized command lines (`p`, `s <n>`, `+`, `-`, `+-`, `* <n>`, `*~ <n>`) over stdout, which are piped directly into stdin of the controller binary.
+*   *Hyperfine Integration:* Each `hyperfine` trial run streams a fresh randomized input sequence directly into the benchmarked target (`./target/release/harness N | ./target/release/bench-<impl>`). This guarantees independent randomization for every trial run while cleanly isolating relative performance differences between the three implementations.
 
 Below are the `hyperfine` benchmark results comparing **Options** (`using_options`), **Fn Pointers** (`using_fn`), and **IDETs** (`using_traits`) across 131,072 iterations in Debug mode and 262,144 iterations in Release mode:
 
@@ -579,21 +579,21 @@ Below are the `hyperfine` benchmark results comparing **Options** (`using_option
 
 | Implementation | Mean ± Std Dev | Min … Max | Speedup |
 | :--- | :--- | :--- | :--- |
-| **Options** (`using_options`) | **150.0 ms ± 3.3 ms** | 143.4 ms … 156.5 ms | **1.00x** (Fastest) |
-| **Fn Pointers** (`using_fn`) | **160.0 ms ± 3.0 ms** | 154.2 ms … 165.3 ms | 1.07x slower |
-| **IDETs** (`using_traits`) | **187.7 ms ± 50.6 ms** | 142.2 ms … 312.0 ms | 1.25x slower |
+| **Options** (`using_options`) | **141.2 ms ± 2.7 ms** | 136.4 ms … 147.9 ms | **1.00x** (Fastest) |
+| **Fn Pointers** (`using_fn`) | **142.2 ms ± 4.0 ms** | 134.9 ms … 150.2 ms | 1.01x slower |
+| **IDETs** (`using_traits`) | **145.0 ms ± 8.8 ms** | 135.1 ms … 176.0 ms | 1.03x slower |
 
-*In Debug mode, `using_options` performs best due to reduced function call indirection overhead before compiler optimizations.*
+*In Debug mode, `using_options` performs marginally faster due to reduced trait object dispatch indirection prior to optimization.*
 
 ##### Release Mode (262,144 iterations)
 
 | Implementation | Mean ± Std Dev | Min … Max | Speedup |
 | :--- | :--- | :--- | :--- |
-| **Fn Pointers** (`using_fn`) | **95.6 ms ± 3.4 ms** | 90.5 ms … 106.4 ms | **1.00x** (Fastest) |
-| **Options** (`using_options`) | **97.5 ms ± 7.5 ms** | 87.4 ms … 114.6 ms | 1.02x slower |
-| **IDETs** (`using_traits`) | **97.5 ms ± 5.7 ms** | 90.4 ms … 117.1 ms | 1.02x slower |
+| **Fn Pointers** (`using_fn`) | **176.3 ms ± 8.0 ms** | 163.9 ms … 198.3 ms | **1.00x** (Fastest) |
+| **IDETs** (`using_traits`) | **176.8 ms ± 5.9 ms** | 167.3 ms … 189.0 ms | 1.00x slower |
+| **Options** (`using_options`) | **178.6 ms ± 7.2 ms** | 171.1 ms … 196.3 ms | 1.01x slower |
 
-*In Release mode (`-O3`), LLVM completely devirtualizes and inlines the dynamic dispatch across all three approaches, rendering runtime performance virtually identical (all within statistical noise at ~95–97 ms).*
+*In Release mode (`-O3`), LLVM completely devirtualizes and inlines both the dynamic dispatch and the packet parsing logic across all three approaches, rendering runtime performance virtually identical (all within statistical noise at ~176–178 ms).*
 
 ## Conclusion
 

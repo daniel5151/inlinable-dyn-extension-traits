@@ -1,4 +1,4 @@
-use crate::commands::Command;
+use crate::commands::{Command, parse_isize};
 
 use super::opt_result::OptResultExt;
 use super::target::Target;
@@ -20,6 +20,56 @@ impl<T: Target> TargetController<T> {
     fn unsupported_cmd(&self) -> Result<(), Error<T::Error>> {
         crate::println_str!("Unsupported cmd!");
         Ok(())
+    }
+
+    // NOTE: `#[inline(never)]` is used here specifically for pedagogical/assembly
+    // inspection purposes, ensuring `parse_command` is emitted as a standalone
+    // symbol in `asm_output/`.
+    //
+    // Unlike IDETs (`using_traits`) and Fn Pointers (`using_fn`), the
+    // `using_options` pattern does NOT provide capability-query methods on
+    // `Target` (e.g. `target.ext_incdec()`). Instead, methods return
+    // `Option`/`OptResult` directly when invoked.
+    //
+    // As a result, packet parsing CANNOT be guarded on target feature support
+    // before parsing. The parser MUST speculatively parse all incoming packets,
+    // preventing LLVM from dead-code eliminating unused packet parsing branches
+    // at compile time.
+    #[inline(never)]
+    pub fn parse_command(&mut self, buf: &[u8]) -> Option<Command> {
+        /* IncDec extension parsing - cannot be gated on target support! */
+        crate::__dead_code_marker!("Parse IncDec extension");
+        if buf == b"+" {
+            return Some(Command::Inc);
+        }
+        if buf == b"-" {
+            return Some(Command::Dec);
+        }
+        if buf == b"+-" {
+            return Some(Command::IncDec);
+        }
+
+        /* Mul extension parsing - cannot be gated on target support! */
+        crate::__dead_code_marker!("Parse Mul extension");
+        if let Some(n) = buf.strip_prefix(b"* ").and_then(parse_isize) {
+            return Some(Command::Mul(n));
+        }
+
+        /* ScaleFactor extension parsing - cannot be gated on target support! */
+        crate::__dead_code_marker!("Parse ScaleFactor extension");
+        if let Some(n) = buf.strip_prefix(b"*~ ").and_then(parse_isize) {
+            return Some(Command::ScaleFactor(n));
+        }
+
+        /* Base protocol parsing */
+        if buf == b"p" {
+            return Some(Command::PrintState);
+        }
+        if let Some(n) = buf.strip_prefix(b"s ").and_then(parse_isize) {
+            return Some(Command::SetState(n));
+        }
+
+        None
     }
 
     fn handle(&mut self, cmd: &Command) -> Result<(), Error<T::Error>> {
@@ -71,7 +121,12 @@ impl<T: Target> TargetController<T> {
             Command::ScaleFactor(n) => {
                 crate::__dead_code_marker!("ScaleFactor extension");
 
-                match self.target.scale_factor(*n).map_unimpl().map_err(Error::Target)? {
+                match self
+                    .target
+                    .scale_factor(*n)
+                    .map_unimpl()
+                    .map_err(Error::Target)?
+                {
                     Some(_) => {}
                     None => self.unsupported_cmd()?,
                 };
@@ -82,9 +137,18 @@ impl<T: Target> TargetController<T> {
     }
 
     #[inline(never)]
-    pub fn run(&mut self, cmds: &[Command]) -> Result<(), Error<T::Error>> {
-        for cmd in cmds.iter() {
-            self.handle(cmd)?
+    pub fn run(&mut self) -> Result<(), Error<T::Error>> {
+        let mut reader = crate::LineReader::new();
+        let mut line_buf = [0u8; 128];
+        while let Some(line) = reader.read_line(&mut line_buf) {
+            if line.is_empty() {
+                continue;
+            }
+            if let Some(cmd) = self.parse_command(line) {
+                self.handle(&cmd)?;
+            } else {
+                self.unsupported_cmd()?;
+            }
         }
 
         Ok(())

@@ -17,6 +17,12 @@ fn panic(_info: &core::panic::PanicInfo) -> ! {
 #[unsafe(no_mangle)]
 pub extern "C" fn rust_eh_personality() {}
 
+mod commands;
+mod line_reader;
+mod print_macros;
+
+pub use line_reader::LineReader;
+
 core::cfg_select! {
     feature = "using_options" => {
         mod using_options;
@@ -35,17 +41,10 @@ core::cfg_select! {
     }
 }
 
-mod commands;
-mod print_macros;
-
-use commands::Command;
 use controller::{Error, TargetController};
 
 #[unsafe(no_mangle)]
 pub extern "C" fn main(_argc: isize, _argv: *const *const u8) -> isize {
-    use rand_chacha::ChaCha8Rng;
-    use rand_core::{RngCore, SeedableRng};
-
     let target = core::cfg_select! {
         feature = "target_basic" => targets::BasicTarget::new(0),
         feature = "target_advanced" => targets::AdvancedTarget::new(0),
@@ -55,61 +54,17 @@ pub extern "C" fn main(_argc: isize, _argv: *const *const u8) -> isize {
 
     let mut controller = TargetController::new(target);
 
-    // Read the BENCH_ITERATIONS environment variable at compile time.
-    // If not set or invalid, defaults to 1.
-    let iterations = match option_env!("BENCH_ITERATIONS") {
-        Some(val) => val.parse::<usize>().unwrap_or(1).max(1),
-        None => 1,
-    };
-
-    // Generate randomized commands ahead of time (outside the hot loop)
-    // We use SeedableRng::from_entropy() to securely source a random seed from
-    // the OS at runtime
-    let mut commands_pool = [Command::PrintState; 8192];
-    let mut rng = ChaCha8Rng::from_entropy();
-
-    for cmd in commands_pool.iter_mut() {
-        *cmd = match rng.next_u32() % 7 {
-            0 => Command::PrintState,
-            1 => Command::SetState((rng.next_u32() % 100) as isize),
-            2 => Command::Inc,
-            3 => Command::Dec,
-            4 => Command::IncDec,
-            5 => {
-                let mut mul_val = (rng.next_u32() % 10) as isize;
-                if mul_val == 7 {
-                    mul_val = 8; // Avoid unlucky 7 for target_advanced to run cleanly
+    if let Err(e) = controller.run() {
+        core::cfg_select! {
+            feature = "using_options" => {
+                match e {
+                    Error::Target(e) => crate::println_str!(e),
+                    Error::InvalidImpl => crate::println_str!("Invalid implementation!"),
                 }
-                Command::Mul(mul_val)
             }
             _ => {
-                let mut scale_val = (rng.next_u32() % 5) as isize;
-                if scale_val == 0 {
-                    scale_val = 1; // Avoid scaling by 0 to keep state active
-                }
-                Command::ScaleFactor(scale_val)
-            }
-        };
-    }
-
-    for i in 0..iterations {
-        // Calculate a shifting offset using coprime 17 to ensure each iteration
-        // processes a different slice of randomized operations from the pool.
-        let offset = (i * 17) % (8192 - 64);
-        let slice = &commands_pool[offset..offset + 64];
-
-        if let Err(e) = controller.run(core::hint::black_box(slice)) {
-            core::cfg_select! {
-                feature = "using_options" => {
-                    match e {
-                        Error::Target(e) => crate::println_str!(e),
-                        Error::InvalidImpl => crate::println_str!("Invalid implementation!"),
-                    }
-                }
-                _ => {
-                    match e {
-                        Error::Target(e) => crate::println_str!(e),
-                    }
+                match e {
+                    Error::Target(e) => crate::println_str!(e),
                 }
             }
         }
