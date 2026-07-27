@@ -28,3 +28,5 @@ do
     done
 done
 
+python3 ./asm_stats.py
+

@@ -77,6 +77,13 @@ impl<T: 'static + Target> TargetController<T> {
         None
     }
 
+    // NOTE: `#[inline(never)]` is used here specifically for pedagogical/assembly
+    // inspection purposes, ensuring `handle` is emitted as a standalone symbol in
+    // `asm_output/`.
+    //
+    // Monomorphization still inlines target capability checks into this function,
+    // preserving dead-code elimination of unsupported extension handlers.
+    #[inline(never)]
     pub fn handle(&mut self, cmd: &Command) -> Result<(), Error<T::Error>> {
         match cmd {
             /* Base protocol */
@@ -94,8 +101,12 @@ impl<T: 'static + Target> TargetController<T> {
                 if let Some(ops) = self.target.ext_incdec() {
                     crate::__dead_code_marker!("IncDec extension");
                     match incdec_cmd {
-                        ext::IncDecCommand::Inc => (ops.inc)(&mut self.target).map_err(Error::Target)?,
-                        ext::IncDecCommand::Dec => (ops.dec)(&mut self.target).map_err(Error::Target)?,
+                        ext::IncDecCommand::Inc => {
+                            (ops.inc)(&mut self.target).map_err(Error::Target)?
+                        }
+                        ext::IncDecCommand::Dec => {
+                            (ops.dec)(&mut self.target).map_err(Error::Target)?
+                        }
                         ext::IncDecCommand::IncDec => {
                             (ops.inc)(&mut self.target).map_err(Error::Target)?;
                             (ops.dec)(&mut self.target).map_err(Error::Target)?;
@@ -133,6 +144,4 @@ impl<T: 'static + Target> TargetController<T> {
 
         Ok(())
     }
-
-
 }

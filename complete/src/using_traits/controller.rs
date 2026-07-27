@@ -77,6 +77,13 @@ impl<T: Target> TargetController<T> {
         None
     }
 
+    // NOTE: `#[inline(never)]` is used here specifically for pedagogical/assembly
+    // inspection purposes, ensuring `handle` is emitted as a standalone symbol in
+    // `asm_output/`.
+    //
+    // Monomorphization still inlines target capability checks into this function,
+    // preserving dead-code elimination of unsupported extension handlers.
+    #[inline(never)]
     pub fn handle(&mut self, cmd: &Command) -> Result<(), Error<T::Error>> {
         match cmd {
             /* Base protocol */
@@ -131,6 +138,4 @@ impl<T: Target> TargetController<T> {
 
         Ok(())
     }
-
-
 }

@@ -117,35 +117,142 @@ __rustc::rust_begin_unwind:
 	ret
 .Lfunc_end1:
 
+<optional_trait_methods::using_options::controller::TargetController<optional_trait_methods::using_options::targets::basic::BasicTarget>>::unsupported_cmd:
+	push	r14
+	push	rbx
+	push	rax
+	mov	rbx, rdi
+	lea	rsi, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.7]
+	mov	r14, qword ptr [rip + write@GOTPCREL]
+	mov	edx, 16
+	mov	edi, 1
+	call	r14
+	lea	rsi, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.8]
+	mov	edx, 1
+	mov	edi, 1
+	call	r14
+	mov	qword ptr [rbx], 0
+	mov	rax, rbx
+	add	rsp, 8
+	pop	rbx
+	pop	r14
+	ret
+.Lfunc_end2:
+
+<optional_trait_methods::using_options::controller::TargetController<optional_trait_methods::using_options::targets::basic::BasicTarget>>::handle:
+	push	r14
+	push	rbx
+	sub	rsp, 24
+	mov	rbx, rdi
+	movzx	eax, byte ptr [rdx]
+	test	eax, eax
+	je	.LBB3_6
+	cmp	eax, 1
+	jne	.LBB3_11
+	lea	rax, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.10]
+	mov	rcx, rsp
+	mov	qword ptr [rcx], rax
+	mov	qword ptr [rcx + 8], 16
+	#APP
+	#NO_APP
+	movzx	eax, byte ptr [rdx + 1]
+	test	eax, eax
+	je	.LBB3_14
+	cmp	eax, 1
+	je	.LBB3_14
+	mov	r14, rsp
+	mov	rdi, r14
+	call	<optional_trait_methods::using_options::controller::TargetController<optional_trait_methods::using_options::targets::basic::BasicTarget>>::unsupported_cmd
+	cmp	dword ptr [r14], 1
+	jne	.LBB3_9
+	movups	xmm0, xmmword ptr [rsp + 8]
+	movups	xmmword ptr [rbx + 8], xmm0
+	mov	r14d, 1
+	jmp	.LBB3_10
+.LBB3_6:
+	cmp	byte ptr [rdx + 8], 0
+	je	.LBB3_7
+	mov	rax, qword ptr [rdx + 16]
+	mov	rdi, rsi
+	mov	rsi, rax
+	call	<optional_trait_methods::using_options::targets::basic::BasicTarget as optional_trait_methods::using_options::target::Target>::set_state
+	jmp	.LBB3_9
+.LBB3_11:
+	cmp	byte ptr [rdx + 8], 0
+	je	.LBB3_12
+	lea	rax, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.12]
+	mov	rcx, rsp
+	mov	qword ptr [rcx], rax
+	mov	qword ptr [rcx + 8], 21
+	#APP
+	#NO_APP
+	jmp	.LBB3_14
+.LBB3_7:
+	mov	rdi, rsi
+	call	<optional_trait_methods::using_options::targets::basic::BasicTarget as optional_trait_methods::using_options::target::Target>::get_state
+	lea	rdi, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.9]
+	xor	r14d, r14d
+	mov	rsi, rax
+	xor	eax, eax
+	call	qword ptr [rip + printf@GOTPCREL]
+	jmp	.LBB3_10
+.LBB3_12:
+	lea	rax, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.11]
+	mov	rcx, rsp
+	mov	qword ptr [rcx], rax
+	mov	qword ptr [rcx + 8], 13
+	#APP
+	#NO_APP
+.LBB3_14:
+	lea	rsi, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.7]
+	mov	r14, qword ptr [rip + write@GOTPCREL]
+	mov	edx, 16
+	mov	edi, 1
+	call	r14
+	lea	rsi, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.8]
+	mov	edx, 1
+	mov	edi, 1
+	call	r14
+.LBB3_9:
+	xor	r14d, r14d
+.LBB3_10:
+	mov	qword ptr [rbx], r14
+	mov	rax, rbx
+	add	rsp, 24
+	pop	rbx
+	pop	r14
+	ret
+.Lfunc_end3:
+
 optional_trait_methods::commands::parse_isize:
 	test	rsi, rsi
-	je	.LBB2_2
+	je	.LBB4_2
 	cmp	rsi, 1
-	jne	.LBB2_3
-.LBB2_2:
+	jne	.LBB4_3
+.LBB4_2:
 	xor	eax, eax
-.LBB2_8:
+.LBB4_8:
 	ret
-.LBB2_3:
+.LBB4_3:
 	mov	cl, byte ptr [rdi]
 	mov	r8d, 1
 	xor	eax, eax
 	xor	edx, edx
-.LBB2_4:
+.LBB4_4:
 	cmp	rsi, r8
-	je	.LBB2_9
+	je	.LBB4_9
 	mov	r9b, byte ptr [rdi + r8]
 	add	r9b, -48
 	cmp	r9b, 9
-	ja	.LBB2_8
+	ja	.LBB4_8
 	imul	rdx, rdx, 10
-	jo	.LBB2_8
+	jo	.LBB4_8
 	movzx	r9d, r9b
 	inc	r8
 	add	rdx, r9
-	jno	.LBB2_4
-	jmp	.LBB2_8
-.LBB2_9:
+	jno	.LBB4_4
+	jmp	.LBB4_8
+.LBB4_9:
 	xor	eax, eax
 	cmp	cl, 45
 	setne	al
@@ -154,17 +261,17 @@ optional_trait_methods::commands::parse_isize:
 	imul	rdx, rcx
 	setno	al
 	ret
-.Lfunc_end2:
+.Lfunc_end4:
 
 <optional_trait_methods::using_options::targets::basic::BasicTarget as optional_trait_methods::using_options::target::Target>::get_state:
 	mov	rax, qword ptr [rdi]
 	ret
-.Lfunc_end3:
+.Lfunc_end5:
 
 <optional_trait_methods::using_options::targets::basic::BasicTarget as optional_trait_methods::using_options::target::Target>::set_state:
 	mov	qword ptr [rdi], rsi
 	ret
-.Lfunc_end4:
+.Lfunc_end6:
 
 main:
 	push	rbp
@@ -173,16 +280,17 @@ main:
 	push	r13
 	push	r12
 	push	rbx
-	sub	rsp, 1224
-	lea	rbx, [rsp + 40]
-	mov	qword ptr [rbx], 0
-	lea	r14, [rsp + 184]
+	sub	rsp, 1240
+	lea	rax, [rsp + 8]
+	mov	qword ptr [rax], 0
+	lea	r14, [rsp + 200]
+	xor	ebp, ebp
 	mov	edx, 1040
 	mov	rdi, r14
 	xor	esi, esi
 	call	qword ptr [rip + memset@GOTPCREL]
 	xorps	xmm0, xmm0
-	lea	r15, [rsp + 48]
+	lea	r15, [rsp + 64]
 	movaps	xmmword ptr [r15 + 112], xmm0
 	movaps	xmmword ptr [r15 + 96], xmm0
 	movaps	xmmword ptr [r15 + 80], xmm0
@@ -191,129 +299,108 @@ main:
 	movaps	xmmword ptr [r15 + 32], xmm0
 	movaps	xmmword ptr [r15 + 16], xmm0
 	movaps	xmmword ptr [r15], xmm0
-	mov	rbp, qword ptr [rip + write@GOTPCREL]
-	mov	r12, qword ptr [rip + read@GOTPCREL]
+	lea	r12, [rsp + 40]
+	mov	rbx, qword ptr [rip + read@GOTPCREL]
 	xor	eax, eax
-	xor	ecx, ecx
-.LBB5_1:
+.LBB7_1:
 	xor	r13d, r13d
-.LBB5_2:
-	cmp	rcx, rax
-	jb	.LBB5_5
+.LBB7_2:
+	cmp	rax, rbp
+	jb	.LBB7_5
 	mov	edx, 1024
 	xor	edi, edi
 	mov	rsi, r14
-	call	r12
+	call	rbx
 	test	rax, rax
-	jle	.LBB5_28
-	mov	qword ptr [rsp + 1208], rax
-	mov	qword ptr [rsp + 1216], 0
-	xor	ecx, ecx
-.LBB5_5:
-	cmp	rax, rcx
-	jb	.LBB5_29
-	cmp	rax, 1024
-	ja	.LBB5_29
-	cmp	rcx, rax
-	je	.LBB5_2
-	inc	rcx
-	mov	rdx, rax
-	neg	rdx
-.LBB5_9:
-	mov	sil, byte ptr [rsp + rcx + 183]
-	mov	qword ptr [rsp + 1216], rcx
-	cmp	sil, 10
-	je	.LBB5_10
+	jle	.LBB7_22
+	mov	rbp, rax
+	mov	qword ptr [rsp + 1224], rax
+	mov	qword ptr [rsp + 1232], 0
+	xor	eax, eax
+.LBB7_5:
+	cmp	rbp, rax
+	jb	.LBB7_21
+	cmp	rbp, 1024
+	ja	.LBB7_21
+	cmp	rax, rbp
+	je	.LBB7_2
+	inc	rax
+	mov	rcx, rbp
+	neg	rcx
+.LBB7_9:
+	mov	dl, byte ptr [rsp + rax + 199]
+	mov	qword ptr [rsp + 1232], rax
+	cmp	dl, 10
+	je	.LBB7_10
 	cmp	r13, 127
-	ja	.LBB5_18
-	mov	byte ptr [rsp + r13 + 48], sil
+	ja	.LBB7_14
+	mov	byte ptr [rsp + r13 + 64], dl
 	inc	r13
-.LBB5_18:
-	lea	rsi, [rdx + rcx]
-	inc	rsi
-	inc	rcx
-	cmp	rsi, 1
-	jne	.LBB5_9
-	mov	rcx, rax
-	jmp	.LBB5_2
-.LBB5_28:
+.LBB7_14:
+	lea	rdx, [rcx + rax]
+	inc	rdx
+	inc	rax
+	cmp	rdx, 1
+	jne	.LBB7_9
+	mov	rax, rbp
+	jmp	.LBB7_2
+.LBB7_22:
 	lea	rax, [r13 - 129]
 	cmp	rax, -128
-	jb	.LBB5_29
-	jmp	.LBB5_12
-.LBB5_10:
+	jb	.LBB7_21
+	jmp	.LBB7_23
+.LBB7_10:
 	cmp	r13, 128
-	ja	.LBB5_29
+	ja	.LBB7_21
 	test	r13, r13
-	je	.LBB5_1
-.LBB5_12:
-	lea	rdi, [rsp + 16]
+	je	.LBB7_1
+.LBB7_23:
+	mov	rdi, r12
 	mov	rsi, r15
 	mov	rdx, r13
 	call	<optional_trait_methods::using_options::controller::TargetController<optional_trait_methods::using_options::targets::basic::BasicTarget>>::parse_command
-	movzx	ecx, byte ptr [rsp + 16]
-	cmp	ecx, 255
-	je	.LBB5_26
-	mov	rax, qword ptr [rsp + 24]
-	test	ecx, ecx
-	je	.LBB5_20
-	cmp	ecx, 1
-	jne	.LBB5_23
-	lea	rax, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.10]
-	mov	qword ptr [rsp], rax
-	mov	qword ptr [rsp + 8], 16
-	mov	rax, rsp
-	#APP
-	#NO_APP
-	jmp	.LBB5_26
-.LBB5_20:
-	test	al, 1
-	je	.LBB5_21
-	mov	rsi, qword ptr [rsp + 32]
-	mov	rdi, rbx
-	call	<optional_trait_methods::using_options::targets::basic::BasicTarget as optional_trait_methods::using_options::target::Target>::set_state
-	jmp	.LBB5_27
-.LBB5_23:
-	test	al, 1
-	je	.LBB5_24
-	lea	rax, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.12]
-	mov	qword ptr [rsp], rax
-	mov	qword ptr [rsp + 8], 21
-	mov	rax, rsp
-	#APP
-	#NO_APP
-	jmp	.LBB5_26
-.LBB5_21:
-	mov	rdi, rbx
-	call	<optional_trait_methods::using_options::targets::basic::BasicTarget as optional_trait_methods::using_options::target::Target>::get_state
-	lea	rdi, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.9]
-	mov	rsi, rax
-	xor	eax, eax
-	call	qword ptr [rip + printf@GOTPCREL]
-	jmp	.LBB5_27
-.LBB5_24:
-	lea	rax, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.11]
-	mov	qword ptr [rsp], rax
-	mov	qword ptr [rsp + 8], 13
-	mov	rax, rsp
-	#APP
-	#NO_APP
-.LBB5_26:
+	cmp	byte ptr [rsp + 40], -1
+	je	.LBB7_24
+	lea	rdi, [rsp + 16]
+	lea	rsi, [rsp + 8]
+	mov	rdx, r12
+	call	<optional_trait_methods::using_options::controller::TargetController<optional_trait_methods::using_options::targets::basic::BasicTarget>>::handle
+	cmp	dword ptr [rsp + 16], 1
+	je	.LBB7_17
+	jmp	.LBB7_25
+.LBB7_24:
 	mov	edx, 16
 	mov	edi, 1
 	lea	rsi, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.7]
-	call	rbp
+	mov	r13, qword ptr [rip + write@GOTPCREL]
+	call	r13
 	mov	edx, 1
 	mov	edi, 1
 	lea	rsi, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.8]
-	call	rbp
-.LBB5_27:
-	mov	rax, qword ptr [rsp + 1208]
-	mov	rcx, qword ptr [rsp + 1216]
-	jmp	.LBB5_1
-.LBB5_29:
+	call	r13
+.LBB7_25:
+	mov	rbp, qword ptr [rsp + 1224]
+	mov	rax, qword ptr [rsp + 1232]
+	jmp	.LBB7_1
+.LBB7_17:
+	mov	rsi, qword ptr [rsp + 24]
+	test	rsi, rsi
+	je	.LBB7_19
+	mov	rdx, qword ptr [rsp + 32]
+	jmp	.LBB7_20
+.LBB7_19:
+	lea	rsi, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.13]
+	mov	edx, 23
+.LBB7_20:
+	mov	edi, 1
+	call	qword ptr [rip + write@GOTPCREL]
+	lea	rsi, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.8]
+	mov	edx, 1
+	mov	edi, 1
+	call	qword ptr [rip + write@GOTPCREL]
+.LBB7_21:
 	xor	eax, eax
-	add	rsp, 1224
+	add	rsp, 1240
 	pop	rbx
 	pop	r12
 	pop	r13
@@ -321,11 +408,11 @@ main:
 	pop	r15
 	pop	rbp
 	ret
-.Lfunc_end5:
+.Lfunc_end7:
 
 rust_eh_personality:
 	ret
-.Lfunc_end6:
+.Lfunc_end8:
 
 .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.0:
 	.ascii	"panic!\n"
@@ -365,5 +452,8 @@ rust_eh_personality:
 
 .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.12:
 	.ascii	"ScaleFactor extension"
+
+.Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.13:
+	.ascii	"Invalid implementation!"
 
 	.ident	"rustc version 1.97.1 (8bab26f4f 2026-07-14)"
