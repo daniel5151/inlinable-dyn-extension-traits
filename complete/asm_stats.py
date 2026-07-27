@@ -85,7 +85,7 @@ def main():
             sys.exit(1)
 
     targets = ["basic", "advanced", "faulty"] if not args.target else [args.target]
-    impls = ["options", "fn", "traits"]
+    impls = ["cfg_gates", "is_supported", "options", "fn", "traits"]
     metric_key = "total_lines" if args.lines else "instructions"
     metric_name = "ASM Lines" if args.lines else "Instructions"
 
@@ -117,27 +117,33 @@ def main():
         priority = ["parse_command", "handle", "main", "unsupported_cmd", "parse_isize", "get_state", "set_state", "inc", "dec", "mul", "scale_factor"]
         sorted_funcs = sorted(all_funcs, key=lambda x: (priority.index(x) if x in priority else 99, x))
 
-        header = f"{'Function':<22} | {'using_options':<15} | {'using_fn':<15} | {'using_traits':<15}"
+        header = f"{'Function':<22} | {'cfg_gates':<12} | {'is_supported':<12} | {'using_options':<13} | {'using_fn':<12} | {'using_traits':<12}"
         divider = "-" * len(header)
         print(header)
         print(divider)
 
         for fn in sorted_funcs:
+            cfg_val = data["cfg_gates"].get(fn, "-")
+            sup_val = data["is_supported"].get(fn, "-")
             opts_val = data["options"].get(fn, "-")
             fn_val = data["fn"].get(fn, "-")
             traits_val = data["traits"].get(fn, "-")
 
+            s_cfg = f"{cfg_val:>5}" if cfg_val != "-" else f"{'-':>5}"
+            s_sup = f"{sup_val:>5}" if sup_val != "-" else f"{'-':>5}"
             s_opts = f"{opts_val:>5}" if opts_val != "-" else f"{'-':>5}"
             s_fn = f"{fn_val:>5}" if fn_val != "-" else f"{'-':>5}"
             s_traits = f"{traits_val:>5}" if traits_val != "-" else f"{'-':>5}"
 
-            print(f"{fn:<22} | {s_opts:<15} | {s_fn:<15} | {s_traits:<15}")
+            print(f"{fn:<22} | {s_cfg:<12} | {s_sup:<12} | {s_opts:<13} | {s_fn:<12} | {s_traits:<12}")
 
         print(divider)
+        tot_cfg = total_file_instructions.get("cfg_gates", 0)
+        tot_sup = total_file_instructions.get("is_supported", 0)
         tot_opts = total_file_instructions.get("options", 0)
         tot_fn = total_file_instructions.get("fn", 0)
         tot_traits = total_file_instructions.get("traits", 0)
-        print(f"{'TOTAL (measured)':<22} | {tot_opts:>5}           | {tot_fn:>5}           | {tot_traits:>5}")
+        print(f"{'TOTAL (measured)':<22} | {tot_cfg:>5}        | {tot_sup:>5}        | {tot_opts:>5}         | {tot_fn:>5}        | {tot_traits:>5}")
         print()
 
 if __name__ == "__main__":

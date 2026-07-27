@@ -24,6 +24,14 @@ mod print_macros;
 pub use line_reader::LineReader;
 
 core::cfg_select! {
+    feature = "using_cfg_gates" => {
+        mod using_cfg_gates;
+        use using_cfg_gates::*;
+    }
+    feature = "using_is_supported" => {
+        mod using_is_supported;
+        use using_is_supported::*;
+    }
     feature = "using_options" => {
         mod using_options;
         use using_options::*;

@@ -10,6 +10,8 @@ default = ["target_advanced", "using_traits", "interpretable_asm"]
 interpretable_asm = []
 bench = []
 
+using_cfg_gates = []
+using_is_supported = []
 using_options = []
 using_fn = []
 using_traits = []

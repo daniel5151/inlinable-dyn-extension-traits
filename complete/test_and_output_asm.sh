@@ -8,7 +8,7 @@ mkdir -p ./asm_output ./asm_output_inlined
 
 for target in "basic" "advanced" "faulty"
 do
-    for impl in "options" "fn" "traits"
+    for impl in "cfg_gates" "is_supported" "options" "fn" "traits"
     do
         # 1. Generate interpretable asm listing (with inline(never))
         rm -f ./target/release/deps/optional_trait_methods-*

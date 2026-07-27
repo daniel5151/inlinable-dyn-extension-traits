@@ -28,13 +28,15 @@ build_bin() {
     cp target/${mode}/optional-trait-methods target/${mode}/bench-${impl}
 }
 
-for impl in "options" "fn" "traits"; do
+for impl in "cfg_gates" "is_supported" "options" "fn" "traits"; do
     build_bin "$impl" "debug"
     build_bin "$impl" "release"
 done
 
 echo "Running hyperfine benchmark for Debug Mode ($ITERATIONS_DEBUG iterations)..."
 hyperfine --warmup 3 \
+    "./target/release/harness $ITERATIONS_DEBUG | ./target/debug/bench-cfg_gates" \
+    "./target/release/harness $ITERATIONS_DEBUG | ./target/debug/bench-is_supported" \
     "./target/release/harness $ITERATIONS_DEBUG | ./target/debug/bench-options" \
     "./target/release/harness $ITERATIONS_DEBUG | ./target/debug/bench-fn" \
     "./target/release/harness $ITERATIONS_DEBUG | ./target/debug/bench-traits"
@@ -42,6 +44,8 @@ hyperfine --warmup 3 \
 echo ""
 echo "Running hyperfine benchmark for Release Mode ($ITERATIONS_RELEASE iterations)..."
 hyperfine --warmup 3 \
+    "./target/release/harness $ITERATIONS_RELEASE | ./target/release/bench-cfg_gates" \
+    "./target/release/harness $ITERATIONS_RELEASE | ./target/release/bench-is_supported" \
     "./target/release/harness $ITERATIONS_RELEASE | ./target/release/bench-options" \
     "./target/release/harness $ITERATIONS_RELEASE | ./target/release/bench-fn" \
     "./target/release/harness $ITERATIONS_RELEASE | ./target/release/bench-traits"
