@@ -1,6 +1,8 @@
 use core::num::Wrapping;
 
-use super::super::target::{Target, TargetBaseOps, TargetExtIncDecOps};
+use super::super::target::Target;
+use super::super::target::TargetBaseOps;
+use super::super::target::TargetExtIncDecOps;
 
 pub struct FaultyTarget {
     state: Wrapping<isize>,
@@ -8,7 +10,9 @@ pub struct FaultyTarget {
 
 impl FaultyTarget {
     pub fn new(state: isize) -> FaultyTarget {
-        FaultyTarget { state: Wrapping(state) }
+        FaultyTarget {
+            state: Wrapping(state),
+        }
     }
 }
 
@@ -53,7 +57,4 @@ const BASE_OPS: TargetBaseOps<FaultyTarget> = TargetBaseOps {
     set_state,
 };
 
-const EXT_INC_DEC_OPS: TargetExtIncDecOps<FaultyTarget> = TargetExtIncDecOps {
-    inc,
-    dec,
-};
+const EXT_INC_DEC_OPS: TargetExtIncDecOps<FaultyTarget> = TargetExtIncDecOps { inc, dec };

@@ -1,1 +1,2 @@
 wrap_comments = true
+imports_granularity = "Item"

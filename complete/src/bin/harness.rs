@@ -1,6 +1,8 @@
 use rand_chacha::ChaCha8Rng;
-use rand_core::{RngCore, SeedableRng};
-use std::io::{self, Write};
+use rand_core::RngCore;
+use rand_core::SeedableRng;
+use std::io::Write;
+use std::io::{self};
 
 fn main() {
     let num_commands = std::env::args()

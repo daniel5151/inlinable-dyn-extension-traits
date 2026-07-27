@@ -1,9 +1,14 @@
 use core::num::Wrapping;
 
-use super::super::target::{
-    Target, TargetBase, TargetBaseOps, TargetExtIncDec, TargetExtIncDecOps, TargetExtMul,
-    TargetExtMulOps, TargetExtScaleFactor, TargetExtScaleFactorOps,
-};
+use super::super::target::Target;
+use super::super::target::TargetBase;
+use super::super::target::TargetBaseOps;
+use super::super::target::TargetExtIncDec;
+use super::super::target::TargetExtIncDecOps;
+use super::super::target::TargetExtMul;
+use super::super::target::TargetExtMulOps;
+use super::super::target::TargetExtScaleFactor;
+use super::super::target::TargetExtScaleFactorOps;
 
 pub struct AdvancedTarget {
     state: Wrapping<isize>,

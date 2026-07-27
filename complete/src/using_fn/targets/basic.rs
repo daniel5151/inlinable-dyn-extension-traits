@@ -1,4 +1,5 @@
-use super::super::target::{Target, TargetBaseOps};
+use super::super::target::Target;
+use super::super::target::TargetBaseOps;
 
 pub struct BasicTarget {
     state: isize,

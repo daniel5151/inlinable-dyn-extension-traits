@@ -1,6 +1,7 @@
 use core::num::Wrapping;
 
-use super::super::target::{OptResult, Target};
+use super::super::target::OptResult;
+use super::super::target::Target;
 
 pub struct AdvancedTarget {
     state: Wrapping<isize>,

@@ -49,7 +49,8 @@ core::cfg_select! {
     }
 }
 
-use controller::{Error, TargetController};
+use controller::Error;
+use controller::TargetController;
 
 #[unsafe(no_mangle)]
 pub extern "C" fn main(_argc: isize, _argv: *const *const u8) -> isize {

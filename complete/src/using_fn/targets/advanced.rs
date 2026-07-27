@@ -1,6 +1,10 @@
 use core::num::Wrapping;
 
-use super::super::target::{Target, TargetBaseOps, TargetExtIncDecOps, TargetExtMulOps, TargetExtScaleFactorOps};
+use super::super::target::Target;
+use super::super::target::TargetBaseOps;
+use super::super::target::TargetExtIncDecOps;
+use super::super::target::TargetExtMulOps;
+use super::super::target::TargetExtScaleFactorOps;
 
 pub struct AdvancedTarget {
     state: Wrapping<isize>,
@@ -76,7 +80,9 @@ fn scale_factor(this: &mut AdvancedTarget, factor: isize) -> Result<(), &'static
 }
 
 #[inline(always)]
-fn ext_scale_factor(this: &AdvancedTarget) -> Option<&'static TargetExtScaleFactorOps<AdvancedTarget>> {
+fn ext_scale_factor(
+    this: &AdvancedTarget,
+) -> Option<&'static TargetExtScaleFactorOps<AdvancedTarget>> {
     let _ = this;
     Some(&EXT_SCALE_FACTOR_OPS)
 }
@@ -86,16 +92,12 @@ const BASE_OPS: TargetBaseOps<AdvancedTarget> = TargetBaseOps {
     set_state,
 };
 
-const EXT_INC_DEC_OPS: TargetExtIncDecOps<AdvancedTarget> = TargetExtIncDecOps {
-    inc,
-    dec,
-};
+const EXT_INC_DEC_OPS: TargetExtIncDecOps<AdvancedTarget> = TargetExtIncDecOps { inc, dec };
 
 const EXT_MUL_OPS: TargetExtMulOps<AdvancedTarget> = TargetExtMulOps {
     mul,
     ext_scale_factor,
 };
 
-const EXT_SCALE_FACTOR_OPS: TargetExtScaleFactorOps<AdvancedTarget> = TargetExtScaleFactorOps {
-    scale_factor,
-};
+const EXT_SCALE_FACTOR_OPS: TargetExtScaleFactorOps<AdvancedTarget> =
+    TargetExtScaleFactorOps { scale_factor };

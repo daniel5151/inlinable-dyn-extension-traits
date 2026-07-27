@@ -1,4 +1,6 @@
-use crate::commands::{Command, ext, parse_isize};
+use crate::commands::Command;
+use crate::commands::ext;
+use crate::commands::parse_isize;
 
 use super::opt_result::OptResultExt;
 use super::target::Target;

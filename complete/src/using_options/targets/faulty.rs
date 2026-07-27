@@ -1,6 +1,7 @@
 use core::num::Wrapping;
 
-use super::super::target::{OptResult, Target};
+use super::super::target::OptResult;
+use super::super::target::Target;
 
 pub struct FaultyTarget {
     state: Wrapping<isize>,
@@ -8,7 +9,9 @@ pub struct FaultyTarget {
 
 impl FaultyTarget {
     pub fn new(state: isize) -> FaultyTarget {
-        FaultyTarget { state: Wrapping(state) }
+        FaultyTarget {
+            state: Wrapping(state),
+        }
     }
 }
 

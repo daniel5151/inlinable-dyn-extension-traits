@@ -1,4 +1,5 @@
-pub use super::opt_result::{MaybeUnimpl, OptResult};
+pub use super::opt_result::MaybeUnimpl;
+pub use super::opt_result::OptResult;
 
 pub trait Target {
     type Error;
