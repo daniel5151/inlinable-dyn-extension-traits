@@ -67,200 +67,35 @@ __rustc::rust_begin_unwind:
 	jmp	.LBB1_9
 .Lfunc_end1:
 
-<optional_trait_methods::using_traits::controller::TargetController<optional_trait_methods::using_traits::targets::faulty::FaultyTarget>>::run:
-	push	rbp
-	push	r15
-	push	r14
-	push	r13
-	push	r12
-	push	rbx
-	sub	rsp, 1224
-	mov	r14, rdi
-	lea	r15, [rsp + 184]
-	xor	ebx, ebx
-	mov	edx, 1040
-	mov	rdi, r15
-	xor	esi, esi
-	call	qword ptr [rip + memset@GOTPCREL]
-	xorps	xmm0, xmm0
-	lea	r12, [rsp + 48]
-	movaps	xmmword ptr [r12 + 112], xmm0
-	movaps	xmmword ptr [r12 + 96], xmm0
-	movaps	xmmword ptr [r12 + 80], xmm0
-	movaps	xmmword ptr [r12 + 64], xmm0
-	movaps	xmmword ptr [r12 + 48], xmm0
-	movaps	xmmword ptr [r12 + 32], xmm0
-	movaps	xmmword ptr [r12 + 16], xmm0
-	movaps	xmmword ptr [r12], xmm0
-	mov	r13, qword ptr [rip + read@GOTPCREL]
-	xor	edx, edx
-	xor	eax, eax
-.LBB2_1:
-	xor	ebp, ebp
-.LBB2_2:
-	mov	rcx, rax
-	mov	rax, rdx
-.LBB2_3:
-	cmp	rcx, rax
-	jb	.LBB2_6
-	mov	edx, 1024
-	xor	edi, edi
-	mov	rsi, r15
-	call	r13
-	test	rax, rax
-	jle	.LBB2_17
-	mov	qword ptr [rsp + 1208], rax
-	mov	qword ptr [rsp + 1216], 0
-	xor	ecx, ecx
-.LBB2_6:
-	cmp	rax, rcx
-	jb	.LBB2_18
-	cmp	rax, 1024
-	ja	.LBB2_19
-	cmp	rcx, rax
-	je	.LBB2_3
-	inc	rcx
-	mov	rdx, rax
-	neg	rdx
-.LBB2_10:
-	mov	sil, byte ptr [rsp + rcx + 183]
-	mov	qword ptr [rsp + 1216], rcx
-	cmp	sil, 10
-	je	.LBB2_11
-	cmp	rbp, 127
-	ja	.LBB2_22
-	mov	byte ptr [rsp + rbp + 48], sil
-	inc	rbp
-.LBB2_22:
-	lea	rsi, [rdx + rcx]
-	inc	rsi
-	inc	rcx
-	cmp	rsi, 1
-	jne	.LBB2_10
-	mov	rdx, rax
-	jmp	.LBB2_2
-.LBB2_17:
-	lea	rax, [rbp - 129]
-	cmp	rax, -128
-	jb	.LBB2_18
-	jmp	.LBB2_13
-.LBB2_11:
-	cmp	rbp, 128
-	ja	.LBB2_18
-	test	rbp, rbp
-	je	.LBB2_26
-.LBB2_13:
-	lea	rdi, [rsp + 8]
-	mov	rsi, r12
-	mov	rdx, rbp
-	call	<optional_trait_methods::using_traits::controller::TargetController<optional_trait_methods::using_traits::targets::faulty::FaultyTarget>>::parse_command
-	movzx	eax, byte ptr [rsp + 8]
-	cmp	eax, 255
-	je	.LBB2_16
-	test	eax, eax
-	je	.LBB2_24
-	cmp	eax, 1
-	jne	.LBB2_16
-	movzx	eax, byte ptr [rsp + 9]
-	lea	rcx, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.6]
-	mov	qword ptr [rsp + 32], rcx
-	mov	qword ptr [rsp + 40], 16
-	lea	rcx, [rsp + 32]
-	#APP
-	#NO_APP
-	cmp	eax, 2
-	je	.LBB2_32
-	cmp	eax, 1
-	je	.LBB2_33
-	mov	rdi, r14
-	call	<optional_trait_methods::using_traits::targets::faulty::FaultyTarget as optional_trait_methods::using_traits::target::TargetExtIncDec>::inc
-	jmp	.LBB2_30
-.LBB2_16:
-	mov	edx, 16
-	mov	edi, 1
-	lea	rsi, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.3]
-	mov	rbp, qword ptr [rip + write@GOTPCREL]
-	call	rbp
-	mov	edx, 1
-	mov	edi, 1
-	lea	rsi, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.4]
-	call	rbp
-	jmp	.LBB2_26
-.LBB2_24:
-	mov	rax, qword ptr [rsp + 16]
-	test	al, 1
-	je	.LBB2_25
-	mov	rsi, qword ptr [rsp + 24]
-	mov	rdi, r14
-	call	<optional_trait_methods::using_traits::targets::faulty::FaultyTarget as optional_trait_methods::using_traits::target::TargetBase>::set_state
-	jmp	.LBB2_30
-.LBB2_25:
-	mov	rdi, r14
-	call	<optional_trait_methods::using_traits::targets::faulty::FaultyTarget as optional_trait_methods::using_traits::target::TargetBase>::get_state
-	lea	rdi, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.5]
-	mov	rsi, rax
-	xor	eax, eax
-	call	qword ptr [rip + printf@GOTPCREL]
-	jmp	.LBB2_26
-.LBB2_32:
-	mov	rdi, r14
-	call	<optional_trait_methods::using_traits::targets::faulty::FaultyTarget as optional_trait_methods::using_traits::target::TargetExtIncDec>::inc
-	test	rax, rax
-	jne	.LBB2_31
-.LBB2_33:
-	call	<optional_trait_methods::using_traits::targets::faulty::FaultyTarget as optional_trait_methods::using_traits::target::TargetExtIncDec>::dec
-.LBB2_30:
-	test	rax, rax
-	jne	.LBB2_31
-.LBB2_26:
-	mov	rdx, qword ptr [rsp + 1208]
-	mov	rax, qword ptr [rsp + 1216]
-	jmp	.LBB2_1
-.LBB2_18:
-.LBB2_19:
-	mov	rax, rbx
-	add	rsp, 1224
-	pop	rbx
-	pop	r12
-	pop	r13
-	pop	r14
-	pop	r15
-	pop	rbp
-	ret
-.LBB2_31:
-	mov	rbx, rax
-	jmp	.LBB2_19
-.Lfunc_end2:
-
 optional_trait_methods::commands::parse_isize:
 	test	rsi, rsi
-	je	.LBB3_2
+	je	.LBB2_2
 	cmp	rsi, 1
-	jne	.LBB3_3
-.LBB3_2:
+	jne	.LBB2_3
+.LBB2_2:
 	xor	eax, eax
-.LBB3_8:
+.LBB2_8:
 	ret
-.LBB3_3:
+.LBB2_3:
 	mov	cl, byte ptr [rdi]
 	mov	r8d, 1
 	xor	eax, eax
 	xor	edx, edx
-.LBB3_4:
+.LBB2_4:
 	cmp	rsi, r8
-	je	.LBB3_9
+	je	.LBB2_9
 	mov	r9b, byte ptr [rdi + r8]
 	add	r9b, -48
 	cmp	r9b, 9
-	ja	.LBB3_8
+	ja	.LBB2_8
 	imul	rdx, rdx, 10
-	jo	.LBB3_8
+	jo	.LBB2_8
 	movzx	r9d, r9b
 	inc	r8
 	add	rdx, r9
-	jno	.LBB3_4
-	jmp	.LBB3_8
-.LBB3_9:
+	jno	.LBB2_4
+	jmp	.LBB2_8
+.LBB2_9:
 	xor	eax, eax
 	cmp	cl, 45
 	setne	al
@@ -269,57 +104,202 @@ optional_trait_methods::commands::parse_isize:
 	imul	rdx, rcx
 	setno	al
 	ret
-.Lfunc_end3:
+.Lfunc_end2:
 
 <optional_trait_methods::using_traits::targets::faulty::FaultyTarget as optional_trait_methods::using_traits::target::TargetBase>::get_state:
 	mov	rax, qword ptr [rdi]
 	ret
-.Lfunc_end4:
+.Lfunc_end3:
 
 <optional_trait_methods::using_traits::targets::faulty::FaultyTarget as optional_trait_methods::using_traits::target::TargetBase>::set_state:
 	mov	qword ptr [rdi], rsi
 	xor	eax, eax
 	ret
-.Lfunc_end5:
+.Lfunc_end4:
 
 <optional_trait_methods::using_traits::targets::faulty::FaultyTarget as optional_trait_methods::using_traits::target::TargetExtIncDec>::dec:
 	lea	rax, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.7]
 	mov	edx, 38
 	ret
-.Lfunc_end6:
+.Lfunc_end5:
 
 <optional_trait_methods::using_traits::targets::faulty::FaultyTarget as optional_trait_methods::using_traits::target::TargetExtIncDec>::inc:
 	inc	qword ptr [rdi]
 	xor	eax, eax
 	ret
-.Lfunc_end7:
+.Lfunc_end6:
 
 main:
+	push	rbp
+	push	r15
+	push	r14
+	push	r13
+	push	r12
 	push	rbx
-	sub	rsp, 16
-	lea	rdi, [rsp + 8]
-	mov	qword ptr [rdi], 0
-	call	<optional_trait_methods::using_traits::controller::TargetController<optional_trait_methods::using_traits::targets::faulty::FaultyTarget>>::run
+	sub	rsp, 1224
+	lea	rbx, [rsp + 40]
+	mov	qword ptr [rbx], 0
+	lea	r14, [rsp + 184]
+	mov	edx, 1040
+	mov	rdi, r14
+	xor	esi, esi
+	call	qword ptr [rip + memset@GOTPCREL]
+	xorps	xmm0, xmm0
+	lea	r15, [rsp + 48]
+	movaps	xmmword ptr [r15 + 112], xmm0
+	movaps	xmmword ptr [r15 + 96], xmm0
+	movaps	xmmword ptr [r15 + 80], xmm0
+	movaps	xmmword ptr [r15 + 64], xmm0
+	movaps	xmmword ptr [r15 + 48], xmm0
+	movaps	xmmword ptr [r15 + 32], xmm0
+	movaps	xmmword ptr [r15 + 16], xmm0
+	movaps	xmmword ptr [r15], xmm0
+	mov	r12, rsp
+	mov	rbp, qword ptr [rip + read@GOTPCREL]
+	xor	eax, eax
+	xor	ecx, ecx
+.LBB7_1:
+	xor	r13d, r13d
+.LBB7_2:
+	cmp	rcx, rax
+	jb	.LBB7_5
+	mov	edx, 1024
+	xor	edi, edi
+	mov	rsi, r14
+	call	rbp
 	test	rax, rax
-	je	.LBB8_2
-	mov	rbx, qword ptr [rip + write@GOTPCREL]
+	jle	.LBB7_24
+	mov	qword ptr [rsp + 1208], rax
+	mov	qword ptr [rsp + 1216], 0
+	xor	ecx, ecx
+.LBB7_5:
+	cmp	rax, rcx
+	jb	.LBB7_32
+	cmp	rax, 1024
+	ja	.LBB7_32
+	cmp	rcx, rax
+	je	.LBB7_2
+	inc	rcx
+	mov	rdx, rax
+	neg	rdx
+.LBB7_9:
+	mov	sil, byte ptr [rsp + rcx + 183]
+	mov	qword ptr [rsp + 1216], rcx
+	cmp	sil, 10
+	je	.LBB7_10
+	cmp	r13, 127
+	ja	.LBB7_14
+	mov	byte ptr [rsp + r13 + 48], sil
+	inc	r13
+.LBB7_14:
+	lea	rsi, [rdx + rcx]
+	inc	rsi
+	inc	rcx
+	cmp	rsi, 1
+	jne	.LBB7_9
+	mov	rcx, rax
+	jmp	.LBB7_2
+.LBB7_24:
+	lea	rax, [r13 - 129]
+	cmp	rax, -128
+	jb	.LBB7_32
+	jmp	.LBB7_25
+.LBB7_10:
+	cmp	r13, 128
+	ja	.LBB7_32
+	test	r13, r13
+	je	.LBB7_1
+.LBB7_25:
+	mov	rdi, r12
+	mov	rsi, r15
+	mov	rdx, r13
+	call	<optional_trait_methods::using_traits::controller::TargetController<optional_trait_methods::using_traits::targets::faulty::FaultyTarget>>::parse_command
+	movzx	eax, byte ptr [rsp]
+	cmp	eax, 255
+	je	.LBB7_20
+	test	eax, eax
+	je	.LBB7_16
+	cmp	eax, 1
+	jne	.LBB7_20
+	movzx	eax, byte ptr [rsp + 1]
+	lea	rcx, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.6]
+	mov	qword ptr [rsp + 24], rcx
+	mov	qword ptr [rsp + 32], 16
+	lea	rcx, [rsp + 24]
+	#APP
+	#NO_APP
+	cmp	eax, 2
+	je	.LBB7_18
+	cmp	eax, 1
+	je	.LBB7_19
+	mov	rdi, rbx
+	call	<optional_trait_methods::using_traits::targets::faulty::FaultyTarget as optional_trait_methods::using_traits::target::TargetExtIncDec>::inc
+	jmp	.LBB7_22
+.LBB7_20:
+	mov	edx, 16
+	mov	edi, 1
+	lea	rsi, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.3]
+	mov	r13, qword ptr [rip + write@GOTPCREL]
+	call	r13
+	mov	edx, 1
+	mov	edi, 1
+	lea	rsi, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.4]
+	call	r13
+	jmp	.LBB7_23
+.LBB7_16:
+	mov	rax, qword ptr [rsp + 8]
+	test	al, 1
+	je	.LBB7_17
+	mov	rsi, qword ptr [rsp + 16]
+	mov	rdi, rbx
+	call	<optional_trait_methods::using_traits::targets::faulty::FaultyTarget as optional_trait_methods::using_traits::target::TargetBase>::set_state
+	jmp	.LBB7_22
+.LBB7_17:
+	mov	rdi, rbx
+	call	<optional_trait_methods::using_traits::targets::faulty::FaultyTarget as optional_trait_methods::using_traits::target::TargetBase>::get_state
+	lea	rdi, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.5]
+	mov	rsi, rax
+	xor	eax, eax
+	call	qword ptr [rip + printf@GOTPCREL]
+	jmp	.LBB7_23
+.LBB7_18:
+	mov	rdi, rbx
+	call	<optional_trait_methods::using_traits::targets::faulty::FaultyTarget as optional_trait_methods::using_traits::target::TargetExtIncDec>::inc
+	test	rax, rax
+	jne	.LBB7_31
+.LBB7_19:
+	call	<optional_trait_methods::using_traits::targets::faulty::FaultyTarget as optional_trait_methods::using_traits::target::TargetExtIncDec>::dec
+.LBB7_22:
+	test	rax, rax
+	jne	.LBB7_31
+.LBB7_23:
+	mov	rax, qword ptr [rsp + 1208]
+	mov	rcx, qword ptr [rsp + 1216]
+	jmp	.LBB7_1
+.LBB7_31:
 	mov	edi, 1
 	mov	rsi, rax
+	mov	rbx, qword ptr [rip + write@GOTPCREL]
 	call	rbx
 	lea	rsi, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.4]
 	mov	edx, 1
 	mov	edi, 1
 	call	rbx
-.LBB8_2:
+.LBB7_32:
 	xor	eax, eax
-	add	rsp, 16
+	add	rsp, 1224
 	pop	rbx
+	pop	r12
+	pop	r13
+	pop	r14
+	pop	r15
+	pop	rbp
 	ret
-.Lfunc_end8:
+.Lfunc_end7:
 
 rust_eh_personality:
 	ret
-.Lfunc_end9:
+.Lfunc_end8:
 
 .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.0:
 	.ascii	"panic!\n"

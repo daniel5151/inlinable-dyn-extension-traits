@@ -54,19 +54,32 @@ pub extern "C" fn main(_argc: isize, _argv: *const *const u8) -> isize {
 
     let mut controller = TargetController::new(target);
 
-    if let Err(e) = controller.run() {
-        core::cfg_select! {
-            feature = "using_options" => {
-                match e {
-                    Error::Target(e) => crate::println_str!(e),
-                    Error::InvalidImpl => crate::println_str!("Invalid implementation!"),
+    let mut reader = LineReader::new();
+    let mut line_buf = [0u8; 128];
+    while let Some(line) = reader.read_line(&mut line_buf) {
+        if line.is_empty() {
+            continue;
+        }
+        let res = match controller.parse_command(line) {
+            Some(cmd) => controller.handle(&cmd),
+            None => controller.unsupported_cmd(),
+        };
+
+        if let Err(e) = res {
+            core::cfg_select! {
+                feature = "using_options" => {
+                    match e {
+                        Error::Target(e) => crate::println_str!(e),
+                        Error::InvalidImpl => crate::println_str!("Invalid implementation!"),
+                    }
+                }
+                _ => {
+                    match e {
+                        Error::Target(e) => crate::println_str!(e),
+                    }
                 }
             }
-            _ => {
-                match e {
-                    Error::Target(e) => crate::println_str!(e),
-                }
-            }
+            break;
         }
     }
 

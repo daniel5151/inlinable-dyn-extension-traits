@@ -17,7 +17,7 @@ impl<T: Target> TargetController<T> {
         TargetController { target }
     }
 
-    fn unsupported_cmd(&self) -> Result<(), Error<T::Error>> {
+    pub fn unsupported_cmd(&self) -> Result<(), Error<T::Error>> {
         crate::println_str!("Unsupported cmd!");
         Ok(())
     }
@@ -72,7 +72,7 @@ impl<T: Target> TargetController<T> {
         None
     }
 
-    fn handle(&mut self, cmd: &Command) -> Result<(), Error<T::Error>> {
+    pub fn handle(&mut self, cmd: &Command) -> Result<(), Error<T::Error>> {
         match cmd {
             /* Base protocol */
             Command::Base(base_cmd) => match base_cmd {
@@ -140,21 +140,5 @@ impl<T: Target> TargetController<T> {
         Ok(())
     }
 
-    #[inline(never)]
-    pub fn run(&mut self) -> Result<(), Error<T::Error>> {
-        let mut reader = crate::LineReader::new();
-        let mut line_buf = [0u8; 128];
-        while let Some(line) = reader.read_line(&mut line_buf) {
-            if line.is_empty() {
-                continue;
-            }
-            if let Some(cmd) = self.parse_command(line) {
-                self.handle(&cmd)?;
-            } else {
-                self.unsupported_cmd()?;
-            }
-        }
 
-        Ok(())
-    }
 }
