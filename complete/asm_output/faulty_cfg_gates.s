@@ -30,12 +30,14 @@ __rustc::rust_begin_unwind:
 	je	.LBB1_7
 	cmp	eax, 43
 	jne	.LBB1_13
-	mov	word ptr [rbx], 1
+	mov	qword ptr [rbx], 2
+	mov	byte ptr [rbx + 8], 0
 	jmp	.LBB1_14
 .LBB1_9:
 	cmp	word ptr [rsi], 11563
 	jne	.LBB1_10
-	mov	word ptr [rbx], 513
+	mov	qword ptr [rbx], 2
+	mov	byte ptr [rbx + 8], 2
 	jmp	.LBB1_14
 .LBB1_10:
 	cmp	word ptr [rsi], 8307
@@ -47,78 +49,64 @@ __rustc::rust_begin_unwind:
 	call	optional_trait_methods::commands::parse_isize
 	test	al, 1
 	je	.LBB1_13
-	mov	byte ptr [rbx], 0
-	mov	qword ptr [rbx + 8], 1
-	mov	qword ptr [rbx + 16], rdx
+	mov	qword ptr [rbx], 1
+	mov	qword ptr [rbx + 8], rdx
 	jmp	.LBB1_14
 .LBB1_13:
-	mov	byte ptr [rbx], -1
+	mov	qword ptr [rbx], -1
 .LBB1_14:
 	mov	rax, rbx
 	add	rsp, 16
 	pop	rbx
 	ret
 .LBB1_7:
-	mov	word ptr [rbx], 257
+	mov	qword ptr [rbx], 2
+	mov	byte ptr [rbx + 8], 1
 	jmp	.LBB1_14
 .LBB1_15:
-	mov	byte ptr [rbx], 0
-	mov	qword ptr [rbx + 8], 0
+	mov	qword ptr [rbx], 0
 	jmp	.LBB1_14
 .Lfunc_end1:
 
 <optional_trait_methods::using_cfg_gates::controller::TargetController<optional_trait_methods::using_cfg_gates::targets::faulty::FaultyTarget>>::handle:
 	push	rbx
 	sub	rsp, 16
-	movzx	eax, byte ptr [rsi]
-	test	eax, eax
+	mov	rax, qword ptr [rsi]
+	test	rax, rax
 	je	.LBB2_5
-	cmp	eax, 1
-	jne	.LBB2_7
+	cmp	eax, 2
+	jne	.LBB2_6
 	lea	rax, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.6]
 	mov	rcx, rsp
 	mov	qword ptr [rcx], rax
 	mov	qword ptr [rcx + 8], 16
 	#APP
 	#NO_APP
-	movzx	eax, byte ptr [rsi + 1]
+	movzx	eax, byte ptr [rsi + 8]
 	test	eax, eax
-	je	.LBB2_9
+	je	.LBB2_7
 	lea	rbx, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.7]
 	cmp	eax, 1
-	je	.LBB2_11
+	je	.LBB2_9
 	call	<optional_trait_methods::using_cfg_gates::targets::faulty::FaultyTarget as optional_trait_methods::using_cfg_gates::target::Target>::inc
-	jmp	.LBB2_11
+	jmp	.LBB2_9
 .LBB2_5:
-	cmp	byte ptr [rsi + 8], 0
-	je	.LBB2_8
-	mov	rsi, qword ptr [rsi + 16]
-	call	<optional_trait_methods::using_cfg_gates::targets::faulty::FaultyTarget as optional_trait_methods::using_cfg_gates::target::Target>::set_state
-	jmp	.LBB2_10
-.LBB2_7:
-	lea	rsi, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.3]
-	mov	rbx, qword ptr [rip + write@GOTPCREL]
-	mov	edx, 16
-	mov	edi, 1
-	call	rbx
-	lea	rsi, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.4]
-	mov	edx, 1
-	mov	edi, 1
-	call	rbx
-	jmp	.LBB2_10
-.LBB2_8:
 	call	<optional_trait_methods::using_cfg_gates::targets::faulty::FaultyTarget as optional_trait_methods::using_cfg_gates::target::Target>::get_state
 	lea	rdi, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.5]
 	xor	ebx, ebx
 	mov	rsi, rax
 	xor	eax, eax
 	call	qword ptr [rip + printf@GOTPCREL]
-	jmp	.LBB2_11
-.LBB2_9:
+	jmp	.LBB2_9
+.LBB2_6:
+	mov	rsi, qword ptr [rsi + 8]
+	call	<optional_trait_methods::using_cfg_gates::targets::faulty::FaultyTarget as optional_trait_methods::using_cfg_gates::target::Target>::set_state
+	jmp	.LBB2_8
+.LBB2_7:
 	call	<optional_trait_methods::using_cfg_gates::targets::faulty::FaultyTarget as optional_trait_methods::using_cfg_gates::target::Target>::inc
-.LBB2_10:
+.LBB2_8:
 	xor	ebx, ebx
-.LBB2_11:
+.LBB2_9:
 	mov	rax, rbx
 	add	rsp, 16
 	pop	rbx
@@ -187,7 +175,7 @@ main:
 	push	r12
 	push	rbx
 	sub	rsp, 1208
-	mov	rax, rsp
+	lea	rax, [rsp + 8]
 	mov	qword ptr [rax], 0
 	lea	r14, [rsp + 168]
 	xor	r13d, r13d
@@ -205,7 +193,7 @@ main:
 	movaps	xmmword ptr [r15 + 32], xmm0
 	movaps	xmmword ptr [r15 + 16], xmm0
 	movaps	xmmword ptr [r15], xmm0
-	lea	r12, [rsp + 8]
+	lea	r12, [rsp + 16]
 	mov	rbx, qword ptr [rip + read@GOTPCREL]
 	xor	eax, eax
 .LBB7_1:
@@ -265,9 +253,9 @@ main:
 	mov	rsi, r15
 	mov	rdx, rbp
 	call	<optional_trait_methods::using_cfg_gates::controller::TargetController<optional_trait_methods::using_cfg_gates::targets::faulty::FaultyTarget>>::parse_command
-	cmp	byte ptr [rsp + 8], -1
+	cmp	dword ptr [rsp + 16], -1
 	je	.LBB7_22
-	mov	rdi, rsp
+	lea	rdi, [rsp + 8]
 	mov	rsi, r12
 	call	<optional_trait_methods::using_cfg_gates::controller::TargetController<optional_trait_methods::using_cfg_gates::targets::faulty::FaultyTarget>>::handle
 	test	rax, rax

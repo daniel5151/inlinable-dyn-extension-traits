@@ -4,15 +4,15 @@ pub trait Target {
     fn get_state(&self) -> isize;
     fn set_state(&mut self, n: isize) -> Result<(), Self::Error>;
 
-    #[cfg(any(feature = "target_advanced", feature = "target_faulty"))]
+    #[cfg(ext_incdec)]
     fn inc(&mut self) -> Result<(), Self::Error>;
 
-    #[cfg(any(feature = "target_advanced", feature = "target_faulty"))]
+    #[cfg(ext_incdec)]
     fn dec(&mut self) -> Result<(), Self::Error>;
 
-    #[cfg(feature = "target_advanced")]
+    #[cfg(ext_mul)]
     fn mul(&mut self, n: isize) -> Result<(), Self::Error>;
 
-    #[cfg(feature = "target_advanced")]
+    #[cfg(ext_mul)]
     fn scale_factor(&mut self, factor: isize) -> Result<(), Self::Error>;
 }

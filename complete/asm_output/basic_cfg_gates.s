@@ -8,68 +8,46 @@ __rustc::rust_begin_unwind:
 .Lfunc_end0:
 
 <optional_trait_methods::using_cfg_gates::controller::TargetController<optional_trait_methods::using_cfg_gates::targets::basic::BasicTarget>>::parse_command:
-	push	rbx
-	mov	rbx, rdi
-	test	rdx, rdx
+	test	rsi, rsi
+	je	.LBB1_6
+	cmp	rsi, 1
+	jne	.LBB1_5
+	cmp	byte ptr [rdi], 112
+	jne	.LBB1_6
+	xor	eax, eax
+	ret
+.LBB1_5:
+	cmp	word ptr [rdi], 8307
 	je	.LBB1_7
-	cmp	rdx, 1
-	jne	.LBB1_4
-	cmp	byte ptr [rsi], 112
-	jne	.LBB1_7
-	mov	byte ptr [rbx], 0
-	mov	qword ptr [rbx + 8], 0
-	jmp	.LBB1_8
-.LBB1_4:
-	cmp	word ptr [rsi], 8307
-	jne	.LBB1_7
-	add	rdx, -2
-	add	rsi, 2
-	mov	rdi, rsi
-	mov	rsi, rdx
-	call	optional_trait_methods::commands::parse_isize
-	test	al, 1
-	je	.LBB1_7
-	mov	byte ptr [rbx], 0
-	mov	qword ptr [rbx + 8], 1
-	mov	qword ptr [rbx + 16], rdx
-	jmp	.LBB1_8
+.LBB1_6:
+	mov	eax, 2
+	ret
 .LBB1_7:
-	mov	byte ptr [rbx], -1
-.LBB1_8:
-	mov	rax, rbx
-	pop	rbx
+	push	rax
+	add	rsi, -2
+	add	rdi, 2
+	call	optional_trait_methods::commands::parse_isize
+	mov	rcx, rax
+	and	ecx, 1
+	mov	eax, 2
+	sub	rax, rcx
+	add	rsp, 8
 	ret
 .Lfunc_end1:
 
 <optional_trait_methods::using_cfg_gates::controller::TargetController<optional_trait_methods::using_cfg_gates::targets::basic::BasicTarget>>::handle:
-	push	rbx
-	movzx	eax, byte ptr [rsi]
-	test	eax, eax
-	je	.LBB2_3
-	cmp	eax, 1
-	lea	rsi, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.2]
-	mov	rbx, qword ptr [rip + write@GOTPCREL]
-	mov	edx, 16
-	mov	edi, 1
-	call	rbx
-	lea	rsi, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.3]
-	mov	edx, 1
-	mov	edi, 1
-	mov	rax, rbx
-	pop	rbx
-	jmp	rax
-.LBB2_3:
-	cmp	byte ptr [rsi + 8], 0
-	je	.LBB2_4
-	mov	rsi, qword ptr [rsi + 16]
-	pop	rbx
+	push	rax
+	cmp	dword ptr [rsi], 1
+	jne	.LBB2_2
+	mov	rsi, qword ptr [rsi + 8]
+	pop	rax
 	jmp	<optional_trait_methods::using_cfg_gates::targets::basic::BasicTarget as optional_trait_methods::using_cfg_gates::target::Target>::set_state
-.LBB2_4:
+.LBB2_2:
 	call	<optional_trait_methods::using_cfg_gates::targets::basic::BasicTarget as optional_trait_methods::using_cfg_gates::target::Target>::get_state
 	lea	rdi, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.4]
 	mov	rsi, rax
 	xor	eax, eax
-	pop	rbx
+	pop	rcx
 	jmp	qword ptr [rip + printf@GOTPCREL]
 .Lfunc_end2:
 
@@ -130,8 +108,8 @@ main:
 	push	r12
 	push	rbx
 	sub	rsp, 1208
-	mov	rax, rsp
-	mov	qword ptr [rax], 0
+	lea	rbx, [rsp + 24]
+	mov	qword ptr [rbx], 0
 	lea	r14, [rsp + 168]
 	xor	r13d, r13d
 	mov	edx, 1040
@@ -148,87 +126,89 @@ main:
 	movaps	xmmword ptr [r15 + 32], xmm0
 	movaps	xmmword ptr [r15 + 16], xmm0
 	movaps	xmmword ptr [r15], xmm0
-	lea	r12, [rsp + 8]
-	mov	rbx, qword ptr [rip + read@GOTPCREL]
+	mov	rbp, qword ptr [rip + read@GOTPCREL]
 	xor	eax, eax
 .LBB6_1:
-	xor	ebp, ebp
+	xor	r12d, r12d
 .LBB6_2:
-	cmp	rax, r13
-	jb	.LBB6_5
+	mov	rcx, rax
+	mov	rax, r13
+.LBB6_3:
+	cmp	rcx, rax
+	jb	.LBB6_6
 	mov	edx, 1024
 	xor	edi, edi
 	mov	rsi, r14
-	call	rbx
+	call	rbp
 	test	rax, rax
-	jle	.LBB6_20
-	mov	r13, rax
+	jle	.LBB6_21
 	mov	qword ptr [rsp + 1192], rax
 	mov	qword ptr [rsp + 1200], 0
-	xor	eax, eax
-.LBB6_5:
-	cmp	r13, rax
-	jb	.LBB6_21
-	cmp	r13, 1024
-	ja	.LBB6_21
-	cmp	rax, r13
-	je	.LBB6_2
-	inc	rax
-	mov	rcx, r13
-	neg	rcx
-.LBB6_9:
-	mov	dl, byte ptr [rsp + rax + 167]
-	mov	qword ptr [rsp + 1200], rax
-	cmp	dl, 10
-	je	.LBB6_10
-	cmp	rbp, 127
-	ja	.LBB6_16
-	mov	byte ptr [rsp + rbp + 32], dl
-	inc	rbp
-.LBB6_16:
-	lea	rdx, [rcx + rax]
-	inc	rdx
-	inc	rax
-	cmp	rdx, 1
-	jne	.LBB6_9
-	mov	rax, r13
-	jmp	.LBB6_2
-.LBB6_20:
-	lea	rax, [rbp - 129]
-	cmp	rax, -128
-	jb	.LBB6_21
-	jmp	.LBB6_12
+	xor	ecx, ecx
+.LBB6_6:
+	cmp	rax, rcx
+	jb	.LBB6_22
+	cmp	rax, 1024
+	ja	.LBB6_22
+	cmp	rcx, rax
+	je	.LBB6_3
+	inc	rcx
+	mov	rdx, rax
+	neg	rdx
 .LBB6_10:
-	cmp	rbp, 128
-	ja	.LBB6_21
-	test	rbp, rbp
-	je	.LBB6_1
-.LBB6_12:
-	mov	rdi, r12
-	mov	rsi, r15
-	mov	rdx, rbp
-	call	<optional_trait_methods::using_cfg_gates::controller::TargetController<optional_trait_methods::using_cfg_gates::targets::basic::BasicTarget>>::parse_command
-	cmp	byte ptr [rsp + 8], -1
-	je	.LBB6_18
-	mov	rdi, rsp
+	mov	sil, byte ptr [rsp + rcx + 167]
+	mov	qword ptr [rsp + 1200], rcx
+	cmp	sil, 10
+	je	.LBB6_11
+	cmp	r12, 127
+	ja	.LBB6_17
+	mov	byte ptr [rsp + r12 + 32], sil
+	inc	r12
+.LBB6_17:
+	lea	rsi, [rdx + rcx]
+	inc	rsi
+	inc	rcx
+	cmp	rsi, 1
+	jne	.LBB6_10
+	mov	r13, rax
+	jmp	.LBB6_2
+.LBB6_21:
+	lea	rax, [r12 - 129]
+	cmp	rax, -128
+	jb	.LBB6_22
+	jmp	.LBB6_13
+.LBB6_11:
+	cmp	r12, 128
+	ja	.LBB6_22
+	test	r12, r12
+	je	.LBB6_20
+.LBB6_13:
+	mov	rdi, r15
 	mov	rsi, r12
-	call	<optional_trait_methods::using_cfg_gates::controller::TargetController<optional_trait_methods::using_cfg_gates::targets::basic::BasicTarget>>::handle
-	jmp	.LBB6_19
-.LBB6_18:
+	call	<optional_trait_methods::using_cfg_gates::controller::TargetController<optional_trait_methods::using_cfg_gates::targets::basic::BasicTarget>>::parse_command
+	cmp	rax, 2
+	jne	.LBB6_14
 	mov	edx, 16
 	mov	edi, 1
 	lea	rsi, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.2]
-	mov	r13, qword ptr [rip + write@GOTPCREL]
-	call	r13
+	mov	r12, qword ptr [rip + write@GOTPCREL]
+	call	r12
 	mov	edx, 1
 	mov	edi, 1
 	lea	rsi, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.3]
-	call	r13
-.LBB6_19:
+	call	r12
+	jmp	.LBB6_20
+.LBB6_14:
+	mov	qword ptr [rsp + 8], rax
+	mov	qword ptr [rsp + 16], rdx
+	mov	rdi, rbx
+	lea	rsi, [rsp + 8]
+	call	<optional_trait_methods::using_cfg_gates::controller::TargetController<optional_trait_methods::using_cfg_gates::targets::basic::BasicTarget>>::handle
+.LBB6_20:
 	mov	r13, qword ptr [rsp + 1192]
 	mov	rax, qword ptr [rsp + 1200]
 	jmp	.LBB6_1
-.LBB6_21:
+.LBB6_22:
 	xor	eax, eax
 	add	rsp, 1208
 	pop	rbx

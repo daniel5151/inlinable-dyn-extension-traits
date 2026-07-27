@@ -55,7 +55,7 @@ impl Target for AdvancedTarget {
     #[inline(never)]
     fn mul(&mut self, n: isize) -> Result<(), Self::Error> {
         match n {
-            7 => Err("multiplying by 7 is unlucky!".into()),
+            7 => Err("multiplying by 7 is unlucky!"),
             _ => {
                 self.state *= Wrapping(n) * self.scale;
                 Ok(())

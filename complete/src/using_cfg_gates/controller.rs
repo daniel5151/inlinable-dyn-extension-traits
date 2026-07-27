@@ -28,7 +28,7 @@ impl<T: Target> TargetController<T> {
     #[cfg_attr(feature = "interpretable_asm", inline(never))]
     pub fn parse_command(&mut self, buf: &[u8]) -> Option<Command> {
         /* IncDec extension parsing - gated at compile time */
-        #[cfg(any(feature = "target_advanced", feature = "target_faulty"))]
+        #[cfg(ext_incdec)]
         {
             crate::__dead_code_marker!("Parse IncDec extension");
             if buf == b"+" {
@@ -43,7 +43,7 @@ impl<T: Target> TargetController<T> {
         }
 
         /* Mul extension parsing - gated at compile time */
-        #[cfg(feature = "target_advanced")]
+        #[cfg(ext_mul)]
         {
             crate::__dead_code_marker!("Parse Mul extension");
             if let Some(n) = buf.strip_prefix(b"* ").and_then(parse_isize) {
@@ -52,7 +52,7 @@ impl<T: Target> TargetController<T> {
         }
 
         /* ScaleFactor extension parsing - gated at compile time */
-        #[cfg(feature = "target_advanced")]
+        #[cfg(ext_mul)]
         {
             crate::__dead_code_marker!("Parse ScaleFactor extension");
             if let Some(n) = buf.strip_prefix(b"*~ ").and_then(parse_isize) {
@@ -86,7 +86,7 @@ impl<T: Target> TargetController<T> {
             },
 
             /* IncDec extension */
-            #[cfg(any(feature = "target_advanced", feature = "target_faulty"))]
+            #[cfg(ext_incdec)]
             Command::IncDec(incdec_cmd) => {
                 crate::__dead_code_marker!("IncDec extension");
                 match incdec_cmd {
@@ -98,13 +98,9 @@ impl<T: Target> TargetController<T> {
                     }
                 }
             }
-            #[cfg(not(any(feature = "target_advanced", feature = "target_faulty")))]
-            Command::IncDec(_) => {
-                self.unsupported_cmd()?;
-            }
 
             /* Mul extension */
-            #[cfg(feature = "target_advanced")]
+            #[cfg(ext_mul)]
             Command::Mul(mul_cmd) => match mul_cmd {
                 ext::MulCommand::Mul(n) => {
                     crate::__dead_code_marker!("Mul extension");
@@ -115,10 +111,6 @@ impl<T: Target> TargetController<T> {
                     self.target.scale_factor(*n).map_err(Error::Target)?;
                 }
             },
-            #[cfg(not(feature = "target_advanced"))]
-            Command::Mul(_) => {
-                self.unsupported_cmd()?;
-            }
         }
 
         Ok(())

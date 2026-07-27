@@ -5,6 +5,7 @@ pub mod ext {
         SetState(isize),
     }
 
+    #[cfg(cmd_incdec)] // (only used in using_cfg_gates case)
     #[derive(Clone, Copy, Debug)]
     pub enum IncDecCommand {
         Inc,
@@ -12,6 +13,7 @@ pub mod ext {
         IncDec,
     }
 
+    #[cfg(cmd_mul)] // (only used in using_cfg_gates case)
     #[derive(Clone, Copy, Debug)]
     pub enum MulCommand {
         Mul(isize),
@@ -22,7 +24,9 @@ pub mod ext {
 #[derive(Clone, Copy, Debug)]
 pub enum Command {
     Base(ext::BaseCommand),
+    #[cfg(cmd_incdec)] // (only used in using_cfg_gates case)
     IncDec(ext::IncDecCommand),
+    #[cfg(cmd_mul)] // (only used in using_cfg_gates case)
     Mul(ext::MulCommand),
 }
 

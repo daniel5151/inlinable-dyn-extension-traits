@@ -637,24 +637,27 @@ Based on local benchmarks and assembly inspection:
 
 Comparing generated assembly for `parse_command` and `handle` across targets (`asm_output/*.s`) highlights how capability-gated parsing achieves fine-grained dead-code elimination proportional to the exact set of extensions implemented by each target:
 
-| Implementation / Metric                          | `BasicTarget`<br>*(Base Protocol ONLY)*                           | `FaultyTarget`<br>*(Base + `IncDec`)*                       | `AdvancedTarget`<br>*(All Extensions)* |
-| :----------------------------------------------- | :---------------------------------------------------------------- | :---------------------------------------------------------- | :------------------------------------- |
-| **`parse_command`**                              |                                                                   |                                                             |                                        |
-| • `cfg_gates` / `is_supported` / `traits` / `fn` | **28 instrs**<br>• **100% DCE** of `IncDec`, `Mul`, `ScaleFactor` | **49 instrs**<br>• Selective DCE of `Mul` and `ScaleFactor` | **90 / 91 instrs**<br>• Full parser    |
-| • `options`                                      | **90 instrs**<br>• Zero DCE (speculative parse)                   | **90 instrs**<br>• Zero DCE (speculative parse)             | **90 instrs**<br>• Full parser         |
-| **`handle`**                                     |                                                                   |                                                             |                                        |
-| • `cfg_gates`                                    | **27 instrs**<br>• **100% DCE** (omits unneeded match arms)       | **47 instrs**<br>• Selective DCE of handlers                | **62 instrs**<br>• Full handler        |
-| • `traits` / `fn`                                | **31 instrs**<br>• **100% DCE** of extension handlers             | **53 instrs**<br>• Selective DCE of handlers                | **69 instrs**<br>• Full handler        |
-| • `is_supported`                                 | **48 instrs**<br>• Checks `_supported` bools                      | **58 instrs**<br>• Selective DCE of handlers                | **62 instrs**<br>• Full handler        |
-| • `options`                                      | **69 instrs**<br>• Retains all extension branches                 | **91 instrs**<br>• Retains all extension branches           | **126 instrs**<br>• Full handler       |
-| **Total Measured Instructions**                  |                                                                   |                                                             |                                        |
-| • `cfg_gates`                                    | **201 instrs**                                                    | **255 instrs**                                              | **325 instrs**                         |
-| • `traits` / `fn`                                | **216 instrs**                                                    | **265 instrs**                                              | **337 instrs**                         |
-| • `is_supported`                                 | **222 instrs**                                                    | **266 instrs**                                              | **325 instrs**                         |
-| • `options`                                      | **340 instrs**                                                    | **366 instrs**                                              | **424 instrs**                         |
-| **Instruction Reduction**                        | **~35–41% reduction**                                             | **~27–30% reduction**                                       | **~20–23% reduction**                  |
+| Implementation / Metric            | `BasicTarget`<br>*(Base Protocol ONLY)*                           | `FaultyTarget`<br>*(Base + `IncDec`)*                       | `AdvancedTarget`<br>*(All Extensions)* |
+| :--------------------------------- | :---------------------------------------------------------------- | :---------------------------------------------------------- | :------------------------------------- |
+| **`parse_command`**                |                                                                   |                                                             |                                        |
+| • `cfg_gates`                      | **22 instrs**<br>• **100% DCE** of enum variants & parser         | **50 instrs**<br>• Selective DCE of `Mul` and `ScaleFactor` | **90 instrs**<br>• Full parser         |
+| • `is_supported` / `traits` / `fn` | **28 instrs**<br>• **100% DCE** of `IncDec`, `Mul`, `ScaleFactor` | **49 instrs**<br>• Selective DCE of `Mul` and `ScaleFactor` | **90 / 91 instrs**<br>• Full parser    |
+| • `options`                        | **90 instrs**<br>• Zero DCE (speculative parse)                   | **90 instrs**<br>• Zero DCE (speculative parse)             | **90 instrs**<br>• Full parser         |
+| **`handle`**                       |                                                                   |                                                             |                                        |
+| • `cfg_gates`                      | **12 instrs**<br>• **100% DCE** (omits unneeded match arms)       | **35 instrs**<br>• Selective DCE of handlers                | **62 instrs**<br>• Full handler        |
+| • `traits` / `fn`                  | **31 instrs**<br>• **100% DCE** of extension handlers             | **53 instrs**<br>• Selective DCE of handlers                | **69 instrs**<br>• Full handler        |
+| • `is_supported`                   | **48 instrs**<br>• Checks `_supported` bools                      | **58 instrs**<br>• Selective DCE of handlers                | **62 instrs**<br>• Full handler        |
+| • `options`                        | **69 instrs**<br>• Retains all extension branches                 | **91 instrs**<br>• Retains all extension branches           | **126 instrs**<br>• Full handler       |
+| **Total Measured Instructions**    |                                                                   |                                                             |                                        |
+| • `cfg_gates`                      | **181 instrs**                                                    | **244 instrs**                                              | **325 instrs**                         |
+| • `traits` / `fn`                  | **216 instrs**                                                    | **265 instrs**                                              | **337 instrs**                         |
+| • `is_supported`                   | **222 instrs**                                                    | **266 instrs**                                              | **325 instrs**                         |
+| • `options`                        | **340 instrs**                                                    | **366 instrs**                                              | **424 instrs**                         |
+| **Instruction Reduction**          | **~36–47% reduction**                                             | **~28–33% reduction**                                       | **~20–23% reduction**                  |
 
-Key observation: On targets with partial protocol support (`BasicTarget` and `FaultyTarget`), compile-time and runtime capability-gated dispatch (`cfg_gates`, `is_supported`, `using_fn`, and `using_traits`) enables LLVM to prune both unused packet parsing logic in `parse_command` AND unsupported command handlers in `handle`. Conversely, `using_options` emits the full 90-instruction parser and bloated handler unconditionally across all targets, resulting in **up to 41% more instructions** in the target executable.
+Key observation: On targets with partial protocol support (`BasicTarget` and `FaultyTarget`), compile-time and runtime capability-gated dispatch (`cfg_gates`, `is_supported`, `using_fn`, and `using_traits`) enables LLVM to prune both unused packet parsing logic in `parse_command` AND unsupported command handlers in `handle`. Conversely, `using_options` emits the full 90-instruction parser and bloated handler unconditionally across all targets, resulting in **up to 47% more instructions** in the target executable.
+
+*Note on the instruction spike in `handle` for `options` on `AdvancedTarget`:* Unlike capability-gated approaches where LLVM proves extension support before invocation and prunes fallback paths, `using_options` invokes methods returning `OptResult<(), E>` (`Result<(), MaybeUnimpl<E>>`). LLVM must emit defensive code for `map_unimpl()` enum unwrapping (`MaybeUnimpl` -> `Option`), runtime `Some`/`None` branching to `unsupported_cmd()`, and `(inc_impl, dec_impl)` tuple checks for `Error::InvalidImpl`. This nearly doubles the instruction count of `handle` even when all extensions are supported (126 instrs vs. 62–69 instrs).
 
 ##### Interpretable Assembly vs. Fully-Inlined Production Assembly
 
@@ -682,25 +685,25 @@ Below are the `hyperfine` benchmark results comparing **`cargo` features** (`usi
 
 | Implementation                      | Mean ± Std Dev       | Min … Max         | Speedup      |
 | :---------------------------------- | :------------------- | :---------------- | :----------- |
-| **`cargo` Features** (`cfg_gates`)  | **82.4 ms ± 3.3 ms** | 78.0 ms … 88.5 ms | 1.04x slower |
-| **`is_supported`** (`is_supported`) | **83.5 ms ± 5.7 ms** | 76.8 ms … 96.5 ms | 1.05x slower |
-| **Options** (`using_options`)       | **79.4 ms ± 1.9 ms** | 75.0 ms … 84.8 ms | 1.00x        |
-| **Fn Pointers** (`using_fn`)        | **80.0 ms ± 3.8 ms** | 75.0 ms … 88.5 ms | 1.01x slower |
-| **IDETs** (`using_traits`)          | **81.4 ms ± 5.0 ms** | 74.4 ms … 90.1 ms | 1.02x slower |
+| **`cargo` Features** (`cfg_gates`)  | **79.0 ms ± 2.4 ms** | 74.5 ms … 84.5 ms | 1.00x        |
+| **`is_supported`** (`is_supported`) | **79.3 ms ± 2.8 ms** | 75.3 ms … 92.7 ms | 1.01x slower |
+| **Options** (`using_options`)       | **79.3 ms ± 2.7 ms** | 75.8 ms … 92.6 ms | 1.01x slower |
+| **Fn Pointers** (`using_fn`)        | **78.7 ms ± 1.7 ms** | 75.6 ms … 83.4 ms | 1.00x        |
+| **IDETs** (`using_traits`)          | **78.8 ms ± 2.1 ms** | 75.5 ms … 86.0 ms | 1.00x        |
 
-*In Debug mode (`-O0`), `using_options` and `using_fn` perform marginally faster (~79–80 ms vs ~82–83 ms) due to overlapping statistical measurement noise (±1.9 to 5.7 ms stddev) and un-inlined Debug mode stack frame generation for `#[cfg]` enum pattern matching when all cargo features are enabled on `AdvancedTarget`.*
+*In Debug mode (`-O0`), all implementations execute virtually identically (~78.7–79.3 ms), within overlapping statistical noise (±1.7 to 2.8 ms stddev).*
 
 ##### Release Mode (262,144 iterations)
 
 | Implementation                      | Mean ± Std Dev        | Min … Max           | Speedup      |
 | :---------------------------------- | :-------------------- | :------------------ | :----------- |
-| **`cargo` Features** (`cfg_gates`)  | **171.2 ms ± 6.4 ms** | 162.7 ms … 186.2 ms | 1.01x slower |
-| **`is_supported`** (`is_supported`) | **171.4 ms ± 4.5 ms** | 163.3 ms … 179.2 ms | 1.02x slower |
-| **Options** (`using_options`)       | **172.1 ms ± 6.5 ms** | 162.9 ms … 185.7 ms | 1.02x slower |
-| **Fn Pointers** (`using_fn`)        | **172.6 ms ± 5.3 ms** | 164.6 ms … 185.3 ms | 1.02x slower |
-| **IDETs** (`using_traits`)          | **168.7 ms ± 4.5 ms** | 163.1 ms … 182.4 ms | 1.00x        |
+| **`cargo` Features** (`cfg_gates`)  | **167.9 ms ± 3.3 ms** | 162.8 ms … 174.3 ms | 1.01x slower |
+| **`is_supported`** (`is_supported`) | **169.5 ms ± 7.3 ms** | 161.1 ms … 189.5 ms | 1.02x slower |
+| **Options** (`using_options`)       | **165.8 ms ± 3.7 ms** | 158.7 ms … 171.4 ms | 1.00x        |
+| **Fn Pointers** (`using_fn`)        | **167.5 ms ± 4.1 ms** | 159.5 ms … 185.1 ms | 1.01x slower |
+| **IDETs** (`using_traits`)          | **167.6 ms ± 4.0 ms** | 159.8 ms … 184.2 ms | 1.01x slower |
 
-*In Release mode (`-O3`), LLVM completely devirtualizes and inlines both dynamic dispatch and packet parsing logic across all five approaches, rendering runtime performance virtually identical (all within statistical noise at ~168–172 ms).*
+*In Release mode (`-O3`), LLVM completely devirtualizes and inlines both dynamic dispatch and packet parsing logic across all five approaches, rendering runtime performance virtually identical (all within statistical noise at ~165–169 ms).*
 
 ## Conclusion
 
