@@ -1,16 +1,29 @@
+pub mod ext {
+    #[derive(Clone, Copy, Debug)]
+    pub enum BaseCommand {
+        PrintState,
+        SetState(isize),
+    }
+
+    #[derive(Clone, Copy, Debug)]
+    pub enum IncDecCommand {
+        Inc,
+        Dec,
+        IncDec,
+    }
+
+    #[derive(Clone, Copy, Debug)]
+    pub enum MulCommand {
+        Mul(isize),
+        ScaleFactor(isize),
+    }
+}
+
 #[derive(Clone, Copy, Debug)]
 pub enum Command {
-    // Base Protocol
-    PrintState,
-    SetState(isize),
-    // Requires IncDec Extensions
-    Inc,
-    Dec,
-    IncDec,
-    // Requires Mul Extension
-    Mul(isize),
-    // Requires Nested ScaleFactor Extension
-    ScaleFactor(isize),
+    Base(ext::BaseCommand),
+    IncDec(ext::IncDecCommand),
+    Mul(ext::MulCommand),
 }
 
 #[inline(never)]

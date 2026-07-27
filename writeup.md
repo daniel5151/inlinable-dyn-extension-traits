@@ -33,38 +33,69 @@ Ideally, we'd want all the following properties:
 
 ### A Simplified Example Protocol - The Remote ALU Protocol
 
-Instead of working with the real-world inspiration for this project - the GDB remote serial protocol - let's consider a simpler, artificial protocol that has several similar properties: the Remote ALI Protocol
+Instead of working with the real-world inspiration for this project - the GDB remote serial protocol - let's consider a simpler, artificial protocol that has several similar properties: the Remote ALU Protocol.
+
+The protocol uses a simple line-oriented ASCII text wire format:
+
+| Command          | Wire Format | Category / Requirement   | Description                   |
+| :--------------- | :---------- | :----------------------- | :---------------------------- |
+| `PrintState`     | `p`         | Base Protocol            | Print current state           |
+| `SetState(n)`    | `s <n>`     | Base Protocol            | Set state to `<n>`            |
+| `Inc`            | `+`         | IncDec Extension         | Increment state               |
+| `Dec`            | `-`         | IncDec Extension         | Decrement state               |
+| `IncDec`         | `+-`        | IncDec Extension         | Increment and decrement state |
+| `Mul(n)`         | `* <n>`     | Mul Extension            | Multiply state by `<n>`       |
+| `ScaleFactor(n)` | `*~ <n>`    | Nested Extension (`Mul`) | Scale state by factor `<n>`   |
+
+Or, modeled in Rust:
 
 ```rust
+pub mod ext {
+    #[derive(Clone, Copy, Debug)]
+    pub enum BaseCommand {
+        /// Print the current accumulator state (`p`)
+        PrintState,
+        /// Set the accumulator's state (`s <n>`)
+        SetState(isize),
+    }
+
+    #[derive(Clone, Copy, Debug)]
+    pub enum IncDecCommand {
+        /// Increment the accumulator (`+`)
+        Inc,
+        /// Decrement the accumulator (`-`)
+        Dec,
+        /// Meta-operation: both increment _and_ decrement the accumulator (`+-`)
+        IncDec,
+    }
+
+    #[derive(Clone, Copy, Debug)]
+    pub enum MulCommand {
+        /// Multiply the accumulator by some value (`* <n>`)
+        Mul(isize),
+        /// Scale factor extension (nested within Mul) (`*~ <n>`)
+        ScaleFactor(isize),
+    }
+}
+
+#[derive(Clone, Copy, Debug)]
 pub enum Command {
-    // ---------- Base Protocol ---------- //
-    /// Print the current accumulator state
-    PrintState,
-    /// Set the accumulator's state
-    SetState(isize),
-    // -------- IncDec Extensions -------- //
-    /// Increment the accumulator
-    Inc,
-    /// Decrement the accumulator
-    Dec,
-    /// Meta-operation: both increment _and_ decrement the accumulator
-    /// NOTE: this is a legacy feature, but it required for "compatibility reasons"
-    IncDec,
-    // ---------- Mul Extension ---------- //
-    /// Multiply the accumulator by some value
-    Mul(isize),
+    Base(ext::BaseCommand),
+    IncDec(ext::IncDecCommand),
+    Mul(ext::MulCommand),
 }
 ```
 
 It's got a lot of things we care about:
 
--   common "base" protocol
--   several protocol extensions
--   commands which are mutually-dependent on one another (inc/dec + incdec)
+-   common "base" protocol (`PrintState`, `SetState`)
+-   several protocol extensions (`IncDec`, `Mul`)
+-   nested protocol extensions (`ScaleFactor` nested within `Mul`)
+-   commands which are mutually-dependent on one another (`inc`/`dec` + `incdec`)
 
 For simplicity, I didn't include mutually-exclusive commands in this example protocol, but I will touch upon this use-case when discussing the various approaches.
 
-So, how can we write a library to run this protocol? Well, let's start off with a controller:
+So, how can we write a library to run this protocol over an incoming byte stream (e.g., lines from standard input)? Well, let's start off with a controller:
 
 ```rust
 pub struct TargetController<T: Target> {
@@ -77,10 +108,32 @@ impl<T: Target> TargetController<T> {
         TargetController { target }
     }
 
-    /// Run the specified commands with the given target
-    pub fn run(&mut self, cmds: &[Command]) -> Result<(), Error<T::Error>>;
+    /// Parse an incoming byte buffer into a Command, guarded by target capabilities
+    pub fn parse_command(&mut self, buf: &[u8]) -> Option<Command>;
+
+    /// Run the controller over incoming command lines from standard input
+    pub fn run(&mut self) -> Result<(), Error<T::Error>>;
 }
 ```
+
+#### Dead Code Elimination (DCE) in Packet Parsing
+
+In a real-world protocol parser, incoming raw byte packets (e.g. `"p"`, `"s <n>"`, `"+"`, `"-"`, `"+-"`, `"* <n>"`, `"*~ <n>"`) must be parsed into protocol commands before being handled.
+
+A major performance advantage of IDETs and Fn-Pointer tables is that capability checks (`ext_incdec().is_some()`, `ext_mul().is_some()`) can **guard the parsing logic itself**:
+
+```rust
+/* IncDec extension parsing */
+if self.target.ext_incdec().is_some() {
+    if buf == b"+" { return Some(Command::IncDec(ext::IncDecCommand::Inc)); }
+    if buf == b"-" { return Some(Command::IncDec(ext::IncDecCommand::Dec)); }
+    if buf == b"+-" { return Some(Command::IncDec(ext::IncDecCommand::IncDec)); }
+}
+```
+
+When a concrete target does *not* implement `ext_incdec()`, monomorphization and devirtualization turn `ext_incdec().is_some()` into a compile-time constant `false`. LLVM can then completely eliminate the packet parsing code paths for those unsupported commands from the final compiled binary.
+
+Conversely, approaches like bare `Options` cannot query target capabilities *before* invoking methods. As a result, the parser must **speculatively parse** all incoming byte packets into `Command` variants regardless of target support, preventing compile-time DCE of unused packet parsing logic.
 
 The question is: what's the best way to implement the `Target` trait?
 
@@ -359,6 +412,15 @@ pub trait TargetExtIncDec: Target {
 
 pub trait TargetExtMul: Target {
     fn mul(&mut self, n: isize) -> Result<(), Self::Error>;
+
+    #[inline(always)]
+    fn ext_scale_factor(&mut self) -> Option<TargetExtScaleFactorOps<Self>> {
+        None
+    }
+}
+
+pub trait TargetExtScaleFactor: Target {
+    fn scale_factor(&mut self, factor: isize) -> Result<(), Self::Error>;
 }
 
 macro_rules! define_ops {
@@ -371,6 +433,7 @@ macro_rules! define_ops {
 define_ops!(TargetBase -> TargetBaseOps);
 define_ops!(TargetExtIncDec -> TargetExtIncDecOps);
 define_ops!(TargetExtMul -> TargetExtMulOps);
+define_ops!(TargetExtScaleFactor -> TargetExtScaleFactorOps);
 
 ```
 
@@ -567,6 +630,18 @@ Based on local benchmarks and assembly inspection:
 -   **Function Pointers vs IDETs:** The generated assembly for the function pointers approach and the IDETs traits approach is nearly identical. In both cases, the compiler's behavior with `#[inline(always)]` is the same (only affecting dead code elimination).
 -   **Compiler Magic:** Removing `#[inline(never)]` from `Controller::run` really shows the magic of optimizing compilers, allowing the entire trait dispatch structure to be flattened and devirtualized.
 
+#### Target-Level Assembly DCE Inspection (`BasicTarget` vs `FaultyTarget` vs `AdvancedTarget`)
+
+Comparing generated assembly for `parse_command` across target targets (`asm_output/*.s`) highlights how IDET capability-gated parsing achieves fine-grained dead-code elimination proportional to the exact set of extensions implemented by each target:
+
+| Target               | Implemented Extensions                  | IDETs (`using_traits`) Assembly Output                                                                                              | Options (`using_options`) Assembly Output                                                                        |
+| :------------------- | :-------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------- |
+| **`BasicTarget`**    | Base Protocol ONLY (`p`, `s <n>`)       | **Leanest (~30 instrs)**<br>• Parses: `p`, `s <n>`<br>• **100% DCE** of `IncDec`, `Mul`, and `ScaleFactor` parsing.                 | **Bloated (>100 instrs)**<br>• Zero DCE.<br>• Speculatively parses `+`, `-`, `+-`, `*`, `*~` despite no support. |
+| **`FaultyTarget`**   | Base + `IncDec` (`+`, `-`, `+-`)        | **Selective DCE (~50 instrs)**<br>• Parses: `+`, `-`, `+-`, `p`, `s <n>`<br>• **100% DCE** of `Mul` (`*`) and `ScaleFactor` (`*~`). | **Bloated (>100 instrs)**<br>• Zero DCE.<br>• Speculatively parses `*` and `*~` despite no `Mul` support.        |
+| **`AdvancedTarget`** | Base + `IncDec` + `Mul` + `ScaleFactor` | **Full Parser (~110 instrs)**<br>• Parses: `+`, `-`, `+-`, `*`, `*~`, `p`, `s <n>`.                                                 | **Full Parser (~110 instrs)**<br>• Parses all commands.                                                          |
+
+Key observation: On targets with partial protocol support (`BasicTarget` and `FaultyTarget`), IDETs enable LLVM to prune unused packet parsing logic and string constants from the compiled executable, whereas `Options` emits the full ~110 instruction parser unconditionally across all targets.
+
 #### Assembly & Benchmarking Methodology
 To measure realistic end-to-end command parsing and trait/function dispatch performance, commands are streamed via stdin from an external Rust harness (`src/bin/harness.rs`).
 
@@ -577,21 +652,21 @@ Below are the `hyperfine` benchmark results comparing **Options** (`using_option
 
 ##### Debug Mode (131,072 iterations)
 
-| Implementation | Mean ± Std Dev | Min … Max | Speedup |
-| :--- | :--- | :--- | :--- |
+| Implementation                | Mean ± Std Dev        | Min … Max           | Speedup             |
+| :---------------------------- | :-------------------- | :------------------ | :------------------ |
 | **Options** (`using_options`) | **141.2 ms ± 2.7 ms** | 136.4 ms … 147.9 ms | **1.00x** (Fastest) |
-| **Fn Pointers** (`using_fn`) | **142.2 ms ± 4.0 ms** | 134.9 ms … 150.2 ms | 1.01x slower |
-| **IDETs** (`using_traits`) | **145.0 ms ± 8.8 ms** | 135.1 ms … 176.0 ms | 1.03x slower |
+| **Fn Pointers** (`using_fn`)  | **142.2 ms ± 4.0 ms** | 134.9 ms … 150.2 ms | 1.01x slower        |
+| **IDETs** (`using_traits`)    | **145.0 ms ± 8.8 ms** | 135.1 ms … 176.0 ms | 1.03x slower        |
 
 *In Debug mode, `using_options` performs marginally faster due to reduced trait object dispatch indirection prior to optimization.*
 
 ##### Release Mode (262,144 iterations)
 
-| Implementation | Mean ± Std Dev | Min … Max | Speedup |
-| :--- | :--- | :--- | :--- |
-| **Fn Pointers** (`using_fn`) | **176.3 ms ± 8.0 ms** | 163.9 ms … 198.3 ms | **1.00x** (Fastest) |
-| **IDETs** (`using_traits`) | **176.8 ms ± 5.9 ms** | 167.3 ms … 189.0 ms | 1.00x slower |
-| **Options** (`using_options`) | **178.6 ms ± 7.2 ms** | 171.1 ms … 196.3 ms | 1.01x slower |
+| Implementation                | Mean ± Std Dev        | Min … Max           | Speedup             |
+| :---------------------------- | :-------------------- | :------------------ | :------------------ |
+| **Fn Pointers** (`using_fn`)  | **176.3 ms ± 8.0 ms** | 163.9 ms … 198.3 ms | **1.00x** (Fastest) |
+| **IDETs** (`using_traits`)    | **176.8 ms ± 5.9 ms** | 167.3 ms … 189.0 ms | 1.00x slower        |
+| **Options** (`using_options`) | **178.6 ms ± 7.2 ms** | 171.1 ms … 196.3 ms | 1.01x slower        |
 
 *In Release mode (`-O3`), LLVM completely devirtualizes and inlines both the dynamic dispatch and the packet parsing logic across all three approaches, rendering runtime performance virtually identical (all within statistical noise at ~176–178 ms).*
 

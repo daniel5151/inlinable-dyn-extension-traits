@@ -1,4 +1,4 @@
-use crate::commands::{Command, parse_isize};
+use crate::commands::{Command, ext, parse_isize};
 
 use super::opt_result::OptResultExt;
 use super::target::Target;
@@ -40,33 +40,33 @@ impl<T: Target> TargetController<T> {
         /* IncDec extension parsing - cannot be gated on target support! */
         crate::__dead_code_marker!("Parse IncDec extension");
         if buf == b"+" {
-            return Some(Command::Inc);
+            return Some(Command::IncDec(ext::IncDecCommand::Inc));
         }
         if buf == b"-" {
-            return Some(Command::Dec);
+            return Some(Command::IncDec(ext::IncDecCommand::Dec));
         }
         if buf == b"+-" {
-            return Some(Command::IncDec);
+            return Some(Command::IncDec(ext::IncDecCommand::IncDec));
         }
 
         /* Mul extension parsing - cannot be gated on target support! */
         crate::__dead_code_marker!("Parse Mul extension");
         if let Some(n) = buf.strip_prefix(b"* ").and_then(parse_isize) {
-            return Some(Command::Mul(n));
+            return Some(Command::Mul(ext::MulCommand::Mul(n)));
         }
 
         /* ScaleFactor extension parsing - cannot be gated on target support! */
         crate::__dead_code_marker!("Parse ScaleFactor extension");
         if let Some(n) = buf.strip_prefix(b"*~ ").and_then(parse_isize) {
-            return Some(Command::ScaleFactor(n));
+            return Some(Command::Mul(ext::MulCommand::ScaleFactor(n)));
         }
 
         /* Base protocol parsing */
         if buf == b"p" {
-            return Some(Command::PrintState);
+            return Some(Command::Base(ext::BaseCommand::PrintState));
         }
         if let Some(n) = buf.strip_prefix(b"s ").and_then(parse_isize) {
-            return Some(Command::SetState(n));
+            return Some(Command::Base(ext::BaseCommand::SetState(n)));
         }
 
         None
@@ -75,27 +75,31 @@ impl<T: Target> TargetController<T> {
     fn handle(&mut self, cmd: &Command) -> Result<(), Error<T::Error>> {
         match cmd {
             /* Base protocol */
-            Command::PrintState => crate::println_isize!(self.target.get_state()),
-            Command::SetState(n) => self.target.set_state(*n).map_err(Error::Target)?,
+            Command::Base(base_cmd) => match base_cmd {
+                ext::BaseCommand::PrintState => crate::println_isize!(self.target.get_state()),
+                ext::BaseCommand::SetState(n) => {
+                    self.target.set_state(*n).map_err(Error::Target)?
+                }
+            },
 
             /* IncDec extension */
-            Command::Inc | Command::Dec | Command::IncDec => {
+            Command::IncDec(incdec_cmd) => {
                 crate::__dead_code_marker!("IncDec extension");
 
-                match cmd {
-                    Command::Inc => {
+                match incdec_cmd {
+                    ext::IncDecCommand::Inc => {
                         match self.target.inc().map_unimpl().map_err(Error::Target)? {
                             Some(_) => {}
                             None => self.unsupported_cmd()?,
                         };
                     }
-                    Command::Dec => {
+                    ext::IncDecCommand::Dec => {
                         match self.target.dec().map_unimpl().map_err(Error::Target)? {
                             Some(_) => {}
                             None => self.unsupported_cmd()?,
                         };
                     }
-                    Command::IncDec => {
+                    ext::IncDecCommand::IncDec => {
                         let inc_impl = self.target.inc().map_unimpl().map_err(Error::Target)?;
                         let dec_impl = self.target.dec().map_unimpl().map_err(Error::Target)?;
                         match (inc_impl, dec_impl) {
@@ -104,33 +108,33 @@ impl<T: Target> TargetController<T> {
                             _ => return Err(Error::InvalidImpl),
                         }
                     }
-                    _ => {} // unreachable
                 }
             }
 
             /* Mul extension */
-            Command::Mul(n) => {
-                crate::__dead_code_marker!("Mul extension");
+            Command::Mul(mul_cmd) => match mul_cmd {
+                ext::MulCommand::Mul(n) => {
+                    crate::__dead_code_marker!("Mul extension");
 
-                match self.target.mul(*n).map_unimpl().map_err(Error::Target)? {
-                    Some(_) => {}
-                    None => self.unsupported_cmd()?,
-                };
-            }
-            /* ScaleFactor extension */
-            Command::ScaleFactor(n) => {
-                crate::__dead_code_marker!("ScaleFactor extension");
+                    match self.target.mul(*n).map_unimpl().map_err(Error::Target)? {
+                        Some(_) => {}
+                        None => self.unsupported_cmd()?,
+                    };
+                }
+                ext::MulCommand::ScaleFactor(n) => {
+                    crate::__dead_code_marker!("ScaleFactor extension");
 
-                match self
-                    .target
-                    .scale_factor(*n)
-                    .map_unimpl()
-                    .map_err(Error::Target)?
-                {
-                    Some(_) => {}
-                    None => self.unsupported_cmd()?,
-                };
-            }
+                    match self
+                        .target
+                        .scale_factor(*n)
+                        .map_unimpl()
+                        .map_err(Error::Target)?
+                    {
+                        Some(_) => {}
+                        None => self.unsupported_cmd()?,
+                    };
+                }
+            },
         }
 
         Ok(())
