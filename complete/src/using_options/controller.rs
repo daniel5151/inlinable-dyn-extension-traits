@@ -35,7 +35,7 @@ impl<T: Target> TargetController<T> {
     // before parsing. The parser MUST speculatively parse all incoming packets,
     // preventing LLVM from dead-code eliminating unused packet parsing branches
     // at compile time.
-    #[inline(never)]
+    #[cfg_attr(feature = "interpretable_asm", inline(never))]
     pub fn parse_command(&mut self, buf: &[u8]) -> Option<Command> {
         /* IncDec extension parsing - cannot be gated on target support! */
         crate::__dead_code_marker!("Parse IncDec extension");
@@ -75,7 +75,7 @@ impl<T: Target> TargetController<T> {
     // NOTE: `#[inline(never)]` is used here specifically for pedagogical/assembly
     // inspection purposes, ensuring `handle` is emitted as a standalone symbol in
     // `asm_output/`.
-    #[inline(never)]
+    #[cfg_attr(feature = "interpretable_asm", inline(never))]
     pub fn handle(&mut self, cmd: &Command) -> Result<(), Error<T::Error>> {
         match cmd {
             /* Base protocol */

@@ -29,7 +29,7 @@ impl<T: 'static + Target> TargetController<T> {
     // production code (e.g. gdbstub), omitting `#[inline(never)]` allows LLVM
     // to inline `parse_command` into `run()`, eliminating `Command` enum
     // discriminant overhead across the parsing and handling pipeline.
-    #[inline(never)]
+    #[cfg_attr(feature = "interpretable_asm", inline(never))]
     pub fn parse_command(&mut self, buf: &[u8]) -> Option<Command> {
         /* IncDec extension parsing */
         if self.target.ext_incdec().is_some() {
@@ -83,7 +83,7 @@ impl<T: 'static + Target> TargetController<T> {
     //
     // Monomorphization still inlines target capability checks into this function,
     // preserving dead-code elimination of unsupported extension handlers.
-    #[inline(never)]
+    #[cfg_attr(feature = "interpretable_asm", inline(never))]
     pub fn handle(&mut self, cmd: &Command) -> Result<(), Error<T::Error>> {
         match cmd {
             /* Base protocol */

@@ -628,7 +628,8 @@ Every technique except for `cargo` features and specialization.
 Based on local benchmarks and assembly inspection:
 -   **Inlining & Vtables:** Using `#[inline(always)]` doesn't improve the quality of the generated code directly, but it does seem to help the dead-code-eliminator to remove the unused vtables, resulting in a marginally smaller binary (which is crucial in embedded/`no_std` applications).
 -   **Function Pointers vs IDETs:** The generated assembly for the function pointers approach (`using_fn`) and the IDETs traits approach (`using_traits`) is virtually identical instruction-for-instruction across all targets and functions.
--   **Standalone Assembly Symbols:** Marking `parse_command` and `handle` with `#[inline(never)]` isolates them as standalone symbols in `asm_output/*.s`, allowing automated metrics collection (`asm_stats.py`) to measure exact instruction counts per function without interference from the outer event loop.
+-   **Standalone Assembly Symbols:** Marking `parse_command` and `handle` with `#[inline(never)]` (via the `interpretable_asm` feature) isolates them as standalone symbols in `asm_output/*.s`, allowing automated metrics collection (`asm_stats.py`) to measure exact instruction counts per function without interference from the outer event loop.
+-   **Target Leaf Function Inlining:** Target methods (`get_state`, `set_state`, `inc`, `dec`, etc.) retain unconditional `#[inline(never)]` annotations. In our simplified benchmark targets, these methods perform trivial state mutations; marking them `#[inline(never)]` models real-world protocol implementations (such as `gdbstub` targets) where leaf handlers perform non-trivial I/O, hardware register access, or memory manipulation that an optimizing compiler would not inline into the main packet loop.
 
 #### Target-Level Assembly DCE Inspection (`BasicTarget` vs `FaultyTarget` vs `AdvancedTarget`)
 
@@ -641,6 +642,20 @@ Comparing generated assembly for `parse_command` and `handle` across targets (`a
 | **`AdvancedTarget`** | Base + `IncDec` + `Mul` + `ScaleFactor` | **91 instrs**<br>• Full parser                                    | **90 instrs**<br>• Full parser                                     | **69 instrs**<br>• Full handler                           | **126 instrs**<br>• Full handler                           | **337 vs 424 instrs**<br>(**20% reduction**)              |
 
 Key observation: On targets with partial protocol support (`BasicTarget` and `FaultyTarget`), IDETs and Fn Pointers enable LLVM to prune both unused packet parsing logic in `parse_command` AND unsupported command handlers in `handle`. Conversely, `using_options` emits the full 90-instruction parser and bloated handler unconditionally across all targets, resulting in **up to 36% more instructions** in the target executable.
+
+##### Interpretable Assembly vs. Fully-Inlined Production Assembly
+
+The repository builds two separate sets of assembly listings:
+
+1. **Interpretable Assembly (`asm_output/`)**: Compiled with the repo-wide `interpretable_asm` feature (which applies `#[inline(never)]` to key functions like `parse_command` and `handle`). This isolates `parse_command` and `handle` into distinct, named assembly symbols so `asm_stats.py` can measure exact instruction counts per function.
+2. **Fully-Inlined Production Assembly (`asm_output_inlined/`)**: Compiled without `interpretable_asm` (omitting `#[inline(never)]`). In this mode, LLVM flattens the entire parsing, handling, and main execution loop into a single streamlined block.
+
+Comparing the fully-inlined assembly outputs (`asm_output_inlined/`) demonstrates that `#[inline(never)]` is strictly an inspection aid and does not "fake" the Dead-Code Elimination effect:
+
+- **`basic_traits.s` / `basic_fn.s` (Inlined)**: LLVM completely deletes all parsing byte checks for `+`, `-`, `+-`, `*`, `*~`, integer parsing routines, and associated string constants, producing a total binary size of **3.7 KB (202 assembly lines)** while maintaining realistic standalone calls to target leaf handlers (`get_state` / `set_state`).
+- **`basic_options.s` (Inlined)**: Lacking capability pre-checks, LLVM is forced to retain all speculative parsing branches and string constants, resulting in a binary size of **6.1 KB (337 assembly lines)**—**a ~40% reduction in total assembly lines for `basic_traits`**.
+
+This confirms that IDET capability-gated dispatch enables LLVM to achieve end-to-end Dead-Code Elimination across the entire compiled binary.
 
 #### Assembly & Benchmarking Methodology
 To measure realistic end-to-end command parsing and trait/function dispatch performance, commands are streamed via stdin from an external Rust harness (`src/bin/harness.rs`).

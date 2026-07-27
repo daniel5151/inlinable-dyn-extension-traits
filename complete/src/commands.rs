@@ -26,7 +26,7 @@ pub enum Command {
     Mul(ext::MulCommand),
 }
 
-#[inline(never)]
+#[cfg_attr(feature = "interpretable_asm", inline(never))]
 pub fn parse_isize(bytes: &[u8]) -> Option<isize> {
     let (is_neg, digits) = match bytes.split_first()? {
         (b'-', rest) => (true, rest),

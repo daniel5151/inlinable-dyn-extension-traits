@@ -1,7 +1,7 @@
 # throw the entire crate into a single .rs file, with can then be copy/pasted into godbolt.org
 # automatically copies output into the clipboard
 
-cargo +nightly rustc --release --no-default-features --features="target_$1 using_$2" --profile=check -- -Zunstable-options --pretty=expanded > godbolt_raw.rs
+cargo +nightly rustc --release --no-default-features --features="target_$1 using_$2 interpretable_asm" --profile=check -- -Zunstable-options --pretty=expanded > godbolt_raw.rs
 
 # tweak the header a bit to remove redundant imports + enable certain features.
 tail -n +10 godbolt_raw.rs > godbolt.rs
