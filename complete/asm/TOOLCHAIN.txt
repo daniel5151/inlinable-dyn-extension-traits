@@ -3,3 +3,5 @@ commit-hash: 9ec5d5f32e19d250c7fbeaa90978c79105b39dee
 LLVM version: 22.1.2
 rust_demangle 0.2.1
 cargo-profile=release (-Os, codegen-units=1)
+inlined-dce-markers=false
+noinline-dce-markers=true

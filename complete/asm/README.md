@@ -11,13 +11,16 @@ asm/
     └── <rust-target-triple>/
 ```
 
-- `inlined` is the production-style build. `parse_command` and `handle` may be
-  folded into `run_optional_trait_methods`.
-- `noinline` enables the repository's `interpretable_asm` feature so those two
-  functions remain independently inspectable.
+- `inlined` is the marker-free, production-style build. `parse_command` and
+  `handle` may be folded into `run_optional_trait_methods`.
+- `noinline` enables the repository's `interpretable_asm` and `dce_markers`
+  features so those two functions remain independently inspectable and
+  retained extension paths contain searchable marker strings.
 
 Both modes retain `#[inline(never)]` on the example target's leaf operations.
 The `always_inline` feature is enabled for small capability-conversion helpers.
+Only `inlined` disables `dce_markers`; its instruction counts therefore omit
+the diagnostic `black_box` operations.
 
 These listings retain the program's normal printing paths. Timed binaries use
 the `bench` feature to replace printing with `black_box`, avoiding high-variance
@@ -44,6 +47,11 @@ rustup target add x86_64-unknown-linux-gnu
 `--target` may be repeated. With no argument, the script uses the compiler's
 host triple. The script validates every generated file with `asm_stats.py` and
 fails rather than accepting empty statistics.
+
+The checked-in `noinline` listings already include DCE markers. Pass
+`--dce-markers` to enable them in `inlined` listings too. That fully marked
+corpus is written under `target/dce-marker-asm/` and remains separate from the
+checked-in artifacts.
 
 For a Rust target whose assembly syntax is not yet understood by
 `asm_stats.py`, pass `--skip-stats`. Generation remains target-qualified, but

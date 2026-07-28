@@ -635,8 +635,8 @@ this experiment.** Once `TargetController<T>` is monomorphized, LLVM can resolve
 `try_as_dyn` on all three targets:
 
 -   `BasicTarget`: **114 x86 instructions / 91 AArch64 instructions**
--   `FaultyTarget`: **144 x86 instructions / 129 AArch64 instructions**
--   `AdvancedTarget`: **252 x86 instructions / 246 AArch64 instructions**
+-   `FaultyTarget`: **132 x86 instructions / 112 AArch64 instructions**
+-   `AdvancedTarget`: **232 x86 instructions / 213 AArch64 instructions**
 
 Debug mode is a different story: `try_as_dyn_mut` still invokes the runtime
 trait-resolution machinery, whereas an IDET is just a direct method call which
@@ -739,7 +739,7 @@ what LLVM throws away for each target:
 | :--------------------------------------------- | :---------------------------------------------------------------- | :---------------------------------------------------------- | :------------------------------------- |
 | **`parse_command`**                            |                                                                   |                                                             |                                        |
 | • `cfg_gates`                                  | **22 instrs**<br>• **100% DCE** of enum variants & parser         | **50 instrs**<br>• Selective DCE of `Mul` and `ScaleFactor` | **90 instrs**<br>• Full parser         |
-| • `is_supported` / `traits` / `fn` / `try_dyn` | **28 instrs**<br>• **100% DCE** of `IncDec`, `Mul`, `ScaleFactor` | **49 instrs**<br>• Selective DCE of `Mul` and `ScaleFactor` | **90 / 91 instrs**<br>• Full parser    |
+| • `is_supported` / `traits` / `fn` / `try_dyn` | **28 instrs**<br>• **100% DCE** of `IncDec`, `Mul`, `ScaleFactor` | **49 instrs**<br>• Selective DCE of `Mul` and `ScaleFactor` | **90–91 instrs**<br>• Full parser      |
 | • `options`                                    | **90 instrs**<br>• Zero DCE (speculative parse)                   | **90 instrs**<br>• Zero DCE (speculative parse)             | **90 instrs**<br>• Full parser         |
 | **`handle`**                                   |                                                                   |                                                             |                                        |
 | • `cfg_gates`                                  | **9 instrs**<br>• Omits unneeded match arms                       | **32 instrs**<br>• Selective DCE of handlers                | **57 instrs**<br>• Full handler        |
@@ -761,15 +761,16 @@ approaches.
 ##### Why Are There Two Sets of Assembly Listings?
 
 The `noinline` listings are meant to be read: `parse_command` and `handle` stay
-as separate functions, making it easy to count instructions and see which
-branches survived.
+as separate functions, and DCE markers make retained extension paths easy to
+find.
 
 The `inlined` listings are closer to the real optimized program. LLVM is free
-to fold parsing and dispatch into `run_optional_trait_methods`, which lets us
-check that `#[inline(never)]` isn't somehow "faking" the DCE result:
+to fold parsing and dispatch into `run_optional_trait_methods`, and the markers
+are disabled. This lets us check that the inspection helpers aren't somehow
+"faking" the DCE result:
 
 - **`basic_traits.s` / `basic_fn.s` (Inlined)**: LLVM completely deletes all parsing byte checks for `+`, `-`, `+-`, `*`, `*~`, and their associated parser paths. The selected x86 run loop is **114 instructions**.
-- **`basic_options.s` (Inlined)**: Lacking capability pre-checks, LLVM retains speculative parsing branches. The selected x86 run loop is **224 instructions**.
+- **`basic_options.s` (Inlined)**: Lacking capability pre-checks, LLVM retains speculative parsing branches. The selected x86 run loop is **202 instructions**.
 
 So the DCE still works end-to-end once all the inspection-only annotations are
 removed. One caveat: these listings come from an `rlib`, so the size of the
@@ -780,14 +781,21 @@ whole `.s` file is not the size of a final linked binary.
 The assembly is generated with the repository's pinned nightly toolchain.
 `generate_asm.sh` compiles the library target, which means I can generate x86
 assembly from macOS without needing a linker or emulator for that target.
+The readable listings include DCE markers, while the fully-inlined listings are
+marker-free. Passing `--dce-markers` also produces a marked inlined corpus under
+`target/dce-marker-asm` when I need to check exactly which paths survived.
+
 `asm_stats.py` counts textual instructions—not encoded bytes, and definitely
-not runtime cost.
+not runtime cost. Counts from the readable listings also include the marker
+overhead.
 
 For timing, `run_hyperfine.sh` generates one deterministic command stream and
 feeds that same input to every implementation. All of them use
 `AdvancedTarget`, so every extension is enabled. Printing is replaced with
-`black_box` to keep syscall noise out of the result, and the benchmarks run in
-both forward and reverse order to make order-dependent noise easier to spot.
+`black_box` to keep syscall noise out of the result, and DCE markers remain
+disabled. The benchmarks run in both forward and reverse order to make
+order-dependent noise easier to spot. Raw results and environment details are
+written to `target/benchmark-results/`.
 
 The following results were measured on the current AArch64 macOS host using 1,000,000 commands generated with seed 42, 30 measured runs, and 5 warmup runs.
 
@@ -795,35 +803,36 @@ The following results were measured on the current AArch64 macOS host using 1,00
 
 | Implementation | Forward mean ± std dev (min … max)       | Reverse mean ± std dev (min … max)       |
 | :------------- | :--------------------------------------- | :--------------------------------------- |
-| `cfg_gates`    | 99.73 ms ± 2.47 ms (96.64 … 107.89 ms)   | 105.55 ms ± 6.06 ms (99.21 … 122.19 ms)  |
-| `is_supported` | 103.10 ms ± 4.59 ms (98.86 … 119.91 ms)  | 105.97 ms ± 6.38 ms (102.26 … 129.11 ms) |
-| `options`      | 104.70 ms ± 3.32 ms (101.25 … 119.33 ms) | 107.83 ms ± 6.49 ms (103.95 … 130.20 ms) |
-| `fn`           | 102.99 ms ± 2.92 ms (99.08 … 113.47 ms)  | 104.86 ms ± 1.76 ms (102.92 … 110.01 ms) |
-| `traits`       | 104.69 ms ± 2.08 ms (101.98 … 113.48 ms) | 107.61 ms ± 5.93 ms (102.97 … 124.72 ms) |
-| `try_as_dyn`   | 109.38 ms ± 3.44 ms (106.30 … 123.67 ms) | 108.92 ms ± 3.34 ms (105.69 … 121.86 ms) |
+| `cfg_gates`    | 101.80 ms ± 2.60 ms (99.50 … 114.81 ms)  | 100.71 ms ± 1.20 ms (97.90 … 104.07 ms)  |
+| `is_supported` | 102.37 ms ± 1.37 ms (100.59 … 107.37 ms) | 103.21 ms ± 5.72 ms (99.58 … 132.24 ms)  |
+| `options`      | 116.82 ms ± 2.84 ms (106.14 … 121.96 ms) | 107.08 ms ± 2.47 ms (104.06 … 115.14 ms) |
+| `fn`           | 109.85 ms ± 4.01 ms (106.88 … 121.45 ms) | 106.16 ms ± 1.06 ms (104.51 … 110.49 ms) |
+| `traits`       | 109.97 ms ± 4.63 ms (106.86 … 125.12 ms) | 106.84 ms ± 1.95 ms (104.59 … 113.66 ms) |
+| `try_as_dyn`   | 111.20 ms ± 1.73 ms (109.27 … 118.70 ms) | 110.35 ms ± 2.61 ms (107.70 … 118.39 ms) |
 
 ##### Release Mode (`-Os`)
 
 | Implementation | Forward mean ± std dev (min … max)    | Reverse mean ± std dev (min … max)    |
 | :------------- | :------------------------------------ | :------------------------------------ |
-| `cfg_gates`    | 14.23 ms ± 2.69 ms (12.50 … 27.69 ms) | 13.83 ms ± 1.15 ms (12.85 … 17.87 ms) |
-| `is_supported` | 13.66 ms ± 0.58 ms (12.53 … 14.65 ms) | 13.74 ms ± 1.02 ms (12.71 … 18.68 ms) |
-| `options`      | 13.70 ms ± 1.19 ms (12.63 … 18.92 ms) | 13.57 ms ± 0.45 ms (12.55 … 14.19 ms) |
-| `fn`           | 14.43 ms ± 1.39 ms (12.77 … 19.47 ms) | 14.56 ms ± 2.24 ms (12.67 … 23.84 ms) |
-| `traits`       | 14.25 ms ± 1.28 ms (12.62 … 19.08 ms) | 13.64 ms ± 0.85 ms (12.60 … 17.49 ms) |
-| `try_as_dyn`   | 13.66 ms ± 1.13 ms (12.60 … 18.86 ms) | 13.69 ms ± 0.69 ms (12.11 … 15.55 ms) |
+| `cfg_gates`    | 14.28 ms ± 0.87 ms (13.15 … 16.91 ms) | 14.19 ms ± 0.53 ms (13.15 … 15.33 ms) |
+| `is_supported` | 14.55 ms ± 0.72 ms (13.36 … 15.88 ms) | 14.70 ms ± 1.69 ms (13.04 … 20.66 ms) |
+| `options`      | 14.39 ms ± 0.73 ms (12.68 … 16.65 ms) | 15.10 ms ± 1.29 ms (13.52 … 17.67 ms) |
+| `fn`           | 14.66 ms ± 1.37 ms (13.48 … 20.32 ms) | 14.42 ms ± 0.58 ms (13.03 … 15.76 ms) |
+| `traits`       | 13.87 ms ± 0.77 ms (12.47 … 16.26 ms) | 14.75 ms ± 1.44 ms (13.34 … 21.31 ms) |
+| `try_as_dyn`   | 14.04 ms ± 0.98 ms (12.41 … 17.25 ms) | 13.76 ms ± 1.52 ms (12.09 … 20.39 ms) |
 
-Debug mode is fairly noisy. `try_as_dyn` is slowest in both orders, while the
-fastest result flips from `cfg_gates` to function pointers. That roughly lines
-up with the amount of unoptimized glue each approach needs, but this is still
-an end-to-end parser benchmark—I wouldn't pin the difference on any one call or
-branch.
+Debug mode is fairly noisy. `cfg_gates` is fastest in both orders, but the size
+of the gap changes quite a bit: `options` is about 15% slower in the forward run
+and only 6% slower in reverse. That roughly lines up with the amount of
+unoptimized glue each approach needs, but this is still an end-to-end parser
+benchmark—I wouldn't pin the difference on any one call or branch.
 
 Release mode is the more interesting result: it's basically a wash. LLVM
-reduces most approaches to nearly the same hot loop, and reversing the benchmark
-order changes the apparent winner. The stable result here is the codegen / DCE
-comparison above, not a claim that one approach is universally a few percent
-faster than another.
+reduces most approaches to nearly the same hot loop, the apparent winner flips
+from IDETs to `try_as_dyn` when the order is reversed, and most of the
+distributions overlap. The stable result here is the codegen / DCE comparison
+above, not a claim that one approach is universally a few percent faster than
+another.
 
 ## Conclusion
 

@@ -107,9 +107,9 @@ _optional_trait_methods::print_macros::write_line:
 	mov	x29, sp
 	bl	_optional_trait_methods::print_macros::write_all
 Lloh0:
-	adrp	x0, l_anon.caf67b63d740860d6067461a2d3d6994.4@PAGE
+	adrp	x0, l_anon.caf67b63d740860d6067461a2d3d6994.2@PAGE
 Lloh1:
-	add	x0, x0, l_anon.caf67b63d740860d6067461a2d3d6994.4@PAGEOFF
+	add	x0, x0, l_anon.caf67b63d740860d6067461a2d3d6994.2@PAGEOFF
 	mov	w1, #1
 	ldp	x29, x30, [sp], #16
 	b	_optional_trait_methods::print_macros::write_all
@@ -163,18 +163,18 @@ LBB4_7:
 	ret
 LBB4_8:
 Lloh2:
-	adrp	x2, l_anon.caf67b63d740860d6067461a2d3d6994.6@PAGE
+	adrp	x2, l_anon.caf67b63d740860d6067461a2d3d6994.4@PAGE
 Lloh3:
-	add	x2, x2, l_anon.caf67b63d740860d6067461a2d3d6994.6@PAGEOFF
+	add	x2, x2, l_anon.caf67b63d740860d6067461a2d3d6994.4@PAGEOFF
 LBB4_9:
 	mov	x0, #-1
 	mov	w1, #32
 	bl	_core::panicking::panic_bounds_check
 LBB4_10:
 Lloh4:
-	adrp	x2, l_anon.caf67b63d740860d6067461a2d3d6994.7@PAGE
+	adrp	x2, l_anon.caf67b63d740860d6067461a2d3d6994.5@PAGE
 Lloh5:
-	add	x2, x2, l_anon.caf67b63d740860d6067461a2d3d6994.7@PAGEOFF
+	add	x2, x2, l_anon.caf67b63d740860d6067461a2d3d6994.5@PAGEOFF
 	b	LBB4_9
 	.loh AdrpAdd	Lloh2, Lloh3
 	.loh AdrpAdd	Lloh4, Lloh5
@@ -205,9 +205,9 @@ LBB5_5:
 	ret
 LBB5_6:
 Lloh6:
-	adrp	x3, l_anon.caf67b63d740860d6067461a2d3d6994.8@PAGE
+	adrp	x3, l_anon.caf67b63d740860d6067461a2d3d6994.6@PAGE
 Lloh7:
-	add	x3, x3, l_anon.caf67b63d740860d6067461a2d3d6994.8@PAGEOFF
+	add	x3, x3, l_anon.caf67b63d740860d6067461a2d3d6994.6@PAGEOFF
 	mov	x1, x19
 	mov	x2, x19
 	bl	_core::slice::index::slice_index_fail
@@ -230,9 +230,9 @@ _<optional_trait_methods::using_try_as_dyn::targets::faulty::FaultyTarget as opt
 	.p2align	2
 _<optional_trait_methods::using_try_as_dyn::targets::faulty::FaultyTarget as optional_trait_methods::using_try_as_dyn::target::TargetExtIncDec>::dec:
 Lloh8:
-	adrp	x0, l_anon.caf67b63d740860d6067461a2d3d6994.9@PAGE
+	adrp	x0, l_anon.caf67b63d740860d6067461a2d3d6994.7@PAGE
 Lloh9:
-	add	x0, x0, l_anon.caf67b63d740860d6067461a2d3d6994.9@PAGEOFF
+	add	x0, x0, l_anon.caf67b63d740860d6067461a2d3d6994.7@PAGEOFF
 	mov	w1, #38
 	ret
 	.loh AdrpAdd	Lloh8, Lloh9
@@ -256,16 +256,14 @@ _<optional_trait_methods::line_reader::LineReader as core::default::Default>::de
 	.globl	_run_optional_trait_methods
 	.p2align	2
 _run_optional_trait_methods:
-	stp	x28, x27, [sp, #-96]!
-	stp	x26, x25, [sp, #16]
-	stp	x24, x23, [sp, #32]
-	stp	x22, x21, [sp, #48]
-	stp	x20, x19, [sp, #64]
-	stp	x29, x30, [sp, #80]
-	add	x29, sp, #80
-	sub	sp, sp, #1200
+	stp	x28, x27, [sp, #-64]!
+	stp	x22, x21, [sp, #16]
+	stp	x20, x19, [sp, #32]
+	stp	x29, x30, [sp, #48]
+	add	x29, sp, #48
+	sub	sp, sp, #1184
 	str	xzr, [sp]
-	sub	x19, x29, #224
+	sub	x19, x29, #176
 	str	xzr, [sp, #8]
 	add	x0, sp, #16
 	mov	w1, #1040
@@ -276,100 +274,81 @@ _run_optional_trait_methods:
 	stp	q0, q0, [x19, #32]
 	stp	q0, q0, [x19]
 	add	x0, sp, #16
-	sub	x1, x29, #224
+	sub	x1, x29, #176
 	mov	w2, #128
 	bl	_<optional_trait_methods::line_reader::LineReader>::read_line
-	cbz	x0, LBB11_33
+	cbz	x0, LBB11_32
+	mov	w20, #11563
+	mov	w21, #8307
+	mov	w22, #10
 Lloh10:
-	adrp	x20, l_anon.caf67b63d740860d6067461a2d3d6994.0@PAGE
+	adrp	x19, l_anon.caf67b63d740860d6067461a2d3d6994.1@PAGE
 Lloh11:
-	add	x20, x20, l_anon.caf67b63d740860d6067461a2d3d6994.0@PAGEOFF
-	mov	w21, #22
-	sub	x22, x29, #96
-Lloh12:
-	adrp	x23, l_anon.caf67b63d740860d6067461a2d3d6994.3@PAGE
-Lloh13:
-	add	x23, x23, l_anon.caf67b63d740860d6067461a2d3d6994.3@PAGEOFF
-	mov	w24, #11563
-	mov	w25, #16
-	mov	w26, #8307
-	mov	w27, #10
-Lloh14:
-	adrp	x19, l_anon.caf67b63d740860d6067461a2d3d6994.2@PAGE
-Lloh15:
-	add	x19, x19, l_anon.caf67b63d740860d6067461a2d3d6994.2@PAGEOFF
+	add	x19, x19, l_anon.caf67b63d740860d6067461a2d3d6994.1@PAGEOFF
 LBB11_2:
-	cbz	x1, LBB11_31
-	stp	x20, x21, [x29, #-96]
-	; InlineAsm Start
-	; InlineAsm End
+	cbz	x1, LBB11_14
 	subs	x8, x1, #2
 	b.eq	LBB11_9
 	cmp	x1, #1
-	b.ne	LBB11_11
+	b.ne	LBB11_12
 	ldrb	w8, [x0]
 	cmp	w8, #43
-	b.eq	LBB11_18
+	b.eq	LBB11_21
 	cmp	w8, #45
-	b.eq	LBB11_16
+	b.eq	LBB11_11
 	cmp	w8, #112
-	b.ne	LBB11_12
+	b.ne	LBB11_13
 	add	x0, sp, #8
 	bl	_<optional_trait_methods::using_try_as_dyn::targets::faulty::FaultyTarget as optional_trait_methods::using_try_as_dyn::target::TargetBase>::get_state
 	bl	_optional_trait_methods::print_macros::write_isize_line
-	b	LBB11_31
+	b	LBB11_14
 LBB11_9:
 	ldrh	w9, [x0]
-	cmp	w9, w24
-	b.ne	LBB11_11
-	stp	x23, x25, [x29, #-96]
-	; InlineAsm Start
-	; InlineAsm End
+	cmp	w9, w20
+	b.ne	LBB11_12
 	add	x0, sp, #8
 	bl	_<optional_trait_methods::using_try_as_dyn::targets::faulty::FaultyTarget as optional_trait_methods::using_try_as_dyn::target::TargetExtIncDec>::inc
-	cbnz	x0, LBB11_32
-	b	LBB11_17
+	cbnz	x0, LBB11_31
 LBB11_11:
-	ldrh	w9, [x0]
-	cmp	w9, w26
-	ccmp	x8, #0, #4, eq
-	b.ne	LBB11_13
+	bl	_<optional_trait_methods::using_try_as_dyn::targets::faulty::FaultyTarget as optional_trait_methods::using_try_as_dyn::target::TargetExtIncDec>::dec
+	cbnz	x0, LBB11_31
+	b	LBB11_14
 LBB11_12:
+	ldrh	w9, [x0]
+	cmp	w9, w21
+	ccmp	x8, #0, #4, eq
+	b.ne	LBB11_15
+LBB11_13:
 	mov	x0, x19
 	mov	w1, #16
 	bl	_optional_trait_methods::print_macros::write_line
-	b	LBB11_31
-LBB11_13:
+LBB11_14:
+	add	x0, sp, #16
+	sub	x1, x29, #176
+	mov	w2, #128
+	bl	_<optional_trait_methods::line_reader::LineReader>::read_line
+	cbnz	x0, LBB11_2
+	b	LBB11_32
+LBB11_15:
 	ldrb	w9, [x0, #2]!
 	cmp	w9, #45
-	b.eq	LBB11_19
+	b.eq	LBB11_18
 	cmp	w9, #43
 	b.ne	LBB11_22
 	mov	w9, #0
-	b	LBB11_20
-LBB11_16:
-	stp	x23, x25, [x29, #-96]
-	; InlineAsm Start
-	; InlineAsm End
-LBB11_17:
-	bl	_<optional_trait_methods::using_try_as_dyn::targets::faulty::FaultyTarget as optional_trait_methods::using_try_as_dyn::target::TargetExtIncDec>::dec
-	cbnz	x0, LBB11_32
-	b	LBB11_31
+	b	LBB11_19
 LBB11_18:
-	stp	x23, x25, [x29, #-96]
-	; InlineAsm Start
-	; InlineAsm End
-	add	x0, sp, #8
-	bl	_<optional_trait_methods::using_try_as_dyn::targets::faulty::FaultyTarget as optional_trait_methods::using_try_as_dyn::target::TargetExtIncDec>::inc
-	cbnz	x0, LBB11_32
-	b	LBB11_31
-LBB11_19:
 	mov	w9, #1
-LBB11_20:
+LBB11_19:
 	sub	x8, x1, #3
-	cbz	x8, LBB11_12
+	cbz	x8, LBB11_13
 	add	x0, x0, #1
 	b	LBB11_23
+LBB11_21:
+	add	x0, sp, #8
+	bl	_<optional_trait_methods::using_try_as_dyn::targets::faulty::FaultyTarget as optional_trait_methods::using_try_as_dyn::target::TargetExtIncDec>::inc
+	cbnz	x0, LBB11_31
+	b	LBB11_14
 LBB11_22:
 	mov	w9, #0
 LBB11_23:
@@ -378,89 +357,72 @@ LBB11_24:
 	ldrb	w10, [x0], #1
 	sub	w10, w10, #48
 	cmp	w10, #9
-	b.hi	LBB11_12
-	smulh	x12, x1, x27
+	b.hi	LBB11_13
+	smulh	x12, x1, x22
 	add	x11, x1, x1, lsl #2
 	lsl	x11, x11, #1
 	cmp	x12, x11, asr #63
-	b.ne	LBB11_12
+	b.ne	LBB11_13
 	and	x10, x10, #0xff
 	tbz	w9, #0, LBB11_28
 	subs	x1, x11, x10
-	b.vs	LBB11_12
+	b.vs	LBB11_13
 	b	LBB11_29
 LBB11_28:
 	adds	x1, x11, x10
-	b.vs	LBB11_12
+	b.vs	LBB11_13
 LBB11_29:
 	subs	x8, x8, #1
 	b.ne	LBB11_24
 	add	x0, sp, #8
 	bl	_<optional_trait_methods::using_try_as_dyn::targets::faulty::FaultyTarget as optional_trait_methods::using_try_as_dyn::target::TargetBase>::set_state
-	cbnz	x0, LBB11_32
+	cbz	x0, LBB11_14
 LBB11_31:
-	add	x0, sp, #16
-	sub	x1, x29, #224
-	mov	w2, #128
-	bl	_<optional_trait_methods::line_reader::LineReader>::read_line
-	cbnz	x0, LBB11_2
-	b	LBB11_33
-LBB11_32:
 	bl	_optional_trait_methods::print_macros::write_line
 	mov	w0, #1
-LBB11_33:
-	add	sp, sp, #1200
-	ldp	x29, x30, [sp, #80]
-	ldp	x20, x19, [sp, #64]
-	ldp	x22, x21, [sp, #48]
-	ldp	x24, x23, [sp, #32]
-	ldp	x26, x25, [sp, #16]
-	ldp	x28, x27, [sp], #96
+LBB11_32:
+	add	sp, sp, #1184
+	ldp	x29, x30, [sp, #48]
+	ldp	x20, x19, [sp, #32]
+	ldp	x22, x21, [sp, #16]
+	ldp	x28, x27, [sp], #64
 	ret
-	.loh AdrpAdd	Lloh14, Lloh15
-	.loh AdrpAdd	Lloh12, Lloh13
 	.loh AdrpAdd	Lloh10, Lloh11
 
 	.section	__TEXT,__const
 l_anon.caf67b63d740860d6067461a2d3d6994.0:
-	.ascii	"Parse IncDec extension"
-
-l_anon.caf67b63d740860d6067461a2d3d6994.1:
 	.ascii	"s "
 
 	.section	__TEXT,__literal16,16byte_literals
-l_anon.caf67b63d740860d6067461a2d3d6994.2:
+l_anon.caf67b63d740860d6067461a2d3d6994.1:
 	.ascii	"Unsupported cmd!"
 
-l_anon.caf67b63d740860d6067461a2d3d6994.3:
-	.ascii	"IncDec extension"
-
 	.section	__TEXT,__const
-l_anon.caf67b63d740860d6067461a2d3d6994.4:
+l_anon.caf67b63d740860d6067461a2d3d6994.2:
 	.byte	10
 
 	.section	__TEXT,__cstring,cstring_literals
-l_anon.caf67b63d740860d6067461a2d3d6994.5:
+l_anon.caf67b63d740860d6067461a2d3d6994.3:
 	.asciz	"src/print_macros.rs"
 
 	.section	__DATA,__const
 	.p2align	3, 0x0
-l_anon.caf67b63d740860d6067461a2d3d6994.6:
-	.quad	l_anon.caf67b63d740860d6067461a2d3d6994.5
+l_anon.caf67b63d740860d6067461a2d3d6994.4:
+	.quad	l_anon.caf67b63d740860d6067461a2d3d6994.3
 	.asciz	"\023\000\000\000\000\000\000\000\037\000\000\000\t\000\000"
 
 	.p2align	3, 0x0
-l_anon.caf67b63d740860d6067461a2d3d6994.7:
-	.quad	l_anon.caf67b63d740860d6067461a2d3d6994.5
+l_anon.caf67b63d740860d6067461a2d3d6994.5:
+	.quad	l_anon.caf67b63d740860d6067461a2d3d6994.3
 	.asciz	"\023\000\000\000\000\000\000\000(\000\000\000\t\000\000"
 
 	.p2align	3, 0x0
-l_anon.caf67b63d740860d6067461a2d3d6994.8:
-	.quad	l_anon.caf67b63d740860d6067461a2d3d6994.5
+l_anon.caf67b63d740860d6067461a2d3d6994.6:
+	.quad	l_anon.caf67b63d740860d6067461a2d3d6994.3
 	.asciz	"\023\000\000\000\000\000\000\000\t\000\000\000\027\000\000"
 
 	.section	__TEXT,__const
-l_anon.caf67b63d740860d6067461a2d3d6994.9:
+l_anon.caf67b63d740860d6067461a2d3d6994.7:
 	.ascii	"`dec` operations are not supported yet"
 
 .subsections_via_symbols

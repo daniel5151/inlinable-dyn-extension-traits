@@ -156,7 +156,7 @@ optional_trait_methods::print_macros::write_line:
 	pushq	%rax
 	.cfi_def_cfa_offset 16
 	callq	optional_trait_methods::print_macros::write_all
-	leaq	.Lanon.91b310177bbb1fd3423110ae485c90a5.10(%rip), %rdi
+	leaq	.Lanon.91b310177bbb1fd3423110ae485c90a5.4(%rip), %rdi
 	movl	$1, %esi
 	popq	%rax
 	.cfi_def_cfa_offset 8
@@ -214,13 +214,13 @@ optional_trait_methods::print_macros::write_isize_line:
 	retq
 .LBB4_5:
 	.cfi_def_cfa_offset 48
-	leaq	.Lanon.91b310177bbb1fd3423110ae485c90a5.12(%rip), %rdx
+	leaq	.Lanon.91b310177bbb1fd3423110ae485c90a5.6(%rip), %rdx
 .LBB4_6:
 	movl	$32, %esi
 	movq	$-1, %rdi
 	callq	*core::panicking::panic_bounds_check@GOTPCREL(%rip)
 .LBB4_10:
-	leaq	.Lanon.91b310177bbb1fd3423110ae485c90a5.13(%rip), %rdx
+	leaq	.Lanon.91b310177bbb1fd3423110ae485c90a5.7(%rip), %rdx
 	jmp	.LBB4_6
 .Lfunc_end4:
 	.size	optional_trait_methods::print_macros::write_isize_line, .Lfunc_end4-optional_trait_methods::print_macros::write_isize_line
@@ -266,7 +266,7 @@ optional_trait_methods::print_macros::write_all:
 	retq
 .LBB5_6:
 	.cfi_def_cfa_offset 32
-	leaq	.Lanon.91b310177bbb1fd3423110ae485c90a5.14(%rip), %rcx
+	leaq	.Lanon.91b310177bbb1fd3423110ae485c90a5.8(%rip), %rcx
 	movq	%rax, %rdi
 	movq	%rbx, %rsi
 	movq	%rbx, %rdx
@@ -361,22 +361,22 @@ run_optional_trait_methods:
 	.cfi_def_cfa_offset 48
 	pushq	%rbx
 	.cfi_def_cfa_offset 56
-	subq	$1208, %rsp
-	.cfi_def_cfa_offset 1264
+	subq	$1192, %rsp
+	.cfi_def_cfa_offset 1248
 	.cfi_offset %rbx, -56
 	.cfi_offset %r12, -48
 	.cfi_offset %r13, -40
 	.cfi_offset %r14, -32
 	.cfi_offset %r15, -24
 	.cfi_offset %rbp, -16
-	movq	$0, 24(%rsp)
-	leaq	168(%rsp), %rbx
+	movq	$0, 8(%rsp)
+	leaq	152(%rsp), %rbx
 	movl	$1040, %edx
 	movq	%rbx, %rdi
 	xorl	%esi, %esi
 	callq	*memset@GOTPCREL(%rip)
 	xorps	%xmm0, %xmm0
-	leaq	32(%rsp), %rsi
+	leaq	16(%rsp), %rsi
 	movaps	%xmm0, 112(%rsi)
 	movaps	%xmm0, 96(%rsi)
 	movaps	%xmm0, 80(%rsi)
@@ -389,241 +389,205 @@ run_optional_trait_methods:
 	movq	%rbx, %rdi
 	callq	*<optional_trait_methods::line_reader::LineReader>::read_line@GOTPCREL(%rip)
 	testq	%rax, %rax
-	je	.LBB11_67
-	leaq	168(%rsp), %rbx
-	leaq	32(%rsp), %r14
+	je	.LBB11_63
+	leaq	152(%rsp), %rbx
+	leaq	16(%rsp), %r14
 	movq	<optional_trait_methods::line_reader::LineReader>::read_line@GOTPCREL(%rip), %r13
-	leaq	.Lanon.91b310177bbb1fd3423110ae485c90a5.0(%rip), %rbp
+	leaq	.Lanon.91b310177bbb1fd3423110ae485c90a5.3(%rip), %r15
 	leaq	8(%rsp), %r12
-	leaq	.Lanon.91b310177bbb1fd3423110ae485c90a5.6(%rip), %r15
+	movq	<optional_trait_methods::using_options::targets::basic::BasicTarget as optional_trait_methods::using_options::target::Target>::get_state@GOTPCREL(%rip), %rbp
 .LBB11_2:
 	testq	%rdx, %rdx
-	je	.LBB11_66
-	movq	%rbp, 8(%rsp)
-	movq	$22, 16(%rsp)
-	#APP
-	#NO_APP
-	cmpq	$1, %rdx
-	jne	.LBB11_7
-	movzbl	(%rax), %ecx
-	cmpl	$43, %ecx
-	je	.LBB11_64
-	cmpl	$45, %ecx
-	je	.LBB11_64
-	leaq	.Lanon.91b310177bbb1fd3423110ae485c90a5.1(%rip), %rcx
-	movq	%rcx, 8(%rsp)
-	movq	$19, 16(%rsp)
-	#APP
-	#NO_APP
-	jmp	.LBB11_23
-.LBB11_7:
+	je	.LBB11_62
 	cmpq	$2, %rdx
-	jne	.LBB11_9
+	je	.LBB11_9
+	cmpq	$1, %rdx
+	jne	.LBB11_10
+	movzbl	(%rax), %eax
+	cmpl	$43, %eax
+	je	.LBB11_58
+	cmpl	$45, %eax
+	je	.LBB11_58
+	cmpl	$112, %eax
+	jne	.LBB11_58
+	movq	%r12, %rdi
+	callq	*%rbp
+	movq	%rax, %rdi
+	callq	optional_trait_methods::print_macros::write_isize_line
+	jmp	.LBB11_62
+.LBB11_9:
 	cmpw	$11563, (%rax)
-	jne	.LBB11_9
+	je	.LBB11_58
+.LBB11_10:
+	leaq	-2(%rdx), %rcx
+	cmpw	$8234, (%rax)
+	jne	.LBB11_24
+	testq	%rcx, %rcx
+	je	.LBB11_24
+	movzbl	2(%rax), %esi
+	cmpl	$45, %esi
+	je	.LBB11_13
+	cmpl	$43, %esi
+	jne	.LBB11_15
+	xorl	%esi, %esi
+	jmp	.LBB11_17
+.LBB11_13:
+	movb	$1, %sil
+.LBB11_17:
+	movq	%rdx, %r8
+	addq	$-3, %r8
+	je	.LBB11_64
+	leaq	3(%rax), %rdi
+	jmp	.LBB11_19
+.LBB11_15:
+	leaq	2(%rax), %rdi
+	xorl	%esi, %esi
+	movq	%rcx, %r8
+.LBB11_19:
+	xorl	%r9d, %r9d
+	xorl	%r10d, %r10d
+.LBB11_20:
+	movb	(%rdi,%r9), %r11b
+	addb	$-48, %r11b
+	cmpb	$9, %r11b
+	ja	.LBB11_24
+	imulq	$10, %r10, %r10
+	jo	.LBB11_24
+	movzbl	%r11b, %r11d
+	testb	%sil, %sil
+	je	.LBB11_23
+	subq	%r11, %r10
+	jo	.LBB11_24
+	jmp	.LBB11_31
+.LBB11_23:
+	addq	%r11, %r10
+	jo	.LBB11_24
+.LBB11_31:
+	incq	%r9
+	cmpq	%r9, %r8
+	jne	.LBB11_20
+	jmp	.LBB11_58
+.LBB11_24:
+	cmpq	$3, %rdx
+	jb	.LBB11_42
+	leaq	-3(%rdx), %rsi
+	jmp	.LBB11_26
 .LBB11_64:
-	leaq	.Lanon.91b310177bbb1fd3423110ae485c90a5.7(%rip), %rax
-	movq	%rax, 8(%rsp)
-	movq	$16, 16(%rsp)
-	#APP
-	#NO_APP
-.LBB11_65:
+	xorl	%esi, %esi
+.LBB11_26:
+	movzwl	(%rax), %edi
+	xorl	$32298, %edi
+	movzbl	2(%rax), %r8d
+	xorl	$32, %r8d
+	orw	%di, %r8w
+	jne	.LBB11_42
+	testq	%rsi, %rsi
+	je	.LBB11_42
+	movzbl	3(%rax), %edi
+	cmpl	$45, %edi
+	je	.LBB11_29
+	cmpl	$43, %edi
+	jne	.LBB11_33
+	xorl	%edi, %edi
+	jmp	.LBB11_35
+.LBB11_29:
+	movb	$1, %dil
+.LBB11_35:
+	movq	%rdx, %rsi
+	addq	$-4, %rsi
+	je	.LBB11_42
+	leaq	4(%rax), %r8
+	jmp	.LBB11_37
+.LBB11_33:
+	leaq	3(%rax), %r8
+	xorl	%edi, %edi
+.LBB11_37:
+	xorl	%r9d, %r9d
+	xorl	%r10d, %r10d
+.LBB11_38:
+	movb	(%r8,%r9), %r11b
+	addb	$-48, %r11b
+	cmpb	$9, %r11b
+	ja	.LBB11_42
+	imulq	$10, %r10, %r10
+	jo	.LBB11_42
+	movzbl	%r11b, %r11d
+	testb	%dil, %dil
+	je	.LBB11_41
+	subq	%r11, %r10
+	jo	.LBB11_42
+	jmp	.LBB11_47
+.LBB11_41:
+	addq	%r11, %r10
+	jo	.LBB11_42
+.LBB11_47:
+	incq	%r9
+	cmpq	%r9, %rsi
+	jne	.LBB11_38
+	jmp	.LBB11_58
+.LBB11_42:
+	cmpw	$8307, (%rax)
+	jne	.LBB11_58
+	testq	%rcx, %rcx
+	je	.LBB11_58
+	movzbl	2(%rax), %esi
+	cmpl	$45, %esi
+	je	.LBB11_45
+	cmpl	$43, %esi
+	jne	.LBB11_49
+	xorl	%edi, %edi
+	jmp	.LBB11_51
+.LBB11_45:
+	movb	$1, %dil
+.LBB11_51:
+	addq	$-3, %rdx
+	je	.LBB11_58
+	addq	$3, %rax
+	jmp	.LBB11_53
+.LBB11_49:
+	addq	$2, %rax
+	xorl	%edi, %edi
+	movq	%rcx, %rdx
+.LBB11_53:
+	xorl	%ecx, %ecx
+	xorl	%esi, %esi
+.LBB11_54:
+	movb	(%rax,%rcx), %r8b
+	addb	$-48, %r8b
+	cmpb	$9, %r8b
+	ja	.LBB11_58
+	imulq	$10, %rsi, %rsi
+	jo	.LBB11_58
+	movzbl	%r8b, %r8d
+	testb	%dil, %dil
+	je	.LBB11_57
+	subq	%r8, %rsi
+	jo	.LBB11_58
+	jmp	.LBB11_60
+.LBB11_57:
+	addq	%r8, %rsi
+	jo	.LBB11_58
+.LBB11_60:
+	incq	%rcx
+	cmpq	%rcx, %rdx
+	jne	.LBB11_54
+	movq	%r12, %rdi
+	callq	*<optional_trait_methods::using_options::targets::basic::BasicTarget as optional_trait_methods::using_options::target::Target>::set_state@GOTPCREL(%rip)
+	jmp	.LBB11_62
+.LBB11_58:
 	movl	$16, %esi
 	movq	%r15, %rdi
 	callq	optional_trait_methods::print_macros::write_line
-.LBB11_66:
+.LBB11_62:
 	movl	$128, %edx
 	movq	%rbx, %rdi
 	movq	%r14, %rsi
 	callq	*%r13
 	testq	%rax, %rax
 	jne	.LBB11_2
-	jmp	.LBB11_67
-.LBB11_9:
-	leaq	.Lanon.91b310177bbb1fd3423110ae485c90a5.1(%rip), %rcx
-	movq	%rcx, 8(%rsp)
-	movq	$19, 16(%rsp)
-	#APP
-	#NO_APP
-	cmpw	$8234, (%rax)
-	jne	.LBB11_23
-	movq	%rdx, %rcx
-	addq	$-2, %rcx
-	je	.LBB11_23
-	movzbl	2(%rax), %esi
-	cmpl	$45, %esi
-	je	.LBB11_12
-	cmpl	$43, %esi
-	jne	.LBB11_14
-	xorl	%esi, %esi
-	jmp	.LBB11_16
-.LBB11_12:
-	movb	$1, %sil
-.LBB11_16:
-	movq	%rdx, %rcx
-	addq	$-3, %rcx
-	je	.LBB11_23
-	leaq	3(%rax), %rdi
-	jmp	.LBB11_18
-.LBB11_14:
-	leaq	2(%rax), %rdi
-	xorl	%esi, %esi
-.LBB11_18:
-	xorl	%r8d, %r8d
-	xorl	%r9d, %r9d
-.LBB11_19:
-	movb	(%rdi,%r8), %r10b
-	addb	$-48, %r10b
-	cmpb	$9, %r10b
-	ja	.LBB11_23
-	imulq	$10, %r9, %r9
-	jo	.LBB11_23
-	movzbl	%r10b, %r10d
-	testb	%sil, %sil
-	je	.LBB11_22
-	subq	%r10, %r9
-	jo	.LBB11_23
-	jmp	.LBB11_29
-.LBB11_22:
-	addq	%r10, %r9
-	jo	.LBB11_23
-.LBB11_29:
-	incq	%r8
-	cmpq	%r8, %rcx
-	jne	.LBB11_19
-	leaq	.Lanon.91b310177bbb1fd3423110ae485c90a5.8(%rip), %rax
-	movq	%rax, 8(%rsp)
-	movq	$13, 16(%rsp)
-	#APP
-	#NO_APP
-	jmp	.LBB11_65
-.LBB11_23:
-	leaq	.Lanon.91b310177bbb1fd3423110ae485c90a5.3(%rip), %rcx
-	movq	%rcx, 8(%rsp)
-	movq	$27, 16(%rsp)
-	#APP
-	#NO_APP
-	cmpq	$3, %rdx
-	jb	.LBB11_41
-	movzwl	(%rax), %ecx
-	xorl	$32298, %ecx
-	movzbl	2(%rax), %esi
-	xorl	$32, %esi
-	orw	%cx, %si
-	jne	.LBB11_47
-	movq	%rdx, %rcx
-	addq	$-3, %rcx
-	je	.LBB11_47
-	movzbl	3(%rax), %esi
-	cmpl	$45, %esi
-	je	.LBB11_27
-	cmpl	$43, %esi
-	jne	.LBB11_32
-	xorl	%esi, %esi
-	jmp	.LBB11_34
-.LBB11_27:
-	movb	$1, %sil
-.LBB11_34:
-	movq	%rdx, %rcx
-	addq	$-4, %rcx
-	je	.LBB11_47
-	leaq	4(%rax), %rdi
-	jmp	.LBB11_36
-.LBB11_32:
-	leaq	3(%rax), %rdi
-	xorl	%esi, %esi
-.LBB11_36:
-	xorl	%r8d, %r8d
-	xorl	%r9d, %r9d
-.LBB11_37:
-	movb	(%rdi,%r8), %r10b
-	addb	$-48, %r10b
-	cmpb	$9, %r10b
-	ja	.LBB11_41
-	imulq	$10, %r9, %r9
-	jo	.LBB11_41
-	movzbl	%r10b, %r10d
-	testb	%sil, %sil
-	je	.LBB11_40
-	subq	%r10, %r9
-	jo	.LBB11_41
-	jmp	.LBB11_45
-.LBB11_40:
-	addq	%r10, %r9
-	jo	.LBB11_41
-.LBB11_45:
-	incq	%r8
-	cmpq	%r8, %rcx
-	jne	.LBB11_37
-	leaq	.Lanon.91b310177bbb1fd3423110ae485c90a5.9(%rip), %rax
-	movq	%rax, 8(%rsp)
-	movq	$21, 16(%rsp)
-	#APP
-	#NO_APP
-	jmp	.LBB11_65
-.LBB11_41:
-	cmpq	$1, %rdx
-	jne	.LBB11_47
-	cmpb	$112, (%rax)
-	jne	.LBB11_65
-	leaq	24(%rsp), %rdi
-	callq	*<optional_trait_methods::using_options::targets::basic::BasicTarget as optional_trait_methods::using_options::target::Target>::get_state@GOTPCREL(%rip)
-	movq	%rax, %rdi
-	callq	optional_trait_methods::print_macros::write_isize_line
-	jmp	.LBB11_66
-.LBB11_47:
-	cmpw	$8307, (%rax)
-	jne	.LBB11_65
-	movq	%rdx, %rdi
-	addq	$-2, %rdi
-	je	.LBB11_65
-	movzbl	2(%rax), %ecx
-	cmpl	$45, %ecx
-	je	.LBB11_50
-	cmpl	$43, %ecx
-	jne	.LBB11_52
-	xorl	%ecx, %ecx
-	jmp	.LBB11_54
-.LBB11_50:
-	movb	$1, %cl
-.LBB11_54:
-	addq	$-3, %rdx
-	je	.LBB11_65
-	addq	$3, %rax
-	movq	%rdx, %rdi
-	jmp	.LBB11_56
-.LBB11_52:
-	addq	$2, %rax
-	xorl	%ecx, %ecx
-.LBB11_56:
-	xorl	%edx, %edx
-	xorl	%esi, %esi
-.LBB11_57:
-	movb	(%rax,%rdx), %r8b
-	addb	$-48, %r8b
-	cmpb	$9, %r8b
-	ja	.LBB11_65
-	imulq	$10, %rsi, %rsi
-	jo	.LBB11_65
-	movzbl	%r8b, %r8d
-	testb	%cl, %cl
-	je	.LBB11_60
-	subq	%r8, %rsi
-	jo	.LBB11_65
-	jmp	.LBB11_62
-.LBB11_60:
-	addq	%r8, %rsi
-	jo	.LBB11_65
-.LBB11_62:
-	incq	%rdx
-	cmpq	%rdx, %rdi
-	jne	.LBB11_57
-	leaq	24(%rsp), %rdi
-	callq	*<optional_trait_methods::using_options::targets::basic::BasicTarget as optional_trait_methods::using_options::target::Target>::set_state@GOTPCREL(%rip)
-	jmp	.LBB11_66
-.LBB11_67:
+.LBB11_63:
 	xorl	%eax, %eax
-	addq	$1208, %rsp
+	addq	$1192, %rsp
 	.cfi_def_cfa_offset 56
 	popq	%rbx
 	.cfi_def_cfa_offset 48
@@ -645,97 +609,62 @@ run_optional_trait_methods:
 	.type	.Lanon.91b310177bbb1fd3423110ae485c90a5.0,@object
 	.section	.rodata..Lanon.91b310177bbb1fd3423110ae485c90a5.0,"a",@progbits
 .Lanon.91b310177bbb1fd3423110ae485c90a5.0:
-	.ascii	"Parse IncDec extension"
-	.size	.Lanon.91b310177bbb1fd3423110ae485c90a5.0, 22
+	.ascii	"* "
+	.size	.Lanon.91b310177bbb1fd3423110ae485c90a5.0, 2
 
 	.type	.Lanon.91b310177bbb1fd3423110ae485c90a5.1,@object
 	.section	.rodata..Lanon.91b310177bbb1fd3423110ae485c90a5.1,"a",@progbits
 .Lanon.91b310177bbb1fd3423110ae485c90a5.1:
-	.ascii	"Parse Mul extension"
-	.size	.Lanon.91b310177bbb1fd3423110ae485c90a5.1, 19
+	.ascii	"*~ "
+	.size	.Lanon.91b310177bbb1fd3423110ae485c90a5.1, 3
 
 	.type	.Lanon.91b310177bbb1fd3423110ae485c90a5.2,@object
 	.section	.rodata..Lanon.91b310177bbb1fd3423110ae485c90a5.2,"a",@progbits
 .Lanon.91b310177bbb1fd3423110ae485c90a5.2:
-	.ascii	"* "
+	.ascii	"s "
 	.size	.Lanon.91b310177bbb1fd3423110ae485c90a5.2, 2
 
 	.type	.Lanon.91b310177bbb1fd3423110ae485c90a5.3,@object
-	.section	.rodata..Lanon.91b310177bbb1fd3423110ae485c90a5.3,"a",@progbits
+	.section	.rodata.cst16,"aM",@progbits,16
 .Lanon.91b310177bbb1fd3423110ae485c90a5.3:
-	.ascii	"Parse ScaleFactor extension"
-	.size	.Lanon.91b310177bbb1fd3423110ae485c90a5.3, 27
+	.ascii	"Unsupported cmd!"
+	.size	.Lanon.91b310177bbb1fd3423110ae485c90a5.3, 16
 
 	.type	.Lanon.91b310177bbb1fd3423110ae485c90a5.4,@object
 	.section	.rodata..Lanon.91b310177bbb1fd3423110ae485c90a5.4,"a",@progbits
 .Lanon.91b310177bbb1fd3423110ae485c90a5.4:
-	.ascii	"*~ "
-	.size	.Lanon.91b310177bbb1fd3423110ae485c90a5.4, 3
+	.byte	10
+	.size	.Lanon.91b310177bbb1fd3423110ae485c90a5.4, 1
 
 	.type	.Lanon.91b310177bbb1fd3423110ae485c90a5.5,@object
-	.section	.rodata..Lanon.91b310177bbb1fd3423110ae485c90a5.5,"a",@progbits
+	.section	.rodata.str1.1,"aMS",@progbits,1
 .Lanon.91b310177bbb1fd3423110ae485c90a5.5:
-	.ascii	"s "
-	.size	.Lanon.91b310177bbb1fd3423110ae485c90a5.5, 2
+	.asciz	"src/print_macros.rs"
+	.size	.Lanon.91b310177bbb1fd3423110ae485c90a5.5, 20
 
 	.type	.Lanon.91b310177bbb1fd3423110ae485c90a5.6,@object
-	.section	.rodata.cst16,"aM",@progbits,16
+	.section	.data.rel.ro..Lanon.91b310177bbb1fd3423110ae485c90a5.6,"aw",@progbits
+	.p2align	3, 0x0
 .Lanon.91b310177bbb1fd3423110ae485c90a5.6:
-	.ascii	"Unsupported cmd!"
-	.size	.Lanon.91b310177bbb1fd3423110ae485c90a5.6, 16
+	.quad	.Lanon.91b310177bbb1fd3423110ae485c90a5.5
+	.asciz	"\023\000\000\000\000\000\000\000\037\000\000\000\t\000\000"
+	.size	.Lanon.91b310177bbb1fd3423110ae485c90a5.6, 24
 
 	.type	.Lanon.91b310177bbb1fd3423110ae485c90a5.7,@object
+	.section	.data.rel.ro..Lanon.91b310177bbb1fd3423110ae485c90a5.7,"aw",@progbits
+	.p2align	3, 0x0
 .Lanon.91b310177bbb1fd3423110ae485c90a5.7:
-	.ascii	"IncDec extension"
-	.size	.Lanon.91b310177bbb1fd3423110ae485c90a5.7, 16
+	.quad	.Lanon.91b310177bbb1fd3423110ae485c90a5.5
+	.asciz	"\023\000\000\000\000\000\000\000(\000\000\000\t\000\000"
+	.size	.Lanon.91b310177bbb1fd3423110ae485c90a5.7, 24
 
 	.type	.Lanon.91b310177bbb1fd3423110ae485c90a5.8,@object
-	.section	.rodata..Lanon.91b310177bbb1fd3423110ae485c90a5.8,"a",@progbits
+	.section	.data.rel.ro..Lanon.91b310177bbb1fd3423110ae485c90a5.8,"aw",@progbits
+	.p2align	3, 0x0
 .Lanon.91b310177bbb1fd3423110ae485c90a5.8:
-	.ascii	"Mul extension"
-	.size	.Lanon.91b310177bbb1fd3423110ae485c90a5.8, 13
-
-	.type	.Lanon.91b310177bbb1fd3423110ae485c90a5.9,@object
-	.section	.rodata..Lanon.91b310177bbb1fd3423110ae485c90a5.9,"a",@progbits
-.Lanon.91b310177bbb1fd3423110ae485c90a5.9:
-	.ascii	"ScaleFactor extension"
-	.size	.Lanon.91b310177bbb1fd3423110ae485c90a5.9, 21
-
-	.type	.Lanon.91b310177bbb1fd3423110ae485c90a5.10,@object
-	.section	.rodata..Lanon.91b310177bbb1fd3423110ae485c90a5.10,"a",@progbits
-.Lanon.91b310177bbb1fd3423110ae485c90a5.10:
-	.byte	10
-	.size	.Lanon.91b310177bbb1fd3423110ae485c90a5.10, 1
-
-	.type	.Lanon.91b310177bbb1fd3423110ae485c90a5.11,@object
-	.section	.rodata.str1.1,"aMS",@progbits,1
-.Lanon.91b310177bbb1fd3423110ae485c90a5.11:
-	.asciz	"src/print_macros.rs"
-	.size	.Lanon.91b310177bbb1fd3423110ae485c90a5.11, 20
-
-	.type	.Lanon.91b310177bbb1fd3423110ae485c90a5.12,@object
-	.section	.data.rel.ro..Lanon.91b310177bbb1fd3423110ae485c90a5.12,"aw",@progbits
-	.p2align	3, 0x0
-.Lanon.91b310177bbb1fd3423110ae485c90a5.12:
-	.quad	.Lanon.91b310177bbb1fd3423110ae485c90a5.11
-	.asciz	"\023\000\000\000\000\000\000\000\037\000\000\000\t\000\000"
-	.size	.Lanon.91b310177bbb1fd3423110ae485c90a5.12, 24
-
-	.type	.Lanon.91b310177bbb1fd3423110ae485c90a5.13,@object
-	.section	.data.rel.ro..Lanon.91b310177bbb1fd3423110ae485c90a5.13,"aw",@progbits
-	.p2align	3, 0x0
-.Lanon.91b310177bbb1fd3423110ae485c90a5.13:
-	.quad	.Lanon.91b310177bbb1fd3423110ae485c90a5.11
-	.asciz	"\023\000\000\000\000\000\000\000(\000\000\000\t\000\000"
-	.size	.Lanon.91b310177bbb1fd3423110ae485c90a5.13, 24
-
-	.type	.Lanon.91b310177bbb1fd3423110ae485c90a5.14,@object
-	.section	.data.rel.ro..Lanon.91b310177bbb1fd3423110ae485c90a5.14,"aw",@progbits
-	.p2align	3, 0x0
-.Lanon.91b310177bbb1fd3423110ae485c90a5.14:
-	.quad	.Lanon.91b310177bbb1fd3423110ae485c90a5.11
+	.quad	.Lanon.91b310177bbb1fd3423110ae485c90a5.5
 	.asciz	"\023\000\000\000\000\000\000\000\t\000\000\000\027\000\000"
-	.size	.Lanon.91b310177bbb1fd3423110ae485c90a5.14, 24
+	.size	.Lanon.91b310177bbb1fd3423110ae485c90a5.8, 24
 
 	.globl	<optional_trait_methods::using_options::targets::basic::BasicTarget as optional_trait_methods::using_options::target::Target>::inc
 	.type	<optional_trait_methods::using_options::targets::basic::BasicTarget as optional_trait_methods::using_options::target::Target>::inc,@function

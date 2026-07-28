@@ -77,9 +77,9 @@ _<optional_trait_methods::using_try_as_dyn::controller::TargetController<optiona
 	cbz	w8, LBB3_4
 	cmp	w8, #1
 Lloh0:
-	adrp	x0, l_anon.2bf578d66f20f815ce39b3c4048c7d98.1@PAGE
+	adrp	x0, l_anon.081204964e0f12038b25a214aa6d0a7b.1@PAGE
 Lloh1:
-	add	x0, x0, l_anon.2bf578d66f20f815ce39b3c4048c7d98.1@PAGEOFF
+	add	x0, x0, l_anon.081204964e0f12038b25a214aa6d0a7b.1@PAGEOFF
 	mov	w1, #16
 	bl	_optional_trait_methods::print_macros::write_line
 LBB3_2:
@@ -172,9 +172,9 @@ _optional_trait_methods::print_macros::write_line:
 	mov	x29, sp
 	bl	_optional_trait_methods::print_macros::write_all
 Lloh2:
-	adrp	x0, l_anon.2bf578d66f20f815ce39b3c4048c7d98.2@PAGE
+	adrp	x0, l_anon.081204964e0f12038b25a214aa6d0a7b.2@PAGE
 Lloh3:
-	add	x0, x0, l_anon.2bf578d66f20f815ce39b3c4048c7d98.2@PAGEOFF
+	add	x0, x0, l_anon.081204964e0f12038b25a214aa6d0a7b.2@PAGEOFF
 	mov	w1, #1
 	ldp	x29, x30, [sp], #16
 	b	_optional_trait_methods::print_macros::write_all
@@ -228,18 +228,18 @@ LBB6_7:
 	ret
 LBB6_8:
 Lloh4:
-	adrp	x2, l_anon.2bf578d66f20f815ce39b3c4048c7d98.4@PAGE
+	adrp	x2, l_anon.081204964e0f12038b25a214aa6d0a7b.4@PAGE
 Lloh5:
-	add	x2, x2, l_anon.2bf578d66f20f815ce39b3c4048c7d98.4@PAGEOFF
+	add	x2, x2, l_anon.081204964e0f12038b25a214aa6d0a7b.4@PAGEOFF
 LBB6_9:
 	mov	x0, #-1
 	mov	w1, #32
 	bl	_core::panicking::panic_bounds_check
 LBB6_10:
 Lloh6:
-	adrp	x2, l_anon.2bf578d66f20f815ce39b3c4048c7d98.5@PAGE
+	adrp	x2, l_anon.081204964e0f12038b25a214aa6d0a7b.5@PAGE
 Lloh7:
-	add	x2, x2, l_anon.2bf578d66f20f815ce39b3c4048c7d98.5@PAGEOFF
+	add	x2, x2, l_anon.081204964e0f12038b25a214aa6d0a7b.5@PAGEOFF
 	b	LBB6_9
 	.loh AdrpAdd	Lloh4, Lloh5
 	.loh AdrpAdd	Lloh6, Lloh7
@@ -270,9 +270,9 @@ LBB7_5:
 	ret
 LBB7_6:
 Lloh8:
-	adrp	x3, l_anon.2bf578d66f20f815ce39b3c4048c7d98.6@PAGE
+	adrp	x3, l_anon.081204964e0f12038b25a214aa6d0a7b.6@PAGE
 Lloh9:
-	add	x3, x3, l_anon.2bf578d66f20f815ce39b3c4048c7d98.6@PAGEOFF
+	add	x3, x3, l_anon.081204964e0f12038b25a214aa6d0a7b.6@PAGEOFF
 	mov	x1, x19
 	mov	x2, x19
 	bl	_core::slice::index::slice_index_fail
@@ -374,9 +374,9 @@ _run_optional_trait_methods:
 	bl	_<optional_trait_methods::line_reader::LineReader>::read_line
 	cbz	x0, LBB12_8
 Lloh10:
-	adrp	x19, l_anon.2bf578d66f20f815ce39b3c4048c7d98.1@PAGE
+	adrp	x19, l_anon.081204964e0f12038b25a214aa6d0a7b.1@PAGE
 Lloh11:
-	add	x19, x19, l_anon.2bf578d66f20f815ce39b3c4048c7d98.1@PAGEOFF
+	add	x19, x19, l_anon.081204964e0f12038b25a214aa6d0a7b.1@PAGEOFF
 LBB12_2:
 	cbz	x1, LBB12_6
 	sub	x8, x29, #40
@@ -411,35 +411,35 @@ LBB12_8:
 	.loh AdrpAdd	Lloh10, Lloh11
 
 	.section	__TEXT,__const
-l_anon.2bf578d66f20f815ce39b3c4048c7d98.0:
+l_anon.081204964e0f12038b25a214aa6d0a7b.0:
 	.ascii	"s "
 
 	.section	__TEXT,__literal16,16byte_literals
-l_anon.2bf578d66f20f815ce39b3c4048c7d98.1:
+l_anon.081204964e0f12038b25a214aa6d0a7b.1:
 	.ascii	"Unsupported cmd!"
 
 	.section	__TEXT,__const
-l_anon.2bf578d66f20f815ce39b3c4048c7d98.2:
+l_anon.081204964e0f12038b25a214aa6d0a7b.2:
 	.byte	10
 
 	.section	__TEXT,__cstring,cstring_literals
-l_anon.2bf578d66f20f815ce39b3c4048c7d98.3:
+l_anon.081204964e0f12038b25a214aa6d0a7b.3:
 	.asciz	"src/print_macros.rs"
 
 	.section	__DATA,__const
 	.p2align	3, 0x0
-l_anon.2bf578d66f20f815ce39b3c4048c7d98.4:
-	.quad	l_anon.2bf578d66f20f815ce39b3c4048c7d98.3
+l_anon.081204964e0f12038b25a214aa6d0a7b.4:
+	.quad	l_anon.081204964e0f12038b25a214aa6d0a7b.3
 	.asciz	"\023\000\000\000\000\000\000\000\037\000\000\000\t\000\000"
 
 	.p2align	3, 0x0
-l_anon.2bf578d66f20f815ce39b3c4048c7d98.5:
-	.quad	l_anon.2bf578d66f20f815ce39b3c4048c7d98.3
+l_anon.081204964e0f12038b25a214aa6d0a7b.5:
+	.quad	l_anon.081204964e0f12038b25a214aa6d0a7b.3
 	.asciz	"\023\000\000\000\000\000\000\000(\000\000\000\t\000\000"
 
 	.p2align	3, 0x0
-l_anon.2bf578d66f20f815ce39b3c4048c7d98.6:
-	.quad	l_anon.2bf578d66f20f815ce39b3c4048c7d98.3
+l_anon.081204964e0f12038b25a214aa6d0a7b.6:
+	.quad	l_anon.081204964e0f12038b25a214aa6d0a7b.3
 	.asciz	"\023\000\000\000\000\000\000\000\t\000\000\000\027\000\000"
 
 .subsections_via_symbols

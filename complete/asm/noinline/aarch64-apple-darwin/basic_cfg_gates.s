@@ -129,15 +129,15 @@ _optional_trait_methods::print_macros::write_line:
 	stp	x29, x30, [sp, #-16]!
 	mov	x29, sp
 Lloh0:
-	adrp	x0, l_anon.b6a311002f4fd450500fba56d12dc14e.1@PAGE
+	adrp	x0, l_anon.2335b81bb8f9b66c42ce81b09f027af7.1@PAGE
 Lloh1:
-	add	x0, x0, l_anon.b6a311002f4fd450500fba56d12dc14e.1@PAGEOFF
+	add	x0, x0, l_anon.2335b81bb8f9b66c42ce81b09f027af7.1@PAGEOFF
 	mov	w1, #16
 	bl	_optional_trait_methods::print_macros::write_all
 Lloh2:
-	adrp	x0, l_anon.b6a311002f4fd450500fba56d12dc14e.2@PAGE
+	adrp	x0, l_anon.2335b81bb8f9b66c42ce81b09f027af7.2@PAGE
 Lloh3:
-	add	x0, x0, l_anon.b6a311002f4fd450500fba56d12dc14e.2@PAGEOFF
+	add	x0, x0, l_anon.2335b81bb8f9b66c42ce81b09f027af7.2@PAGEOFF
 	mov	w1, #1
 	ldp	x29, x30, [sp], #16
 	b	_optional_trait_methods::print_macros::write_all
@@ -192,18 +192,18 @@ LBB5_7:
 	ret
 LBB5_8:
 Lloh4:
-	adrp	x2, l_anon.b6a311002f4fd450500fba56d12dc14e.4@PAGE
+	adrp	x2, l_anon.2335b81bb8f9b66c42ce81b09f027af7.4@PAGE
 Lloh5:
-	add	x2, x2, l_anon.b6a311002f4fd450500fba56d12dc14e.4@PAGEOFF
+	add	x2, x2, l_anon.2335b81bb8f9b66c42ce81b09f027af7.4@PAGEOFF
 LBB5_9:
 	mov	x0, #-1
 	mov	w1, #32
 	bl	_core::panicking::panic_bounds_check
 LBB5_10:
 Lloh6:
-	adrp	x2, l_anon.b6a311002f4fd450500fba56d12dc14e.5@PAGE
+	adrp	x2, l_anon.2335b81bb8f9b66c42ce81b09f027af7.5@PAGE
 Lloh7:
-	add	x2, x2, l_anon.b6a311002f4fd450500fba56d12dc14e.5@PAGEOFF
+	add	x2, x2, l_anon.2335b81bb8f9b66c42ce81b09f027af7.5@PAGEOFF
 	b	LBB5_9
 	.loh AdrpAdd	Lloh4, Lloh5
 	.loh AdrpAdd	Lloh6, Lloh7
@@ -234,9 +234,9 @@ LBB6_5:
 	ret
 LBB6_6:
 Lloh8:
-	adrp	x3, l_anon.b6a311002f4fd450500fba56d12dc14e.6@PAGE
+	adrp	x3, l_anon.2335b81bb8f9b66c42ce81b09f027af7.6@PAGE
 Lloh9:
-	add	x3, x3, l_anon.b6a311002f4fd450500fba56d12dc14e.6@PAGEOFF
+	add	x3, x3, l_anon.2335b81bb8f9b66c42ce81b09f027af7.6@PAGEOFF
 	mov	x1, x19
 	mov	x2, x19
 	bl	_core::slice::index::slice_index_fail
@@ -358,35 +358,35 @@ LBB11_6:
 	ret
 
 	.section	__TEXT,__const
-l_anon.b6a311002f4fd450500fba56d12dc14e.0:
+l_anon.2335b81bb8f9b66c42ce81b09f027af7.0:
 	.ascii	"s "
 
 	.section	__TEXT,__literal16,16byte_literals
-l_anon.b6a311002f4fd450500fba56d12dc14e.1:
+l_anon.2335b81bb8f9b66c42ce81b09f027af7.1:
 	.ascii	"Unsupported cmd!"
 
 	.section	__TEXT,__const
-l_anon.b6a311002f4fd450500fba56d12dc14e.2:
+l_anon.2335b81bb8f9b66c42ce81b09f027af7.2:
 	.byte	10
 
 	.section	__TEXT,__cstring,cstring_literals
-l_anon.b6a311002f4fd450500fba56d12dc14e.3:
+l_anon.2335b81bb8f9b66c42ce81b09f027af7.3:
 	.asciz	"src/print_macros.rs"
 
 	.section	__DATA,__const
 	.p2align	3, 0x0
-l_anon.b6a311002f4fd450500fba56d12dc14e.4:
-	.quad	l_anon.b6a311002f4fd450500fba56d12dc14e.3
+l_anon.2335b81bb8f9b66c42ce81b09f027af7.4:
+	.quad	l_anon.2335b81bb8f9b66c42ce81b09f027af7.3
 	.asciz	"\023\000\000\000\000\000\000\000\037\000\000\000\t\000\000"
 
 	.p2align	3, 0x0
-l_anon.b6a311002f4fd450500fba56d12dc14e.5:
-	.quad	l_anon.b6a311002f4fd450500fba56d12dc14e.3
+l_anon.2335b81bb8f9b66c42ce81b09f027af7.5:
+	.quad	l_anon.2335b81bb8f9b66c42ce81b09f027af7.3
 	.asciz	"\023\000\000\000\000\000\000\000(\000\000\000\t\000\000"
 
 	.p2align	3, 0x0
-l_anon.b6a311002f4fd450500fba56d12dc14e.6:
-	.quad	l_anon.b6a311002f4fd450500fba56d12dc14e.3
+l_anon.2335b81bb8f9b66c42ce81b09f027af7.6:
+	.quad	l_anon.2335b81bb8f9b66c42ce81b09f027af7.3
 	.asciz	"\023\000\000\000\000\000\000\000\t\000\000\000\027\000\000"
 
 .subsections_via_symbols

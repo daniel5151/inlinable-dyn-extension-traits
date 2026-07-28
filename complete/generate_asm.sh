@@ -6,6 +6,7 @@ cd "$script_dir"
 
 target_triples=()
 skip_stats=false
+dce_markers=false
 while (($#)); do
     case "$1" in
         --target)
@@ -20,10 +21,15 @@ while (($#)); do
             skip_stats=true
             shift
             ;;
+        --dce-markers)
+            dce_markers=true
+            shift
+            ;;
         --help|-h)
-            echo "usage: $0 [--target <rust-target-triple>]... [--skip-stats]"
+            echo "usage: $0 [--target <rust-target-triple>]... [--skip-stats] [--dce-markers]"
             echo "defaults to rustc's host triple; --target may be repeated"
             echo "--skip-stats permits targets whose assembly syntax is not yet parsed"
+            echo "--dce-markers also marks inlined assembly and writes under target/dce-marker-asm"
             exit 0
             ;;
         *)
@@ -58,13 +64,20 @@ if [[ "$actual_rustfilt_version" != "$expected_rustfilt_version" ]]; then
 fi
 
 unset RUSTFLAGS CARGO_ENCODED_RUSTFLAGS
-mkdir -p asm
+if [[ "$dce_markers" == true ]]; then
+    asm_root="target/dce-marker-asm"
+else
+    asm_root="asm"
+fi
+mkdir -p "$asm_root"
 {
     rustc -V
     rustc -Vv | sed -n '/^commit-hash:/p; /^LLVM version:/p'
     rustfilt --version
     echo 'cargo-profile=release (-Os, codegen-units=1)'
-} > asm/TOOLCHAIN.txt
+    echo "inlined-dce-markers=$dce_markers"
+    echo 'noinline-dce-markers=true'
+} > "$asm_root/TOOLCHAIN.txt"
 
 if ((${#target_triples[@]} == 0)); then
     host_triple=$(rustc -vV | sed -n 's/^host: //p')
@@ -88,14 +101,16 @@ for target_triple in "${target_triples[@]}"; do
     fi
 
     for mode in "${modes[@]}"; do
-        output_dir="asm/$mode/$target_triple"
+        output_dir="$asm_root/$mode/$target_triple"
         mkdir -p "$output_dir"
 
         for target_name in "${targets[@]}"; do
             for implementation in "${implementations[@]}"; do
                 features="target_${target_name} using_${implementation} always_inline"
                 if [[ "$mode" == noinline ]]; then
-                    features+=" interpretable_asm"
+                    features+=" interpretable_asm dce_markers"
+                elif [[ "$dce_markers" == true ]]; then
+                    features+=" dce_markers"
                 fi
 
                 deps_dir="target/$target_triple/release/deps"
@@ -123,7 +138,8 @@ for target_triple in "${target_triples[@]}"; do
         done
 
         if [[ "$skip_stats" == false ]]; then
-            python3 asm_stats.py --mode "$mode" --target-triple "$target_triple" --strict
+            python3 asm_stats.py --root "$asm_root" --mode "$mode" \
+                --target-triple "$target_triple" --strict
         fi
     done
 done

@@ -79,9 +79,9 @@ _<optional_trait_methods::using_is_supported::controller::TargetController<optio
 	cmp	w8, #1
 	b.ne	LBB3_5
 Lloh0:
-	adrp	x8, l_anon.8c62c3c99bb22c246234990365a57e2b.2@PAGE
+	adrp	x8, l_anon.dc69959ff14cd86cdd5c323be29f51e1.2@PAGE
 Lloh1:
-	add	x8, x8, l_anon.8c62c3c99bb22c246234990365a57e2b.2@PAGEOFF
+	add	x8, x8, l_anon.dc69959ff14cd86cdd5c323be29f51e1.2@PAGEOFF
 	mov	w9, #16
 	stp	x8, x9, [sp]
 	mov	x8, sp
@@ -99,9 +99,9 @@ LBB3_5:
 	ldr	w8, [x1, #8]
 	tbz	w8, #0, LBB3_8
 Lloh2:
-	adrp	x8, l_anon.8c62c3c99bb22c246234990365a57e2b.4@PAGE
+	adrp	x8, l_anon.dc69959ff14cd86cdd5c323be29f51e1.4@PAGE
 Lloh3:
-	add	x8, x8, l_anon.8c62c3c99bb22c246234990365a57e2b.4@PAGEOFF
+	add	x8, x8, l_anon.dc69959ff14cd86cdd5c323be29f51e1.4@PAGEOFF
 	mov	w9, #21
 	stp	x8, x9, [sp]
 	mov	x8, sp
@@ -115,9 +115,9 @@ LBB3_7:
 	b	_optional_trait_methods::print_macros::write_isize_line
 LBB3_8:
 Lloh4:
-	adrp	x8, l_anon.8c62c3c99bb22c246234990365a57e2b.3@PAGE
+	adrp	x8, l_anon.dc69959ff14cd86cdd5c323be29f51e1.3@PAGE
 Lloh5:
-	add	x8, x8, l_anon.8c62c3c99bb22c246234990365a57e2b.3@PAGEOFF
+	add	x8, x8, l_anon.dc69959ff14cd86cdd5c323be29f51e1.3@PAGEOFF
 	mov	w9, #13
 	stp	x8, x9, [sp]
 	mov	x8, sp
@@ -204,15 +204,15 @@ _optional_trait_methods::print_macros::write_line:
 	stp	x29, x30, [sp, #-16]!
 	mov	x29, sp
 Lloh6:
-	adrp	x0, l_anon.8c62c3c99bb22c246234990365a57e2b.1@PAGE
+	adrp	x0, l_anon.dc69959ff14cd86cdd5c323be29f51e1.1@PAGE
 Lloh7:
-	add	x0, x0, l_anon.8c62c3c99bb22c246234990365a57e2b.1@PAGEOFF
+	add	x0, x0, l_anon.dc69959ff14cd86cdd5c323be29f51e1.1@PAGEOFF
 	mov	w1, #16
 	bl	_optional_trait_methods::print_macros::write_all
 Lloh8:
-	adrp	x0, l_anon.8c62c3c99bb22c246234990365a57e2b.5@PAGE
+	adrp	x0, l_anon.dc69959ff14cd86cdd5c323be29f51e1.5@PAGE
 Lloh9:
-	add	x0, x0, l_anon.8c62c3c99bb22c246234990365a57e2b.5@PAGEOFF
+	add	x0, x0, l_anon.dc69959ff14cd86cdd5c323be29f51e1.5@PAGEOFF
 	mov	w1, #1
 	ldp	x29, x30, [sp], #16
 	b	_optional_trait_methods::print_macros::write_all
@@ -267,18 +267,18 @@ LBB6_7:
 	ret
 LBB6_8:
 Lloh10:
-	adrp	x2, l_anon.8c62c3c99bb22c246234990365a57e2b.7@PAGE
+	adrp	x2, l_anon.dc69959ff14cd86cdd5c323be29f51e1.7@PAGE
 Lloh11:
-	add	x2, x2, l_anon.8c62c3c99bb22c246234990365a57e2b.7@PAGEOFF
+	add	x2, x2, l_anon.dc69959ff14cd86cdd5c323be29f51e1.7@PAGEOFF
 LBB6_9:
 	mov	x0, #-1
 	mov	w1, #32
 	bl	_core::panicking::panic_bounds_check
 LBB6_10:
 Lloh12:
-	adrp	x2, l_anon.8c62c3c99bb22c246234990365a57e2b.8@PAGE
+	adrp	x2, l_anon.dc69959ff14cd86cdd5c323be29f51e1.8@PAGE
 Lloh13:
-	add	x2, x2, l_anon.8c62c3c99bb22c246234990365a57e2b.8@PAGEOFF
+	add	x2, x2, l_anon.dc69959ff14cd86cdd5c323be29f51e1.8@PAGEOFF
 	b	LBB6_9
 	.loh AdrpAdd	Lloh10, Lloh11
 	.loh AdrpAdd	Lloh12, Lloh13
@@ -309,9 +309,9 @@ LBB7_5:
 	ret
 LBB7_6:
 Lloh14:
-	adrp	x3, l_anon.8c62c3c99bb22c246234990365a57e2b.9@PAGE
+	adrp	x3, l_anon.dc69959ff14cd86cdd5c323be29f51e1.9@PAGE
 Lloh15:
-	add	x3, x3, l_anon.8c62c3c99bb22c246234990365a57e2b.9@PAGEOFF
+	add	x3, x3, l_anon.dc69959ff14cd86cdd5c323be29f51e1.9@PAGEOFF
 	mov	x1, x19
 	mov	x2, x19
 	bl	_core::slice::index::slice_index_fail
@@ -395,13 +395,13 @@ _<optional_trait_methods::using_is_supported::targets::basic::BasicTarget as opt
 	stp	x29, x30, [sp, #-16]!
 	mov	x29, sp
 Lloh16:
-	adrp	x0, l_anon.8c62c3c99bb22c246234990365a57e2b.10@PAGE
+	adrp	x0, l_anon.dc69959ff14cd86cdd5c323be29f51e1.10@PAGE
 Lloh17:
-	add	x0, x0, l_anon.8c62c3c99bb22c246234990365a57e2b.10@PAGEOFF
+	add	x0, x0, l_anon.dc69959ff14cd86cdd5c323be29f51e1.10@PAGEOFF
 Lloh18:
-	adrp	x2, l_anon.8c62c3c99bb22c246234990365a57e2b.12@PAGE
+	adrp	x2, l_anon.dc69959ff14cd86cdd5c323be29f51e1.12@PAGE
 Lloh19:
-	add	x2, x2, l_anon.8c62c3c99bb22c246234990365a57e2b.12@PAGEOFF
+	add	x2, x2, l_anon.dc69959ff14cd86cdd5c323be29f51e1.12@PAGEOFF
 	mov	w1, #15
 	bl	_core::panicking::panic
 	.loh AdrpAdd	Lloh18, Lloh19
@@ -413,13 +413,13 @@ _<optional_trait_methods::using_is_supported::targets::basic::BasicTarget as opt
 	stp	x29, x30, [sp, #-16]!
 	mov	x29, sp
 Lloh20:
-	adrp	x0, l_anon.8c62c3c99bb22c246234990365a57e2b.10@PAGE
+	adrp	x0, l_anon.dc69959ff14cd86cdd5c323be29f51e1.10@PAGE
 Lloh21:
-	add	x0, x0, l_anon.8c62c3c99bb22c246234990365a57e2b.10@PAGEOFF
+	add	x0, x0, l_anon.dc69959ff14cd86cdd5c323be29f51e1.10@PAGEOFF
 Lloh22:
-	adrp	x2, l_anon.8c62c3c99bb22c246234990365a57e2b.13@PAGE
+	adrp	x2, l_anon.dc69959ff14cd86cdd5c323be29f51e1.13@PAGE
 Lloh23:
-	add	x2, x2, l_anon.8c62c3c99bb22c246234990365a57e2b.13@PAGEOFF
+	add	x2, x2, l_anon.dc69959ff14cd86cdd5c323be29f51e1.13@PAGEOFF
 	mov	w1, #15
 	bl	_core::panicking::panic
 	.loh AdrpAdd	Lloh22, Lloh23
@@ -431,13 +431,13 @@ _<optional_trait_methods::using_is_supported::targets::basic::BasicTarget as opt
 	stp	x29, x30, [sp, #-16]!
 	mov	x29, sp
 Lloh24:
-	adrp	x0, l_anon.8c62c3c99bb22c246234990365a57e2b.10@PAGE
+	adrp	x0, l_anon.dc69959ff14cd86cdd5c323be29f51e1.10@PAGE
 Lloh25:
-	add	x0, x0, l_anon.8c62c3c99bb22c246234990365a57e2b.10@PAGEOFF
+	add	x0, x0, l_anon.dc69959ff14cd86cdd5c323be29f51e1.10@PAGEOFF
 Lloh26:
-	adrp	x2, l_anon.8c62c3c99bb22c246234990365a57e2b.14@PAGE
+	adrp	x2, l_anon.dc69959ff14cd86cdd5c323be29f51e1.14@PAGE
 Lloh27:
-	add	x2, x2, l_anon.8c62c3c99bb22c246234990365a57e2b.14@PAGEOFF
+	add	x2, x2, l_anon.dc69959ff14cd86cdd5c323be29f51e1.14@PAGEOFF
 	mov	w1, #15
 	bl	_core::panicking::panic
 	.loh AdrpAdd	Lloh26, Lloh27
@@ -449,13 +449,13 @@ _<optional_trait_methods::using_is_supported::targets::basic::BasicTarget as opt
 	stp	x29, x30, [sp, #-16]!
 	mov	x29, sp
 Lloh28:
-	adrp	x0, l_anon.8c62c3c99bb22c246234990365a57e2b.10@PAGE
+	adrp	x0, l_anon.dc69959ff14cd86cdd5c323be29f51e1.10@PAGE
 Lloh29:
-	add	x0, x0, l_anon.8c62c3c99bb22c246234990365a57e2b.10@PAGEOFF
+	add	x0, x0, l_anon.dc69959ff14cd86cdd5c323be29f51e1.10@PAGEOFF
 Lloh30:
-	adrp	x2, l_anon.8c62c3c99bb22c246234990365a57e2b.15@PAGE
+	adrp	x2, l_anon.dc69959ff14cd86cdd5c323be29f51e1.15@PAGE
 Lloh31:
-	add	x2, x2, l_anon.8c62c3c99bb22c246234990365a57e2b.15@PAGEOFF
+	add	x2, x2, l_anon.dc69959ff14cd86cdd5c323be29f51e1.15@PAGEOFF
 	mov	w1, #15
 	bl	_core::panicking::panic
 	.loh AdrpAdd	Lloh30, Lloh31
@@ -506,73 +506,73 @@ LBB16_6:
 	ret
 
 	.section	__TEXT,__const
-l_anon.8c62c3c99bb22c246234990365a57e2b.0:
+l_anon.dc69959ff14cd86cdd5c323be29f51e1.0:
 	.ascii	"s "
 
 	.section	__TEXT,__literal16,16byte_literals
-l_anon.8c62c3c99bb22c246234990365a57e2b.1:
+l_anon.dc69959ff14cd86cdd5c323be29f51e1.1:
 	.ascii	"Unsupported cmd!"
 
-l_anon.8c62c3c99bb22c246234990365a57e2b.2:
+l_anon.dc69959ff14cd86cdd5c323be29f51e1.2:
 	.ascii	"IncDec extension"
 
 	.section	__TEXT,__const
-l_anon.8c62c3c99bb22c246234990365a57e2b.3:
+l_anon.dc69959ff14cd86cdd5c323be29f51e1.3:
 	.ascii	"Mul extension"
 
-l_anon.8c62c3c99bb22c246234990365a57e2b.4:
+l_anon.dc69959ff14cd86cdd5c323be29f51e1.4:
 	.ascii	"ScaleFactor extension"
 
-l_anon.8c62c3c99bb22c246234990365a57e2b.5:
+l_anon.dc69959ff14cd86cdd5c323be29f51e1.5:
 	.byte	10
 
 	.section	__TEXT,__cstring,cstring_literals
-l_anon.8c62c3c99bb22c246234990365a57e2b.6:
+l_anon.dc69959ff14cd86cdd5c323be29f51e1.6:
 	.asciz	"src/print_macros.rs"
 
 	.section	__DATA,__const
 	.p2align	3, 0x0
-l_anon.8c62c3c99bb22c246234990365a57e2b.7:
-	.quad	l_anon.8c62c3c99bb22c246234990365a57e2b.6
+l_anon.dc69959ff14cd86cdd5c323be29f51e1.7:
+	.quad	l_anon.dc69959ff14cd86cdd5c323be29f51e1.6
 	.asciz	"\023\000\000\000\000\000\000\000\037\000\000\000\t\000\000"
 
 	.p2align	3, 0x0
-l_anon.8c62c3c99bb22c246234990365a57e2b.8:
-	.quad	l_anon.8c62c3c99bb22c246234990365a57e2b.6
+l_anon.dc69959ff14cd86cdd5c323be29f51e1.8:
+	.quad	l_anon.dc69959ff14cd86cdd5c323be29f51e1.6
 	.asciz	"\023\000\000\000\000\000\000\000(\000\000\000\t\000\000"
 
 	.p2align	3, 0x0
-l_anon.8c62c3c99bb22c246234990365a57e2b.9:
-	.quad	l_anon.8c62c3c99bb22c246234990365a57e2b.6
+l_anon.dc69959ff14cd86cdd5c323be29f51e1.9:
+	.quad	l_anon.dc69959ff14cd86cdd5c323be29f51e1.6
 	.asciz	"\023\000\000\000\000\000\000\000\t\000\000\000\027\000\000"
 
 	.section	__TEXT,__const
-l_anon.8c62c3c99bb22c246234990365a57e2b.10:
+l_anon.dc69959ff14cd86cdd5c323be29f51e1.10:
 	.ascii	"not implemented"
 
 	.section	__TEXT,__cstring,cstring_literals
-l_anon.8c62c3c99bb22c246234990365a57e2b.11:
+l_anon.dc69959ff14cd86cdd5c323be29f51e1.11:
 	.asciz	"src/using_is_supported/target.rs"
 
 	.section	__DATA,__const
 	.p2align	3, 0x0
-l_anon.8c62c3c99bb22c246234990365a57e2b.12:
-	.quad	l_anon.8c62c3c99bb22c246234990365a57e2b.11
+l_anon.dc69959ff14cd86cdd5c323be29f51e1.12:
+	.quad	l_anon.dc69959ff14cd86cdd5c323be29f51e1.11
 	.asciz	" \000\000\000\000\000\000\000\"\000\000\000\t\000\000"
 
 	.p2align	3, 0x0
-l_anon.8c62c3c99bb22c246234990365a57e2b.13:
-	.quad	l_anon.8c62c3c99bb22c246234990365a57e2b.11
+l_anon.dc69959ff14cd86cdd5c323be29f51e1.13:
+	.quad	l_anon.dc69959ff14cd86cdd5c323be29f51e1.11
 	.asciz	" \000\000\000\000\000\000\000\020\000\000\000\t\000\000"
 
 	.p2align	3, 0x0
-l_anon.8c62c3c99bb22c246234990365a57e2b.14:
-	.quad	l_anon.8c62c3c99bb22c246234990365a57e2b.11
+l_anon.dc69959ff14cd86cdd5c323be29f51e1.14:
+	.quad	l_anon.dc69959ff14cd86cdd5c323be29f51e1.11
 	.asciz	" \000\000\000\000\000\000\000\f\000\000\000\t\000\000"
 
 	.p2align	3, 0x0
-l_anon.8c62c3c99bb22c246234990365a57e2b.15:
-	.quad	l_anon.8c62c3c99bb22c246234990365a57e2b.11
+l_anon.dc69959ff14cd86cdd5c323be29f51e1.15:
+	.quad	l_anon.dc69959ff14cd86cdd5c323be29f51e1.11
 	.asciz	" \000\000\000\000\000\000\000\031\000\000\000\t\000\000"
 
 .subsections_via_symbols

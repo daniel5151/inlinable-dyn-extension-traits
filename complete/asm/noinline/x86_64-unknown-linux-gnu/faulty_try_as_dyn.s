@@ -1,4 +1,4 @@
-	.file	"optional_trait_methods.b11015ca43a7d39f-cgu.0"
+	.file	"optional_trait_methods.a3802f44179a5f3d-cgu.0"
 	.section	.text.<[u8]>::strip_prefix::<[u8; 2]>,"ax",@progbits
 	.globl	<[u8]>::strip_prefix::<[u8; 2]>
 	.type	<[u8]>::strip_prefix::<[u8; 2]>,@function
@@ -59,7 +59,7 @@
 	.cfi_def_cfa_offset 32
 	.cfi_offset %rbx, -16
 	movq	%rdi, %rbx
-	leaq	.Lanon.ce45994ee39e7a9f0ad217f7b3968504.0(%rip), %rax
+	leaq	.Lanon.d97ec21910c8b28098e29fd1e1f5bbb5.0(%rip), %rax
 	movq	%rsp, %rcx
 	movq	%rax, (%rcx)
 	movq	$22, 8(%rcx)
@@ -131,7 +131,7 @@
 	je	.LBB3_4
 	cmpl	$1, %eax
 	jne	.LBB3_2
-	leaq	.Lanon.ce45994ee39e7a9f0ad217f7b3968504.3(%rip), %rax
+	leaq	.Lanon.d97ec21910c8b28098e29fd1e1f5bbb5.3(%rip), %rax
 	leaq	8(%rsp), %rcx
 	movq	%rax, (%rcx)
 	movq	$16, 8(%rcx)
@@ -151,7 +151,7 @@
 	callq	*<optional_trait_methods::using_try_as_dyn::targets::faulty::FaultyTarget as optional_trait_methods::using_try_as_dyn::target::TargetBase>::set_state@GOTPCREL(%rip)
 	jmp	.LBB3_7
 .LBB3_2:
-	leaq	.Lanon.ce45994ee39e7a9f0ad217f7b3968504.2(%rip), %rdi
+	leaq	.Lanon.d97ec21910c8b28098e29fd1e1f5bbb5.2(%rip), %rdi
 	movl	$16, %esi
 	callq	optional_trait_methods::print_macros::write_line
 	jmp	.LBB3_6
@@ -286,7 +286,7 @@ optional_trait_methods::print_macros::write_line:
 	pushq	%rax
 	.cfi_def_cfa_offset 16
 	callq	optional_trait_methods::print_macros::write_all
-	leaq	.Lanon.ce45994ee39e7a9f0ad217f7b3968504.4(%rip), %rdi
+	leaq	.Lanon.d97ec21910c8b28098e29fd1e1f5bbb5.4(%rip), %rdi
 	movl	$1, %esi
 	popq	%rax
 	.cfi_def_cfa_offset 8
@@ -344,13 +344,13 @@ optional_trait_methods::print_macros::write_isize_line:
 	retq
 .LBB6_5:
 	.cfi_def_cfa_offset 48
-	leaq	.Lanon.ce45994ee39e7a9f0ad217f7b3968504.6(%rip), %rdx
+	leaq	.Lanon.d97ec21910c8b28098e29fd1e1f5bbb5.6(%rip), %rdx
 .LBB6_6:
 	movl	$32, %esi
 	movq	$-1, %rdi
 	callq	*core::panicking::panic_bounds_check@GOTPCREL(%rip)
 .LBB6_10:
-	leaq	.Lanon.ce45994ee39e7a9f0ad217f7b3968504.7(%rip), %rdx
+	leaq	.Lanon.d97ec21910c8b28098e29fd1e1f5bbb5.7(%rip), %rdx
 	jmp	.LBB6_6
 .Lfunc_end6:
 	.size	optional_trait_methods::print_macros::write_isize_line, .Lfunc_end6-optional_trait_methods::print_macros::write_isize_line
@@ -396,7 +396,7 @@ optional_trait_methods::print_macros::write_all:
 	retq
 .LBB7_6:
 	.cfi_def_cfa_offset 32
-	leaq	.Lanon.ce45994ee39e7a9f0ad217f7b3968504.8(%rip), %rcx
+	leaq	.Lanon.d97ec21910c8b28098e29fd1e1f5bbb5.8(%rip), %rcx
 	movq	%rax, %rdi
 	movq	%rbx, %rsi
 	movq	%rbx, %rdx
@@ -486,7 +486,7 @@ optional_trait_methods::commands::parse_isize:
 	.type	<optional_trait_methods::using_try_as_dyn::targets::faulty::FaultyTarget as optional_trait_methods::using_try_as_dyn::target::TargetExtIncDec>::dec,@function
 <optional_trait_methods::using_try_as_dyn::targets::faulty::FaultyTarget as optional_trait_methods::using_try_as_dyn::target::TargetExtIncDec>::dec:
 	.cfi_startproc
-	leaq	.Lanon.ce45994ee39e7a9f0ad217f7b3968504.9(%rip), %rax
+	leaq	.Lanon.d97ec21910c8b28098e29fd1e1f5bbb5.9(%rip), %rax
 	movl	$38, %edx
 	retq
 .Lfunc_end11:
@@ -576,7 +576,7 @@ run_optional_trait_methods:
 	leaq	32(%rsp), %r15
 	movq	<optional_trait_methods::line_reader::LineReader>::read_line@GOTPCREL(%rip), %rbx
 	leaq	8(%rsp), %r12
-	leaq	.Lanon.ce45994ee39e7a9f0ad217f7b3968504.2(%rip), %r13
+	leaq	.Lanon.d97ec21910c8b28098e29fd1e1f5bbb5.2(%rip), %r13
 	movq	%rsp, %rbp
 .LBB14_2:
 	testq	%rdx, %rdx
@@ -631,70 +631,70 @@ run_optional_trait_methods:
 	.size	run_optional_trait_methods, .Lfunc_end14-run_optional_trait_methods
 	.cfi_endproc
 
-	.type	.Lanon.ce45994ee39e7a9f0ad217f7b3968504.0,@object
-	.section	.rodata..Lanon.ce45994ee39e7a9f0ad217f7b3968504.0,"a",@progbits
-.Lanon.ce45994ee39e7a9f0ad217f7b3968504.0:
+	.type	.Lanon.d97ec21910c8b28098e29fd1e1f5bbb5.0,@object
+	.section	.rodata..Lanon.d97ec21910c8b28098e29fd1e1f5bbb5.0,"a",@progbits
+.Lanon.d97ec21910c8b28098e29fd1e1f5bbb5.0:
 	.ascii	"Parse IncDec extension"
-	.size	.Lanon.ce45994ee39e7a9f0ad217f7b3968504.0, 22
+	.size	.Lanon.d97ec21910c8b28098e29fd1e1f5bbb5.0, 22
 
-	.type	.Lanon.ce45994ee39e7a9f0ad217f7b3968504.1,@object
-	.section	.rodata..Lanon.ce45994ee39e7a9f0ad217f7b3968504.1,"a",@progbits
-.Lanon.ce45994ee39e7a9f0ad217f7b3968504.1:
+	.type	.Lanon.d97ec21910c8b28098e29fd1e1f5bbb5.1,@object
+	.section	.rodata..Lanon.d97ec21910c8b28098e29fd1e1f5bbb5.1,"a",@progbits
+.Lanon.d97ec21910c8b28098e29fd1e1f5bbb5.1:
 	.ascii	"s "
-	.size	.Lanon.ce45994ee39e7a9f0ad217f7b3968504.1, 2
+	.size	.Lanon.d97ec21910c8b28098e29fd1e1f5bbb5.1, 2
 
-	.type	.Lanon.ce45994ee39e7a9f0ad217f7b3968504.2,@object
+	.type	.Lanon.d97ec21910c8b28098e29fd1e1f5bbb5.2,@object
 	.section	.rodata.cst16,"aM",@progbits,16
-.Lanon.ce45994ee39e7a9f0ad217f7b3968504.2:
+.Lanon.d97ec21910c8b28098e29fd1e1f5bbb5.2:
 	.ascii	"Unsupported cmd!"
-	.size	.Lanon.ce45994ee39e7a9f0ad217f7b3968504.2, 16
+	.size	.Lanon.d97ec21910c8b28098e29fd1e1f5bbb5.2, 16
 
-	.type	.Lanon.ce45994ee39e7a9f0ad217f7b3968504.3,@object
-.Lanon.ce45994ee39e7a9f0ad217f7b3968504.3:
+	.type	.Lanon.d97ec21910c8b28098e29fd1e1f5bbb5.3,@object
+.Lanon.d97ec21910c8b28098e29fd1e1f5bbb5.3:
 	.ascii	"IncDec extension"
-	.size	.Lanon.ce45994ee39e7a9f0ad217f7b3968504.3, 16
+	.size	.Lanon.d97ec21910c8b28098e29fd1e1f5bbb5.3, 16
 
-	.type	.Lanon.ce45994ee39e7a9f0ad217f7b3968504.4,@object
-	.section	.rodata..Lanon.ce45994ee39e7a9f0ad217f7b3968504.4,"a",@progbits
-.Lanon.ce45994ee39e7a9f0ad217f7b3968504.4:
+	.type	.Lanon.d97ec21910c8b28098e29fd1e1f5bbb5.4,@object
+	.section	.rodata..Lanon.d97ec21910c8b28098e29fd1e1f5bbb5.4,"a",@progbits
+.Lanon.d97ec21910c8b28098e29fd1e1f5bbb5.4:
 	.byte	10
-	.size	.Lanon.ce45994ee39e7a9f0ad217f7b3968504.4, 1
+	.size	.Lanon.d97ec21910c8b28098e29fd1e1f5bbb5.4, 1
 
-	.type	.Lanon.ce45994ee39e7a9f0ad217f7b3968504.5,@object
+	.type	.Lanon.d97ec21910c8b28098e29fd1e1f5bbb5.5,@object
 	.section	.rodata.str1.1,"aMS",@progbits,1
-.Lanon.ce45994ee39e7a9f0ad217f7b3968504.5:
+.Lanon.d97ec21910c8b28098e29fd1e1f5bbb5.5:
 	.asciz	"src/print_macros.rs"
-	.size	.Lanon.ce45994ee39e7a9f0ad217f7b3968504.5, 20
+	.size	.Lanon.d97ec21910c8b28098e29fd1e1f5bbb5.5, 20
 
-	.type	.Lanon.ce45994ee39e7a9f0ad217f7b3968504.6,@object
-	.section	.data.rel.ro..Lanon.ce45994ee39e7a9f0ad217f7b3968504.6,"aw",@progbits
+	.type	.Lanon.d97ec21910c8b28098e29fd1e1f5bbb5.6,@object
+	.section	.data.rel.ro..Lanon.d97ec21910c8b28098e29fd1e1f5bbb5.6,"aw",@progbits
 	.p2align	3, 0x0
-.Lanon.ce45994ee39e7a9f0ad217f7b3968504.6:
-	.quad	.Lanon.ce45994ee39e7a9f0ad217f7b3968504.5
+.Lanon.d97ec21910c8b28098e29fd1e1f5bbb5.6:
+	.quad	.Lanon.d97ec21910c8b28098e29fd1e1f5bbb5.5
 	.asciz	"\023\000\000\000\000\000\000\000\037\000\000\000\t\000\000"
-	.size	.Lanon.ce45994ee39e7a9f0ad217f7b3968504.6, 24
+	.size	.Lanon.d97ec21910c8b28098e29fd1e1f5bbb5.6, 24
 
-	.type	.Lanon.ce45994ee39e7a9f0ad217f7b3968504.7,@object
-	.section	.data.rel.ro..Lanon.ce45994ee39e7a9f0ad217f7b3968504.7,"aw",@progbits
+	.type	.Lanon.d97ec21910c8b28098e29fd1e1f5bbb5.7,@object
+	.section	.data.rel.ro..Lanon.d97ec21910c8b28098e29fd1e1f5bbb5.7,"aw",@progbits
 	.p2align	3, 0x0
-.Lanon.ce45994ee39e7a9f0ad217f7b3968504.7:
-	.quad	.Lanon.ce45994ee39e7a9f0ad217f7b3968504.5
+.Lanon.d97ec21910c8b28098e29fd1e1f5bbb5.7:
+	.quad	.Lanon.d97ec21910c8b28098e29fd1e1f5bbb5.5
 	.asciz	"\023\000\000\000\000\000\000\000(\000\000\000\t\000\000"
-	.size	.Lanon.ce45994ee39e7a9f0ad217f7b3968504.7, 24
+	.size	.Lanon.d97ec21910c8b28098e29fd1e1f5bbb5.7, 24
 
-	.type	.Lanon.ce45994ee39e7a9f0ad217f7b3968504.8,@object
-	.section	.data.rel.ro..Lanon.ce45994ee39e7a9f0ad217f7b3968504.8,"aw",@progbits
+	.type	.Lanon.d97ec21910c8b28098e29fd1e1f5bbb5.8,@object
+	.section	.data.rel.ro..Lanon.d97ec21910c8b28098e29fd1e1f5bbb5.8,"aw",@progbits
 	.p2align	3, 0x0
-.Lanon.ce45994ee39e7a9f0ad217f7b3968504.8:
-	.quad	.Lanon.ce45994ee39e7a9f0ad217f7b3968504.5
+.Lanon.d97ec21910c8b28098e29fd1e1f5bbb5.8:
+	.quad	.Lanon.d97ec21910c8b28098e29fd1e1f5bbb5.5
 	.asciz	"\023\000\000\000\000\000\000\000\t\000\000\000\027\000\000"
-	.size	.Lanon.ce45994ee39e7a9f0ad217f7b3968504.8, 24
+	.size	.Lanon.d97ec21910c8b28098e29fd1e1f5bbb5.8, 24
 
-	.type	.Lanon.ce45994ee39e7a9f0ad217f7b3968504.9,@object
-	.section	.rodata..Lanon.ce45994ee39e7a9f0ad217f7b3968504.9,"a",@progbits
-.Lanon.ce45994ee39e7a9f0ad217f7b3968504.9:
+	.type	.Lanon.d97ec21910c8b28098e29fd1e1f5bbb5.9,@object
+	.section	.rodata..Lanon.d97ec21910c8b28098e29fd1e1f5bbb5.9,"a",@progbits
+.Lanon.d97ec21910c8b28098e29fd1e1f5bbb5.9:
 	.ascii	"`dec` operations are not supported yet"
-	.size	.Lanon.ce45994ee39e7a9f0ad217f7b3968504.9, 38
+	.size	.Lanon.d97ec21910c8b28098e29fd1e1f5bbb5.9, 38
 
 	.ident	"rustc version 1.97.0-nightly (9ec5d5f32 2026-04-21)"
 	.section	".note.GNU-stack","",@progbits

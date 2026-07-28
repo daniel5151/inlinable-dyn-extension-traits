@@ -9,6 +9,7 @@ default = ["target_advanced", "using_traits", "always_inline"]
 
 always_inline = []
 interpretable_asm = []
+dce_markers = []
 bench = []
 
 using_cfg_gates = []

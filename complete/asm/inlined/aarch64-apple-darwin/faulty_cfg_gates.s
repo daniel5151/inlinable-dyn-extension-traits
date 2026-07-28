@@ -87,9 +87,9 @@ _optional_trait_methods::print_macros::write_line:
 	mov	x29, sp
 	bl	_optional_trait_methods::print_macros::write_all
 Lloh0:
-	adrp	x0, l_anon.49398fa5a12074ac854baebb69a722bd.4@PAGE
+	adrp	x0, l_anon.49398fa5a12074ac854baebb69a722bd.2@PAGE
 Lloh1:
-	add	x0, x0, l_anon.49398fa5a12074ac854baebb69a722bd.4@PAGEOFF
+	add	x0, x0, l_anon.49398fa5a12074ac854baebb69a722bd.2@PAGEOFF
 	mov	w1, #1
 	ldp	x29, x30, [sp], #16
 	b	_optional_trait_methods::print_macros::write_all
@@ -143,18 +143,18 @@ LBB3_7:
 	ret
 LBB3_8:
 Lloh2:
-	adrp	x2, l_anon.49398fa5a12074ac854baebb69a722bd.6@PAGE
+	adrp	x2, l_anon.49398fa5a12074ac854baebb69a722bd.4@PAGE
 Lloh3:
-	add	x2, x2, l_anon.49398fa5a12074ac854baebb69a722bd.6@PAGEOFF
+	add	x2, x2, l_anon.49398fa5a12074ac854baebb69a722bd.4@PAGEOFF
 LBB3_9:
 	mov	x0, #-1
 	mov	w1, #32
 	bl	_core::panicking::panic_bounds_check
 LBB3_10:
 Lloh4:
-	adrp	x2, l_anon.49398fa5a12074ac854baebb69a722bd.7@PAGE
+	adrp	x2, l_anon.49398fa5a12074ac854baebb69a722bd.5@PAGE
 Lloh5:
-	add	x2, x2, l_anon.49398fa5a12074ac854baebb69a722bd.7@PAGEOFF
+	add	x2, x2, l_anon.49398fa5a12074ac854baebb69a722bd.5@PAGEOFF
 	b	LBB3_9
 	.loh AdrpAdd	Lloh2, Lloh3
 	.loh AdrpAdd	Lloh4, Lloh5
@@ -185,9 +185,9 @@ LBB4_5:
 	ret
 LBB4_6:
 Lloh6:
-	adrp	x3, l_anon.49398fa5a12074ac854baebb69a722bd.8@PAGE
+	adrp	x3, l_anon.49398fa5a12074ac854baebb69a722bd.6@PAGE
 Lloh7:
-	add	x3, x3, l_anon.49398fa5a12074ac854baebb69a722bd.8@PAGEOFF
+	add	x3, x3, l_anon.49398fa5a12074ac854baebb69a722bd.6@PAGEOFF
 	mov	x1, x19
 	mov	x2, x19
 	bl	_core::slice::index::slice_index_fail
@@ -204,9 +204,9 @@ _<optional_trait_methods::line_reader::LineReader as core::default::Default>::de
 	.p2align	2
 _<optional_trait_methods::using_cfg_gates::targets::faulty::FaultyTarget as optional_trait_methods::using_cfg_gates::target::Target>::dec:
 Lloh8:
-	adrp	x0, l_anon.49398fa5a12074ac854baebb69a722bd.9@PAGE
+	adrp	x0, l_anon.49398fa5a12074ac854baebb69a722bd.7@PAGE
 Lloh9:
-	add	x0, x0, l_anon.49398fa5a12074ac854baebb69a722bd.9@PAGEOFF
+	add	x0, x0, l_anon.49398fa5a12074ac854baebb69a722bd.7@PAGEOFF
 	mov	w1, #38
 	ret
 	.loh AdrpAdd	Lloh8, Lloh9
@@ -236,53 +236,37 @@ _<optional_trait_methods::using_cfg_gates::targets::faulty::FaultyTarget as opti
 	.globl	_run_optional_trait_methods
 	.p2align	2
 _run_optional_trait_methods:
-	stp	x28, x27, [sp, #-96]!
-	stp	x26, x25, [sp, #16]
-	stp	x24, x23, [sp, #32]
-	stp	x22, x21, [sp, #48]
-	stp	x20, x19, [sp, #64]
-	stp	x29, x30, [sp, #80]
-	add	x29, sp, #80
-	sub	sp, sp, #1200
+	stp	x24, x23, [sp, #-64]!
+	stp	x22, x21, [sp, #16]
+	stp	x20, x19, [sp, #32]
+	stp	x29, x30, [sp, #48]
+	add	x29, sp, #48
+	sub	sp, sp, #1184
 	str	xzr, [sp]
-	sub	x26, x29, #224
+	sub	x23, x29, #176
 	str	xzr, [sp, #8]
 	add	x0, sp, #16
 	mov	w1, #1040
 	bl	_bzero
 	movi.2d	v0, #0000000000000000
-	stp	q0, q0, [x26, #96]
-	stp	q0, q0, [x26, #64]
+	stp	q0, q0, [x23, #96]
+	stp	q0, q0, [x23, #64]
+	stp	q0, q0, [x23, #32]
+	mov	w20, #11563
+	mov	w21, #8307
+	mov	w22, #10
 Lloh10:
-	adrp	x20, l_anon.49398fa5a12074ac854baebb69a722bd.0@PAGE
+	adrp	x19, l_anon.49398fa5a12074ac854baebb69a722bd.1@PAGE
 Lloh11:
-	add	x20, x20, l_anon.49398fa5a12074ac854baebb69a722bd.0@PAGEOFF
-	mov	w21, #22
-	sub	x22, x29, #96
-	stp	q0, q0, [x26, #32]
-	mov	w23, #11563
-	mov	w24, #8307
-Lloh12:
-	adrp	x19, l_anon.49398fa5a12074ac854baebb69a722bd.2@PAGE
-Lloh13:
-	add	x19, x19, l_anon.49398fa5a12074ac854baebb69a722bd.2@PAGEOFF
-	mov	w25, #10
-	mov	w27, #16
-	stp	q0, q0, [x26]
-Lloh14:
-	adrp	x26, l_anon.49398fa5a12074ac854baebb69a722bd.3@PAGE
-Lloh15:
-	add	x26, x26, l_anon.49398fa5a12074ac854baebb69a722bd.3@PAGEOFF
+	add	x19, x19, l_anon.49398fa5a12074ac854baebb69a722bd.1@PAGEOFF
+	stp	q0, q0, [x23]
 LBB10_1:
 	add	x0, sp, #16
-	sub	x1, x29, #224
+	sub	x1, x29, #176
 	mov	w2, #128
 	bl	_<optional_trait_methods::line_reader::LineReader>::read_line
-	cbz	x0, LBB10_31
+	cbz	x0, LBB10_29
 	cbz	x1, LBB10_1
-	stp	x20, x21, [x29, #-96]
-	; InlineAsm Start
-	; InlineAsm End
 	subs	x8, x1, #2
 	b.eq	LBB10_8
 	cmp	x1, #1
@@ -293,15 +277,15 @@ LBB10_1:
 	cmp	w8, #112
 	b.eq	LBB10_14
 	cmp	w8, #45
-	b.eq	LBB10_29
+	b.eq	LBB10_28
 	b	LBB10_10
 LBB10_8:
 	ldrh	w9, [x0]
-	cmp	w9, w23
+	cmp	w9, w20
 	b.eq	LBB10_28
 LBB10_9:
 	ldrh	w9, [x0]
-	cmp	w9, w24
+	cmp	w9, w21
 	ccmp	x8, #0, #4, eq
 	b.ne	LBB10_11
 LBB10_10:
@@ -323,9 +307,6 @@ LBB10_14:
 	bl	_optional_trait_methods::print_macros::write_isize_line
 	b	LBB10_1
 LBB10_15:
-	stp	x26, x27, [x29, #-96]
-	; InlineAsm Start
-	; InlineAsm End
 	add	x0, sp, #8
 	bl	_<optional_trait_methods::using_cfg_gates::targets::faulty::FaultyTarget as optional_trait_methods::using_cfg_gates::target::Target>::inc
 	b	LBB10_1
@@ -345,7 +326,7 @@ LBB10_21:
 	sub	w10, w10, #48
 	cmp	w10, #9
 	b.hi	LBB10_10
-	smulh	x12, x1, x25
+	smulh	x12, x1, x22
 	add	x11, x1, x1, lsl #2
 	lsl	x11, x11, #1
 	cmp	x12, x11, asr #63
@@ -365,80 +346,57 @@ LBB10_26:
 	bl	_<optional_trait_methods::using_cfg_gates::targets::faulty::FaultyTarget as optional_trait_methods::using_cfg_gates::target::Target>::set_state
 	b	LBB10_1
 LBB10_28:
-	mov	w8, #16
-	stp	x26, x8, [x29, #-96]
-	sub	x8, x29, #96
-	; InlineAsm Start
-	; InlineAsm End
-	b	LBB10_30
-LBB10_29:
-	mov	w8, #16
-	stp	x26, x8, [x29, #-96]
-	sub	x8, x29, #96
-	; InlineAsm Start
-	; InlineAsm End
-LBB10_30:
-Lloh16:
-	adrp	x0, l_anon.49398fa5a12074ac854baebb69a722bd.9@PAGE
-Lloh17:
-	add	x0, x0, l_anon.49398fa5a12074ac854baebb69a722bd.9@PAGEOFF
+Lloh12:
+	adrp	x0, l_anon.49398fa5a12074ac854baebb69a722bd.7@PAGE
+Lloh13:
+	add	x0, x0, l_anon.49398fa5a12074ac854baebb69a722bd.7@PAGEOFF
 	mov	w1, #38
 	bl	_optional_trait_methods::print_macros::write_line
 	mov	w0, #1
-LBB10_31:
-	add	sp, sp, #1200
-	ldp	x29, x30, [sp, #80]
-	ldp	x20, x19, [sp, #64]
-	ldp	x22, x21, [sp, #48]
-	ldp	x24, x23, [sp, #32]
-	ldp	x26, x25, [sp, #16]
-	ldp	x28, x27, [sp], #96
+LBB10_29:
+	add	sp, sp, #1184
+	ldp	x29, x30, [sp, #48]
+	ldp	x20, x19, [sp, #32]
+	ldp	x22, x21, [sp, #16]
+	ldp	x24, x23, [sp], #64
 	ret
-	.loh AdrpAdd	Lloh14, Lloh15
-	.loh AdrpAdd	Lloh12, Lloh13
 	.loh AdrpAdd	Lloh10, Lloh11
-	.loh AdrpAdd	Lloh16, Lloh17
+	.loh AdrpAdd	Lloh12, Lloh13
 
 	.section	__TEXT,__const
 l_anon.49398fa5a12074ac854baebb69a722bd.0:
-	.ascii	"Parse IncDec extension"
-
-l_anon.49398fa5a12074ac854baebb69a722bd.1:
 	.ascii	"s "
 
 	.section	__TEXT,__literal16,16byte_literals
-l_anon.49398fa5a12074ac854baebb69a722bd.2:
+l_anon.49398fa5a12074ac854baebb69a722bd.1:
 	.ascii	"Unsupported cmd!"
 
-l_anon.49398fa5a12074ac854baebb69a722bd.3:
-	.ascii	"IncDec extension"
-
 	.section	__TEXT,__const
-l_anon.49398fa5a12074ac854baebb69a722bd.4:
+l_anon.49398fa5a12074ac854baebb69a722bd.2:
 	.byte	10
 
 	.section	__TEXT,__cstring,cstring_literals
-l_anon.49398fa5a12074ac854baebb69a722bd.5:
+l_anon.49398fa5a12074ac854baebb69a722bd.3:
 	.asciz	"src/print_macros.rs"
 
 	.section	__DATA,__const
 	.p2align	3, 0x0
-l_anon.49398fa5a12074ac854baebb69a722bd.6:
-	.quad	l_anon.49398fa5a12074ac854baebb69a722bd.5
+l_anon.49398fa5a12074ac854baebb69a722bd.4:
+	.quad	l_anon.49398fa5a12074ac854baebb69a722bd.3
 	.asciz	"\023\000\000\000\000\000\000\000\037\000\000\000\t\000\000"
 
 	.p2align	3, 0x0
-l_anon.49398fa5a12074ac854baebb69a722bd.7:
-	.quad	l_anon.49398fa5a12074ac854baebb69a722bd.5
+l_anon.49398fa5a12074ac854baebb69a722bd.5:
+	.quad	l_anon.49398fa5a12074ac854baebb69a722bd.3
 	.asciz	"\023\000\000\000\000\000\000\000(\000\000\000\t\000\000"
 
 	.p2align	3, 0x0
-l_anon.49398fa5a12074ac854baebb69a722bd.8:
-	.quad	l_anon.49398fa5a12074ac854baebb69a722bd.5
+l_anon.49398fa5a12074ac854baebb69a722bd.6:
+	.quad	l_anon.49398fa5a12074ac854baebb69a722bd.3
 	.asciz	"\023\000\000\000\000\000\000\000\t\000\000\000\027\000\000"
 
 	.section	__TEXT,__const
-l_anon.49398fa5a12074ac854baebb69a722bd.9:
+l_anon.49398fa5a12074ac854baebb69a722bd.7:
 	.ascii	"`dec` operations are not supported yet"
 
 .subsections_via_symbols

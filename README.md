@@ -29,7 +29,8 @@ cd complete
 ```
 
 Assembly generation is explicit about the compilation target and does not need
-a target linker or emulator:
+a target linker or emulator. The checked-in fully inlined listings are
+marker-free; the interpretable listings include DCE diagnostics:
 
 ```sh
 cargo install --version 0.2.1 rustfilt
@@ -41,6 +42,15 @@ Generated listings live under:
 
 ```text
 complete/asm/{inlined,noinline}/<rust-target-triple>/
+```
+
+The checked-in interpretable listings contain unique strings in retained
+extension paths. To include those markers in fully inlined listings as well,
+pass `--dce-markers`. This fully marked diagnostic corpus is written under
+`complete/target/dce-marker-asm/` rather than replacing the checked-in files:
+
+```sh
+./generate_asm.sh --target x86_64-unknown-linux-gnu --dce-markers
 ```
 
 For local timing experiments:

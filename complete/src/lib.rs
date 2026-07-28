@@ -88,9 +88,16 @@ pub extern "C" fn run_optional_trait_methods() -> libc::c_int {
     0
 }
 
+#[cfg(feature = "dce_markers")]
 #[macro_export]
 macro_rules! __dead_code_marker {
     ($marker:literal) => {{
         core::hint::black_box($marker);
     }};
+}
+
+#[cfg(not(feature = "dce_markers"))]
+#[macro_export]
+macro_rules! __dead_code_marker {
+    ($marker:literal) => {{}};
 }
