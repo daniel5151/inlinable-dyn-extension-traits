@@ -53,6 +53,14 @@ pass `--dce-markers`. This fully marked diagnostic corpus is written under
 ./generate_asm.sh --target x86_64-unknown-linux-gnu --dce-markers
 ```
 
+Focused IDET tests also cover a concrete target whose capabilities vary per
+instance and an erased `dyn Target` supplied by the caller:
+
+```sh
+cargo test --no-default-features \
+  --features 'target_basic using_traits always_inline traits_codegen_cases'
+```
+
 For local timing experiments:
 
 ```sh

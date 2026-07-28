@@ -716,6 +716,72 @@ targets whose capability answers are constant. That's exactly what lets LLVM
 turn the checks into compile-time `Some` / `None` decisions. A target whose
 answer changes at runtime is going to keep that branch.
 
+#### What About Runtime-Varying and Erased Targets?
+
+So far, all the assembly examples use a concrete target whose capabilities are
+known at compile time. But IDETs don't require `ext_*` methods to always return
+the same thing! They can inspect runtime state, and they continue to work after
+the target has been erased behind `dyn Target`.
+
+I added two small test cases:
+
+-   `run_runtime_toggle_case` uses a concrete target whose IncDec support is
+    controlled by a runtime boolean.
+-   `run_erased_target_case` accepts `&mut dyn Target`, preventing LLVM from
+    knowing which concrete target it will receive.
+
+Here's what the resulting `-Os` AArch64 assembly looks like:
+
+| Target shape | Instructions | Direct calls | Indirect calls |
+| :----------- | -----------: | -----------: | -------------: |
+| Static Basic | 61 | 3 | 0 |
+| Static IncDec | 78 | 6 | 0 |
+| Runtime-varying concrete | 88 | 6 | 0 |
+| Erased `dyn Target` | 231 | 2 | 16 |
+
+The runtime-varying case behaves about how you'd hope: LLVM has to retain the
+capability check, but it still knows the concrete target type, so the actual
+`inc` / `dec` calls are devirtualized into direct calls.
+
+The erased case is where the static DCE advantage disappears. Since any
+`dyn Target` can reach the exported function, LLVM has to retain every parser
+path and dispatch capability queries and extension methods through vtables.
+
+As a quick sanity check, merely enabling `traits_codegen_cases` doesn't add any
+of this work to the normal run loop. The linked executable stayed at 50,800
+bytes, the focused symbols were discarded, and `run_optional_trait_methods`
+was unchanged. The intermediate `rlib` did grow from 45,640 to 71,576 bytes,
+since it still has to carry those entry points until link time.
+
+What does that mean at runtime? I added a tiny microbenchmark which cycles
+through `+`, `-`, and `+-` for 100,000,000 calls:
+
+| Target shape | Forward | Reverse |
+| :----------- | ------: | ------: |
+| Static Basic | 108.4 ms | 106.9 ms |
+| Runtime disabled | 133.0 ms | 134.3 ms |
+| Erased Basic | 530.6 ms | 533.5 ms |
+| Static IncDec | 201.5 ms | 200.2 ms |
+| Runtime enabled | 191.7 ms | 194.2 ms |
+| Erased IncDec | 575.5 ms | 575.2 ms |
+
+The concrete runtime check is fairly cheap. With support disabled it added
+about 25% over the tiny static Basic case; with support enabled, both concrete
+cases landed around 1.9–2.0 ns per call. The runtime version happened to be a
+few percent faster here, but I wouldn't read anything into that beyond code
+layout and branch prediction.
+
+Erasing the target was much more noticeable: roughly 3x the enabled concrete
+case and 4x the disabled case in this microbenchmark. That isn't the cost of
+"one virtual call"—the erased path retains more parser code, performs several
+vtable lookups, and the benchmark includes a small runtime-selection wrapper—but
+it does show where IDETs stop being zero-cost. Alternating the selected target
+on every call produced a similar 3.33x gap (`168.5 ms` vs. `561.4 ms`).
+
+These results were collected on an Apple M4 Pro using the pinned nightly
+compiler. Exact reproduction commands are in
+[`complete/asm/README.md`](complete/asm/README.md#focused-runtime-and-erased-cases).
+
 #### Do IDETs Actually Need `#[inline(always)]`?
 
 One lingering question is how much of this optimization depends on forcing the

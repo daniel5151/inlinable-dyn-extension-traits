@@ -11,6 +11,7 @@ always_inline = []
 interpretable_asm = []
 dce_markers = []
 bench = []
+traits_codegen_cases = []
 
 using_cfg_gates = []
 using_is_supported = []
@@ -27,6 +28,11 @@ target_faulty = []
 libc = { version = "0.2", default-features = false }
 rand_chacha = { version = "0.3", default-features = false }
 rand_core = { version = "0.6", default-features = false }
+
+[[bin]]
+name = "idet-cases-bench"
+path = "src/bin/idet_cases_bench.rs"
+required-features = ["using_traits", "traits_codegen_cases"]
 
 [profile.release]
 panic = "abort"

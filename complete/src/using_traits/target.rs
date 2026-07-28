@@ -49,6 +49,25 @@ define_ops!(TargetExtIncDec -> TargetExtIncDecOps);
 define_ops!(TargetExtMul -> TargetExtMulOps);
 define_ops!(TargetExtScaleFactor -> TargetExtScaleFactorOps);
 
+// Preserve IDET behavior when the controller's static target type is an
+// erased reference. The returned extension trait objects already encode the
+// relevant associated type, so forwarding does not require re-wrapping them.
+impl<'a, 'obj, E> Target for &'a mut (dyn Target<Error = E> + 'obj) {
+    type Error = E;
+
+    fn base(&mut self) -> TargetBaseOps<'_, Self> {
+        (**self).base()
+    }
+
+    fn ext_incdec(&mut self) -> Option<TargetExtIncDecOps<'_, Self>> {
+        (**self).ext_incdec()
+    }
+
+    fn ext_mul(&mut self) -> Option<TargetExtMulOps<'_, Self>> {
+        (**self).ext_mul()
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

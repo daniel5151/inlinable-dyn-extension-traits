@@ -37,6 +37,15 @@ core::cfg_select! {
     }
 }
 
+#[cfg(all(feature = "using_traits", feature = "traits_codegen_cases"))]
+pub use using_traits::run_erased_selection_case;
+#[cfg(all(feature = "using_traits", feature = "traits_codegen_cases"))]
+pub use using_traits::run_runtime_toggle_case;
+#[cfg(all(feature = "using_traits", feature = "traits_codegen_cases"))]
+pub use using_traits::run_static_advanced_case;
+#[cfg(all(feature = "using_traits", feature = "traits_codegen_cases"))]
+pub use using_traits::run_static_basic_case;
+
 use controller::Error;
 use controller::TargetController;
 

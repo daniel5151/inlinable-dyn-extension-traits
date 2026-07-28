@@ -68,6 +68,50 @@ Examples:
 ./asm_stats.py --mode noinline --target-triple aarch64-apple-darwin
 ```
 
+## Focused runtime and erased cases
+
+The runtime-varying and erased IDET entry points are emitted by enabling
+`traits_codegen_cases`. The feature also emits static Basic and IncDec-only
+reference entry points so the retained branch and vtable work can be compared
+against equivalent command handling:
+
+```sh
+CARGO_INCREMENTAL=0 cargo rustc --locked --lib --release \
+  --target-dir target/manual-idet-codegen \
+  --no-default-features \
+  --features 'target_basic using_traits always_inline traits_codegen_cases' \
+  -- --emit asm
+```
+
+The normal executable does not call these entry points. A linked build still
+discards them when the feature is enabled, so use the library assembly above to
+inspect them.
+
+For manual timing, build the focused driver with marker-free output and cycle
+through `+`, `-`, and `+-` commands:
+
+```sh
+cargo build --locked --release --bin idet-cases-bench \
+  --no-default-features \
+  --features 'target_basic using_traits always_inline traits_codegen_cases bench'
+
+hyperfine --warmup 3 --runs 20 --shell=none \
+  'target/release/idet-cases-bench static-basic 100000000' \
+  'target/release/idet-cases-bench runtime-disabled 100000000' \
+  'target/release/idet-cases-bench erased-basic 100000000' \
+  'target/release/idet-cases-bench static-advanced 100000000' \
+  'target/release/idet-cases-bench runtime-enabled 100000000' \
+  'target/release/idet-cases-bench erased-advanced 100000000'
+
+hyperfine --warmup 3 --runs 20 --shell=none \
+  'target/release/idet-cases-bench runtime-alternating 100000000' \
+  'target/release/idet-cases-bench erased-alternating 100000000'
+```
+
+These are local microbenchmarks of the focused one-command entry points. Run the
+main comparison in reverse order too; the results are specific to the host and
+compiler rather than a portable IDET cost model.
+
 ## Manual inline-sensitivity inspection
 
 To inspect sensitivity to forced helper inlining, compare marker-free builds
