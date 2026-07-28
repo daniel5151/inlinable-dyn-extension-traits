@@ -716,6 +716,20 @@ targets whose capability answers are constant. That's exactly what lets LLVM
 turn the checks into compile-time `Some` / `None` decisions. A target whose
 answer changes at runtime is going to keep that branch.
 
+#### Do IDETs Actually Need `#[inline(always)]`?
+
+One lingering question is how much of this optimization depends on forcing the
+small `ext_*` helpers to inline.
+
+At least on the pinned AArch64 toolchain: apparently none of it! Removing
+`always_inline` produced identical normalized assembly for `BasicTarget` and
+`AdvancedTarget`, both with isolated controller functions and with the full run
+loop inlined. Even the nested `ext_mul() -> ext_scale_factor()` path was
+unchanged.
+
+That's reassuring, but not a language guarantee. Different compiler versions,
+crate boundaries, or deeper extension hierarchies may still need the hint.
+
 #### Target-Level Assembly DCE Inspection (`BasicTarget` vs `FaultyTarget` vs `AdvancedTarget`)
 
 Looking at `parse_command` and `handle` separately makes it easy to see exactly

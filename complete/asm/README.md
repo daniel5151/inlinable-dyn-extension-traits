@@ -60,6 +60,27 @@ Examples:
 ./asm_stats.py --mode noinline --target-triple aarch64-apple-darwin
 ```
 
+## Manual inline-sensitivity inspection
+
+To inspect sensitivity to forced helper inlining, compare marker-free builds
+with and without `always_inline`:
+
+```sh
+# forced helper inlining
+CARGO_INCREMENTAL=0 cargo rustc --locked --lib --release \
+  --no-default-features \
+  --features 'target_advanced using_traits always_inline' \
+  -- --emit asm
+
+# unannotated helpers
+CARGO_INCREMENTAL=0 cargo rustc --locked --lib --release \
+  --no-default-features \
+  --features 'target_advanced using_traits' \
+  -- --emit asm
+```
+
+These are manual inspections, not snapshot or instruction-threshold tests.
+
 `asm_stats.py` counts textual assembly instructions. This is useful for
 same-target DCE comparisons, but it is neither encoded object size nor a model
 of execution cost.
