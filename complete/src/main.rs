@@ -1,5 +1,6 @@
 #![cfg_attr(not(test), no_std)]
 #![cfg_attr(not(test), no_main)]
+#![cfg_attr(feature = "using_try_as_dyn", feature(try_as_dyn))]
 
 extern crate libc;
 
@@ -44,6 +45,10 @@ core::cfg_select! {
         mod using_traits;
         use using_traits::*;
     }
+    feature = "using_try_as_dyn" => {
+        mod using_try_as_dyn;
+        use using_try_as_dyn::*;
+    }
     _ => {
         compile_error!("must select one of the `using_` features!");
     }
@@ -52,7 +57,6 @@ core::cfg_select! {
 use controller::Error;
 use controller::TargetController;
 
-#[cfg(not(test))]
 #[unsafe(no_mangle)]
 pub extern "C" fn main(_argc: isize, _argv: *const *const u8) -> isize {
     let target = core::cfg_select! {

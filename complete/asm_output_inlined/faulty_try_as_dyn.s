@@ -7,25 +7,25 @@ __rustc::rust_begin_unwind:
 	call	qword ptr [rip + abort@GOTPCREL]
 .Lfunc_end0:
 
-optional_trait_methods::using_fn::targets::faulty::dec:
-	lea	rax, [rip + .Lanon.cabb224323f7f456a7965482e4c09287.6]
-	mov	edx, 38
+<optional_trait_methods::using_try_as_dyn::targets::faulty::FaultyTarget as optional_trait_methods::using_try_as_dyn::target::TargetBase>::get_state:
+	mov	rax, qword ptr [rdi]
 	ret
 .Lfunc_end1:
 
-optional_trait_methods::using_fn::targets::faulty::inc:
-	inc	qword ptr [rdi]
+<optional_trait_methods::using_try_as_dyn::targets::faulty::FaultyTarget as optional_trait_methods::using_try_as_dyn::target::TargetBase>::set_state:
+	mov	qword ptr [rdi], rsi
 	xor	eax, eax
 	ret
 .Lfunc_end2:
 
-optional_trait_methods::using_fn::targets::faulty::get_state:
-	mov	rax, qword ptr [rdi]
+<optional_trait_methods::using_try_as_dyn::targets::faulty::FaultyTarget as optional_trait_methods::using_try_as_dyn::target::TargetExtIncDec>::dec:
+	lea	rax, [rip + .Lanon.cabb224323f7f456a7965482e4c09287.6]
+	mov	edx, 38
 	ret
 .Lfunc_end3:
 
-optional_trait_methods::using_fn::targets::faulty::set_state:
-	mov	qword ptr [rdi], rsi
+<optional_trait_methods::using_try_as_dyn::targets::faulty::FaultyTarget as optional_trait_methods::using_try_as_dyn::target::TargetExtIncDec>::inc:
+	inc	qword ptr [rdi]
 	xor	eax, eax
 	ret
 .Lfunc_end4:
@@ -128,7 +128,7 @@ main:
 	cmp	eax, 112
 	jne	.LBB5_38
 	mov	rdi, rbx
-	call	optional_trait_methods::using_fn::targets::faulty::get_state
+	call	<optional_trait_methods::using_try_as_dyn::targets::faulty::FaultyTarget as optional_trait_methods::using_try_as_dyn::target::TargetBase>::get_state
 	lea	rdi, [rip + .Lanon.cabb224323f7f456a7965482e4c09287.4]
 	mov	rsi, rax
 	xor	eax, eax
@@ -143,7 +143,7 @@ main:
 	#APP
 	#NO_APP
 	mov	rdi, rbx
-	call	optional_trait_methods::using_fn::targets::faulty::inc
+	call	<optional_trait_methods::using_try_as_dyn::targets::faulty::FaultyTarget as optional_trait_methods::using_try_as_dyn::target::TargetExtIncDec>::inc
 	test	rax, rax
 	jne	.LBB5_32
 	jmp	.LBB5_36
@@ -167,7 +167,7 @@ main:
 	#APP
 	#NO_APP
 .LBB5_36:
-	call	optional_trait_methods::using_fn::targets::faulty::dec
+	call	<optional_trait_methods::using_try_as_dyn::targets::faulty::FaultyTarget as optional_trait_methods::using_try_as_dyn::target::TargetExtIncDec>::dec
 	jmp	.LBB5_31
 .LBB5_30:
 	lea	rax, [rip + .Lanon.cabb224323f7f456a7965482e4c09287.5]
@@ -176,7 +176,7 @@ main:
 	#APP
 	#NO_APP
 	mov	rdi, rbx
-	call	optional_trait_methods::using_fn::targets::faulty::inc
+	call	<optional_trait_methods::using_try_as_dyn::targets::faulty::FaultyTarget as optional_trait_methods::using_try_as_dyn::target::TargetExtIncDec>::inc
 	jmp	.LBB5_31
 .LBB5_20:
 	mov	al, 1
@@ -225,7 +225,7 @@ main:
 	jmp	.LBB5_39
 .LBB5_47:
 	mov	rdi, rbx
-	call	optional_trait_methods::using_fn::targets::faulty::set_state
+	call	<optional_trait_methods::using_try_as_dyn::targets::faulty::FaultyTarget as optional_trait_methods::using_try_as_dyn::target::TargetBase>::set_state
 .LBB5_31:
 	test	rax, rax
 	jne	.LBB5_32

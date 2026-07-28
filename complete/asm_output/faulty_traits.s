@@ -1,6 +1,6 @@
 __rustc::rust_begin_unwind:
 	push	rax
-	lea	rsi, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.0]
+	lea	rsi, [rip + .Lanon.cabb224323f7f456a7965482e4c09287.0]
 	mov	edx, 7
 	mov	edi, 2
 	call	qword ptr [rip + write@GOTPCREL]
@@ -11,7 +11,7 @@ __rustc::rust_begin_unwind:
 	push	rbx
 	sub	rsp, 16
 	mov	rbx, rdi
-	lea	rax, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.1]
+	lea	rax, [rip + .Lanon.cabb224323f7f456a7965482e4c09287.1]
 	mov	rcx, rsp
 	mov	qword ptr [rcx], rax
 	mov	qword ptr [rcx + 8], 22
@@ -75,7 +75,7 @@ __rustc::rust_begin_unwind:
 	je	.LBB2_4
 	cmp	eax, 1
 	jne	.LBB2_2
-	lea	rax, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.6]
+	lea	rax, [rip + .Lanon.cabb224323f7f456a7965482e4c09287.6]
 	mov	rcx, rsp
 	mov	qword ptr [rcx], rax
 	mov	qword ptr [rcx + 8], 16
@@ -95,19 +95,19 @@ __rustc::rust_begin_unwind:
 	call	<optional_trait_methods::using_traits::targets::faulty::FaultyTarget as optional_trait_methods::using_traits::target::TargetBase>::set_state
 	jmp	.LBB2_14
 .LBB2_2:
-	lea	rsi, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.3]
+	lea	rsi, [rip + .Lanon.cabb224323f7f456a7965482e4c09287.3]
 	mov	rbx, qword ptr [rip + write@GOTPCREL]
 	mov	edx, 16
 	mov	edi, 1
 	call	rbx
-	lea	rsi, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.4]
+	lea	rsi, [rip + .Lanon.cabb224323f7f456a7965482e4c09287.4]
 	mov	edx, 1
 	mov	edi, 1
 	call	rbx
 	jmp	.LBB2_12
 .LBB2_5:
 	call	<optional_trait_methods::using_traits::targets::faulty::FaultyTarget as optional_trait_methods::using_traits::target::TargetBase>::get_state
-	lea	rdi, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.5]
+	lea	rdi, [rip + .Lanon.cabb224323f7f456a7965482e4c09287.5]
 	xor	ebx, ebx
 	mov	rsi, rax
 	xor	eax, eax
@@ -195,7 +195,7 @@ optional_trait_methods::commands::parse_isize:
 .Lfunc_end5:
 
 <optional_trait_methods::using_traits::targets::faulty::FaultyTarget as optional_trait_methods::using_traits::target::TargetExtIncDec>::dec:
-	lea	rax, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.7]
+	lea	rax, [rip + .Lanon.cabb224323f7f456a7965482e4c09287.7]
 	mov	edx, 38
 	ret
 .Lfunc_end6:
@@ -303,12 +303,12 @@ main:
 .LBB8_22:
 	mov	edx, 16
 	mov	edi, 1
-	lea	rsi, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.3]
+	lea	rsi, [rip + .Lanon.cabb224323f7f456a7965482e4c09287.3]
 	mov	r13, qword ptr [rip + write@GOTPCREL]
 	call	r13
 	mov	edx, 1
 	mov	edi, 1
-	lea	rsi, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.4]
+	lea	rsi, [rip + .Lanon.cabb224323f7f456a7965482e4c09287.4]
 	call	r13
 .LBB8_17:
 	mov	r13, qword ptr [rsp + 1192]
@@ -319,7 +319,7 @@ main:
 	mov	rsi, rax
 	mov	rbx, qword ptr [rip + write@GOTPCREL]
 	call	rbx
-	lea	rsi, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.4]
+	lea	rsi, [rip + .Lanon.cabb224323f7f456a7965482e4c09287.4]
 	mov	edx, 1
 	mov	edi, 1
 	call	rbx
@@ -339,28 +339,28 @@ rust_eh_personality:
 	ret
 .Lfunc_end9:
 
-.Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.0:
+.Lanon.cabb224323f7f456a7965482e4c09287.0:
 	.ascii	"panic!\n"
 
-.Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.1:
+.Lanon.cabb224323f7f456a7965482e4c09287.1:
 	.ascii	"Parse IncDec extension"
 
-.Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.2:
+.Lanon.cabb224323f7f456a7965482e4c09287.2:
 	.ascii	"s "
 
-.Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.3:
+.Lanon.cabb224323f7f456a7965482e4c09287.3:
 	.ascii	"Unsupported cmd!"
 
-.Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.4:
+.Lanon.cabb224323f7f456a7965482e4c09287.4:
 	.byte	10
 
-.Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.5:
+.Lanon.cabb224323f7f456a7965482e4c09287.5:
 	.asciz	"%d\n"
 
-.Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.6:
+.Lanon.cabb224323f7f456a7965482e4c09287.6:
 	.ascii	"IncDec extension"
 
-.Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.7:
+.Lanon.cabb224323f7f456a7965482e4c09287.7:
 	.ascii	"`dec` operations are not supported yet"
 
-	.ident	"rustc version 1.97.1 (8bab26f4f 2026-07-14)"
+	.ident	"rustc version 1.99.0-nightly (6f72b5dd5 2026-07-22)"

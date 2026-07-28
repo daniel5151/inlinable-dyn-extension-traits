@@ -11,7 +11,7 @@ if [ ! -f "Cargo.toml" ]; then
 fi
 
 echo "Building binaries..."
-cargo build --release --bin harness
+cargo +nightly build --release --bin harness
 
 build_bin() {
     local impl=$1
@@ -23,12 +23,12 @@ build_bin() {
     fi
 
     touch src/main.rs
-    cargo build --bin optional-trait-methods --no-default-features --features="target_advanced using_${impl} always_inline" $release_flag >/dev/null 2>&1
+    cargo +nightly build --bin optional-trait-methods --no-default-features --features="target_advanced using_${impl} always_inline" $release_flag >/dev/null 2>&1
 
     cp target/${mode}/optional-trait-methods target/${mode}/bench-${impl}
 }
 
-for impl in "cfg_gates" "is_supported" "options" "fn" "traits"; do
+for impl in "cfg_gates" "is_supported" "options" "fn" "traits" "try_as_dyn"; do
     build_bin "$impl" "debug"
     build_bin "$impl" "release"
 done
@@ -39,7 +39,8 @@ hyperfine --warmup 3 \
     "./target/release/harness $ITERATIONS_DEBUG | ./target/debug/bench-is_supported" \
     "./target/release/harness $ITERATIONS_DEBUG | ./target/debug/bench-options" \
     "./target/release/harness $ITERATIONS_DEBUG | ./target/debug/bench-fn" \
-    "./target/release/harness $ITERATIONS_DEBUG | ./target/debug/bench-traits"
+    "./target/release/harness $ITERATIONS_DEBUG | ./target/debug/bench-traits" \
+    "./target/release/harness $ITERATIONS_DEBUG | ./target/debug/bench-try_as_dyn"
 
 echo ""
 echo "Running hyperfine benchmark for Release Mode ($ITERATIONS_RELEASE iterations)..."
@@ -48,6 +49,7 @@ hyperfine --warmup 3 \
     "./target/release/harness $ITERATIONS_RELEASE | ./target/release/bench-is_supported" \
     "./target/release/harness $ITERATIONS_RELEASE | ./target/release/bench-options" \
     "./target/release/harness $ITERATIONS_RELEASE | ./target/release/bench-fn" \
-    "./target/release/harness $ITERATIONS_RELEASE | ./target/release/bench-traits"
+    "./target/release/harness $ITERATIONS_RELEASE | ./target/release/bench-traits" \
+    "./target/release/harness $ITERATIONS_RELEASE | ./target/release/bench-try_as_dyn"
 
 

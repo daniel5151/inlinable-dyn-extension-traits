@@ -7,7 +7,7 @@ __rustc::rust_begin_unwind:
 	call	qword ptr [rip + abort@GOTPCREL]
 .Lfunc_end0:
 
-<optional_trait_methods::using_cfg_gates::controller::TargetController<optional_trait_methods::using_cfg_gates::targets::faulty::FaultyTarget>>::parse_command:
+<optional_trait_methods::using_try_as_dyn::controller::TargetController<optional_trait_methods::using_try_as_dyn::targets::faulty::FaultyTarget>>::parse_command:
 	push	rbx
 	sub	rsp, 16
 	mov	rbx, rdi
@@ -18,95 +18,117 @@ __rustc::rust_begin_unwind:
 	#APP
 	#NO_APP
 	test	rdx, rdx
-	je	.LBB1_13
+	je	.LBB1_14
 	cmp	rdx, 2
-	je	.LBB1_9
+	je	.LBB1_10
 	cmp	rdx, 1
-	jne	.LBB1_10
+	jne	.LBB1_11
 	movzx	eax, byte ptr [rsi]
 	cmp	eax, 112
 	je	.LBB1_15
 	cmp	eax, 45
 	je	.LBB1_7
 	cmp	eax, 43
-	jne	.LBB1_13
-	mov	qword ptr [rbx], 2
-	mov	byte ptr [rbx + 8], 0
-	jmp	.LBB1_14
-.LBB1_9:
-	cmp	word ptr [rsi], 11563
-	jne	.LBB1_10
-	mov	qword ptr [rbx], 2
-	mov	byte ptr [rbx + 8], 2
-	jmp	.LBB1_14
+	jne	.LBB1_14
+	mov	word ptr [rbx], 1
+	jmp	.LBB1_9
 .LBB1_10:
+	cmp	word ptr [rsi], 11563
+	jne	.LBB1_11
+	mov	word ptr [rbx], 513
+	jmp	.LBB1_9
+.LBB1_11:
 	cmp	word ptr [rsi], 8307
-	jne	.LBB1_13
+	jne	.LBB1_14
 	add	rdx, -2
 	add	rsi, 2
 	mov	rdi, rsi
 	mov	rsi, rdx
 	call	optional_trait_methods::commands::parse_isize
 	test	al, 1
-	je	.LBB1_13
-	mov	qword ptr [rbx], 1
-	mov	qword ptr [rbx + 8], rdx
-	jmp	.LBB1_14
-.LBB1_13:
-	mov	qword ptr [rbx], -1
+	je	.LBB1_14
+	mov	byte ptr [rbx], 0
+	mov	qword ptr [rbx + 8], 1
+	mov	qword ptr [rbx + 16], rdx
+	jmp	.LBB1_9
 .LBB1_14:
+	mov	byte ptr [rbx], -1
+.LBB1_9:
 	mov	rax, rbx
 	add	rsp, 16
 	pop	rbx
 	ret
 .LBB1_7:
-	mov	qword ptr [rbx], 2
-	mov	byte ptr [rbx + 8], 1
-	jmp	.LBB1_14
+	mov	word ptr [rbx], 257
+	jmp	.LBB1_9
 .LBB1_15:
-	mov	qword ptr [rbx], 0
-	jmp	.LBB1_14
+	mov	byte ptr [rbx], 0
+	mov	qword ptr [rbx + 8], 0
+	jmp	.LBB1_9
 .Lfunc_end1:
 
-<optional_trait_methods::using_cfg_gates::controller::TargetController<optional_trait_methods::using_cfg_gates::targets::faulty::FaultyTarget>>::handle:
+<optional_trait_methods::using_try_as_dyn::controller::TargetController<optional_trait_methods::using_try_as_dyn::targets::faulty::FaultyTarget>>::handle:
 	push	rbx
 	sub	rsp, 16
-	mov	rax, qword ptr [rsi]
-	test	rax, rax
-	je	.LBB2_5
-	cmp	eax, 2
-	jne	.LBB2_6
+	movzx	eax, byte ptr [rsi]
+	test	eax, eax
+	je	.LBB2_4
+	cmp	eax, 1
+	jne	.LBB2_2
 	lea	rax, [rip + .Lanon.cabb224323f7f456a7965482e4c09287.6]
 	mov	rcx, rsp
 	mov	qword ptr [rcx], rax
 	mov	qword ptr [rcx + 8], 16
 	#APP
 	#NO_APP
-	movzx	eax, byte ptr [rsi + 8]
-	test	eax, eax
-	je	.LBB2_7
-	lea	rbx, [rip + .Lanon.cabb224323f7f456a7965482e4c09287.7]
+	movzx	eax, byte ptr [rsi + 1]
+	cmp	eax, 2
+	je	.LBB2_13
 	cmp	eax, 1
-	je	.LBB2_9
-	call	<optional_trait_methods::using_cfg_gates::targets::faulty::FaultyTarget as optional_trait_methods::using_cfg_gates::target::Target>::inc
-	jmp	.LBB2_9
+	je	.LBB2_15
+	call	<optional_trait_methods::using_try_as_dyn::targets::faulty::FaultyTarget as optional_trait_methods::using_try_as_dyn::target::TargetExtIncDec>::inc
+	jmp	.LBB2_11
+.LBB2_4:
+	cmp	byte ptr [rsi + 8], 0
+	je	.LBB2_5
+	mov	rsi, qword ptr [rsi + 16]
+	call	<optional_trait_methods::using_try_as_dyn::targets::faulty::FaultyTarget as optional_trait_methods::using_try_as_dyn::target::TargetBase>::set_state
+	jmp	.LBB2_14
+.LBB2_2:
+	lea	rsi, [rip + .Lanon.cabb224323f7f456a7965482e4c09287.3]
+	mov	rbx, qword ptr [rip + write@GOTPCREL]
+	mov	edx, 16
+	mov	edi, 1
+	call	rbx
+	lea	rsi, [rip + .Lanon.cabb224323f7f456a7965482e4c09287.4]
+	mov	edx, 1
+	mov	edi, 1
+	call	rbx
+	jmp	.LBB2_12
 .LBB2_5:
-	call	<optional_trait_methods::using_cfg_gates::targets::faulty::FaultyTarget as optional_trait_methods::using_cfg_gates::target::Target>::get_state
+	call	<optional_trait_methods::using_try_as_dyn::targets::faulty::FaultyTarget as optional_trait_methods::using_try_as_dyn::target::TargetBase>::get_state
 	lea	rdi, [rip + .Lanon.cabb224323f7f456a7965482e4c09287.5]
 	xor	ebx, ebx
 	mov	rsi, rax
 	xor	eax, eax
 	call	qword ptr [rip + printf@GOTPCREL]
-	jmp	.LBB2_9
-.LBB2_6:
-	mov	rsi, qword ptr [rsi + 8]
-	call	<optional_trait_methods::using_cfg_gates::targets::faulty::FaultyTarget as optional_trait_methods::using_cfg_gates::target::Target>::set_state
-	jmp	.LBB2_8
-.LBB2_7:
-	call	<optional_trait_methods::using_cfg_gates::targets::faulty::FaultyTarget as optional_trait_methods::using_cfg_gates::target::Target>::inc
-.LBB2_8:
+	jmp	.LBB2_6
+.LBB2_13:
+	call	<optional_trait_methods::using_try_as_dyn::targets::faulty::FaultyTarget as optional_trait_methods::using_try_as_dyn::target::TargetExtIncDec>::inc
+	test	rax, rax
+	jne	.LBB2_14
+.LBB2_15:
+	call	<optional_trait_methods::using_try_as_dyn::targets::faulty::FaultyTarget as optional_trait_methods::using_try_as_dyn::target::TargetExtIncDec>::dec
+.LBB2_11:
+	test	rax, rax
+	je	.LBB2_12
+.LBB2_14:
+	mov	rbx, rax
+	jmp	.LBB2_7
+.LBB2_12:
 	xor	ebx, ebx
-.LBB2_9:
+.LBB2_6:
+.LBB2_7:
 	mov	rax, rbx
 	add	rsp, 16
 	pop	rbx
@@ -161,20 +183,28 @@ optional_trait_methods::commands::parse_isize:
 	ret
 .Lfunc_end3:
 
-<optional_trait_methods::using_cfg_gates::targets::faulty::FaultyTarget as optional_trait_methods::using_cfg_gates::target::Target>::inc:
-	inc	qword ptr [rdi]
+<optional_trait_methods::using_try_as_dyn::targets::faulty::FaultyTarget as optional_trait_methods::using_try_as_dyn::target::TargetBase>::get_state:
+	mov	rax, qword ptr [rdi]
 	ret
 .Lfunc_end4:
 
-<optional_trait_methods::using_cfg_gates::targets::faulty::FaultyTarget as optional_trait_methods::using_cfg_gates::target::Target>::get_state:
-	mov	rax, qword ptr [rdi]
+<optional_trait_methods::using_try_as_dyn::targets::faulty::FaultyTarget as optional_trait_methods::using_try_as_dyn::target::TargetBase>::set_state:
+	mov	qword ptr [rdi], rsi
+	xor	eax, eax
 	ret
 .Lfunc_end5:
 
-<optional_trait_methods::using_cfg_gates::targets::faulty::FaultyTarget as optional_trait_methods::using_cfg_gates::target::Target>::set_state:
-	mov	qword ptr [rdi], rsi
+<optional_trait_methods::using_try_as_dyn::targets::faulty::FaultyTarget as optional_trait_methods::using_try_as_dyn::target::TargetExtIncDec>::dec:
+	lea	rax, [rip + .Lanon.cabb224323f7f456a7965482e4c09287.7]
+	mov	edx, 38
 	ret
 .Lfunc_end6:
+
+<optional_trait_methods::using_try_as_dyn::targets::faulty::FaultyTarget as optional_trait_methods::using_try_as_dyn::target::TargetExtIncDec>::inc:
+	inc	qword ptr [rdi]
+	xor	eax, eax
+	ret
+.Lfunc_end7:
 
 main:
 	push	rbp
@@ -184,7 +214,7 @@ main:
 	push	r12
 	push	rbx
 	sub	rsp, 1208
-	lea	rax, [rsp + 8]
+	mov	rax, rsp
 	mov	qword ptr [rax], 0
 	lea	r14, [rsp + 168]
 	xor	r13d, r13d
@@ -202,75 +232,75 @@ main:
 	movaps	xmmword ptr [r15 + 32], xmm0
 	movaps	xmmword ptr [r15 + 16], xmm0
 	movaps	xmmword ptr [r15], xmm0
-	lea	r12, [rsp + 16]
+	lea	r12, [rsp + 8]
 	mov	rbx, qword ptr [rip + read@GOTPCREL]
 	xor	eax, eax
-.LBB7_1:
+.LBB8_1:
 	xor	ebp, ebp
-.LBB7_2:
+.LBB8_2:
 	cmp	rax, r13
-	jb	.LBB7_5
+	jb	.LBB8_5
 	mov	edx, 1024
 	xor	edi, edi
 	mov	rsi, r14
 	call	rbx
 	test	rax, rax
-	jle	.LBB7_20
+	jle	.LBB8_20
 	mov	r13, rax
 	mov	qword ptr [rsp + 1192], rax
 	mov	qword ptr [rsp + 1200], 0
 	xor	eax, eax
-.LBB7_5:
+.LBB8_5:
 	cmp	r13, rax
-	jb	.LBB7_19
+	jb	.LBB8_19
 	cmp	r13, 1024
-	ja	.LBB7_19
+	ja	.LBB8_19
 	cmp	rax, r13
-	je	.LBB7_2
+	je	.LBB8_2
 	inc	rax
 	mov	rcx, r13
 	neg	rcx
-.LBB7_9:
+.LBB8_9:
 	mov	dl, byte ptr [rsp + rax + 167]
 	mov	qword ptr [rsp + 1200], rax
 	cmp	dl, 10
-	je	.LBB7_10
+	je	.LBB8_10
 	cmp	rbp, 127
-	ja	.LBB7_14
+	ja	.LBB8_14
 	mov	byte ptr [rsp + rbp + 32], dl
 	inc	rbp
-.LBB7_14:
+.LBB8_14:
 	lea	rdx, [rcx + rax]
 	inc	rdx
 	inc	rax
 	cmp	rdx, 1
-	jne	.LBB7_9
+	jne	.LBB8_9
 	mov	rax, r13
-	jmp	.LBB7_2
-.LBB7_20:
+	jmp	.LBB8_2
+.LBB8_20:
 	lea	rax, [rbp - 129]
 	cmp	rax, -128
-	jb	.LBB7_19
-	jmp	.LBB7_21
-.LBB7_10:
+	jb	.LBB8_19
+	jmp	.LBB8_21
+.LBB8_10:
 	cmp	rbp, 128
-	ja	.LBB7_19
+	ja	.LBB8_19
 	test	rbp, rbp
-	je	.LBB7_1
-.LBB7_21:
+	je	.LBB8_1
+.LBB8_21:
 	mov	rdi, r12
 	mov	rsi, r15
 	mov	rdx, rbp
-	call	<optional_trait_methods::using_cfg_gates::controller::TargetController<optional_trait_methods::using_cfg_gates::targets::faulty::FaultyTarget>>::parse_command
-	cmp	dword ptr [rsp + 16], -1
-	je	.LBB7_22
-	lea	rdi, [rsp + 8]
+	call	<optional_trait_methods::using_try_as_dyn::controller::TargetController<optional_trait_methods::using_try_as_dyn::targets::faulty::FaultyTarget>>::parse_command
+	cmp	byte ptr [rsp + 8], -1
+	je	.LBB8_22
+	mov	rdi, rsp
 	mov	rsi, r12
-	call	<optional_trait_methods::using_cfg_gates::controller::TargetController<optional_trait_methods::using_cfg_gates::targets::faulty::FaultyTarget>>::handle
+	call	<optional_trait_methods::using_try_as_dyn::controller::TargetController<optional_trait_methods::using_try_as_dyn::targets::faulty::FaultyTarget>>::handle
 	test	rax, rax
-	jne	.LBB7_18
-	jmp	.LBB7_17
-.LBB7_22:
+	jne	.LBB8_18
+	jmp	.LBB8_17
+.LBB8_22:
 	mov	edx, 16
 	mov	edi, 1
 	lea	rsi, [rip + .Lanon.cabb224323f7f456a7965482e4c09287.3]
@@ -280,12 +310,11 @@ main:
 	mov	edi, 1
 	lea	rsi, [rip + .Lanon.cabb224323f7f456a7965482e4c09287.4]
 	call	r13
-.LBB7_17:
+.LBB8_17:
 	mov	r13, qword ptr [rsp + 1192]
 	mov	rax, qword ptr [rsp + 1200]
-	jmp	.LBB7_1
-.LBB7_18:
-	mov	edx, 38
+	jmp	.LBB8_1
+.LBB8_18:
 	mov	edi, 1
 	mov	rsi, rax
 	mov	rbx, qword ptr [rip + write@GOTPCREL]
@@ -294,7 +323,7 @@ main:
 	mov	edx, 1
 	mov	edi, 1
 	call	rbx
-.LBB7_19:
+.LBB8_19:
 	xor	eax, eax
 	add	rsp, 1208
 	pop	rbx
@@ -304,11 +333,11 @@ main:
 	pop	r15
 	pop	rbp
 	ret
-.Lfunc_end7:
+.Lfunc_end8:
 
 rust_eh_personality:
 	ret
-.Lfunc_end8:
+.Lfunc_end9:
 
 .Lanon.cabb224323f7f456a7965482e4c09287.0:
 	.ascii	"panic!\n"

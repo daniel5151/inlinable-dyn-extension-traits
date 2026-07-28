@@ -7,46 +7,46 @@ __rustc::rust_begin_unwind:
 	call	qword ptr [rip + abort@GOTPCREL]
 .Lfunc_end0:
 
-optional_trait_methods::using_fn::targets::advanced::scale_factor:
-	mov	qword ptr [rdi + 8], rsi
-	xor	eax, eax
+<optional_trait_methods::using_try_as_dyn::targets::advanced::AdvancedTarget as optional_trait_methods::using_try_as_dyn::target::TargetBase>::get_state:
+	mov	rax, qword ptr [rdi]
 	ret
 .Lfunc_end1:
 
-optional_trait_methods::using_fn::targets::advanced::dec:
-	dec	qword ptr [rdi]
+<optional_trait_methods::using_try_as_dyn::targets::advanced::AdvancedTarget as optional_trait_methods::using_try_as_dyn::target::TargetBase>::set_state:
+	mov	qword ptr [rdi], rsi
 	xor	eax, eax
 	ret
 .Lfunc_end2:
 
-optional_trait_methods::using_fn::targets::advanced::inc:
-	inc	qword ptr [rdi]
+<optional_trait_methods::using_try_as_dyn::targets::advanced::AdvancedTarget as optional_trait_methods::using_try_as_dyn::target::TargetExtIncDec>::dec:
+	dec	qword ptr [rdi]
 	xor	eax, eax
 	ret
 .Lfunc_end3:
 
-optional_trait_methods::using_fn::targets::advanced::mul:
+<optional_trait_methods::using_try_as_dyn::targets::advanced::AdvancedTarget as optional_trait_methods::using_try_as_dyn::target::TargetExtIncDec>::inc:
+	inc	qword ptr [rdi]
+	xor	eax, eax
+	ret
+.Lfunc_end4:
+
+<optional_trait_methods::using_try_as_dyn::targets::advanced::AdvancedTarget as optional_trait_methods::using_try_as_dyn::target::TargetExtMul>::mul:
 	cmp	rsi, 7
-	jne	.LBB4_2
+	jne	.LBB5_2
 	lea	rax, [rip + .Lanon.cabb224323f7f456a7965482e4c09287.11]
-	jmp	.LBB4_3
-.LBB4_2:
+	jmp	.LBB5_3
+.LBB5_2:
 	imul	rsi, qword ptr [rdi + 8]
 	imul	rsi, qword ptr [rdi]
 	mov	qword ptr [rdi], rsi
 	xor	eax, eax
-.LBB4_3:
+.LBB5_3:
 	mov	edx, 28
-	ret
-.Lfunc_end4:
-
-optional_trait_methods::using_fn::targets::advanced::get_state:
-	mov	rax, qword ptr [rdi]
 	ret
 .Lfunc_end5:
 
-optional_trait_methods::using_fn::targets::advanced::set_state:
-	mov	qword ptr [rdi], rsi
+<optional_trait_methods::using_try_as_dyn::targets::advanced::AdvancedTarget as optional_trait_methods::using_try_as_dyn::target::TargetExtScaleFactor>::scale_factor:
+	mov	qword ptr [rdi + 8], rsi
 	xor	eax, eax
 	ret
 .Lfunc_end6:
@@ -162,12 +162,12 @@ main:
 	#APP
 	#NO_APP
 	mov	rdi, rbx
-	call	optional_trait_methods::using_fn::targets::advanced::inc
+	call	<optional_trait_methods::using_try_as_dyn::targets::advanced::AdvancedTarget as optional_trait_methods::using_try_as_dyn::target::TargetExtIncDec>::inc
 	test	rax, rax
 	jne	.LBB7_70
 .LBB7_73:
 	mov	rdi, rbx
-	call	optional_trait_methods::using_fn::targets::advanced::dec
+	call	<optional_trait_methods::using_try_as_dyn::targets::advanced::AdvancedTarget as optional_trait_methods::using_try_as_dyn::target::TargetExtIncDec>::dec
 	jmp	.LBB7_69
 .LBB7_17:
 	lea	rax, [rip + .Lanon.cabb224323f7f456a7965482e4c09287.2]
@@ -196,7 +196,7 @@ main:
 	#APP
 	#NO_APP
 	mov	rdi, rbx
-	call	optional_trait_methods::using_fn::targets::advanced::inc
+	call	<optional_trait_methods::using_try_as_dyn::targets::advanced::AdvancedTarget as optional_trait_methods::using_try_as_dyn::target::TargetExtIncDec>::inc
 .LBB7_69:
 	test	rax, rax
 	jne	.LBB7_70
@@ -302,7 +302,7 @@ main:
 	cmp	byte ptr [rsp + 16], 112
 	jne	.LBB7_65
 	mov	rdi, rbx
-	call	optional_trait_methods::using_fn::targets::advanced::get_state
+	call	<optional_trait_methods::using_try_as_dyn::targets::advanced::AdvancedTarget as optional_trait_methods::using_try_as_dyn::target::TargetBase>::get_state
 	lea	rdi, [rip + .Lanon.cabb224323f7f456a7965482e4c09287.7]
 	mov	rsi, rax
 	xor	eax, eax
@@ -371,7 +371,7 @@ main:
 	jmp	.LBB7_1
 .LBB7_67:
 	mov	rdi, rbx
-	call	optional_trait_methods::using_fn::targets::advanced::set_state
+	call	<optional_trait_methods::using_try_as_dyn::targets::advanced::AdvancedTarget as optional_trait_methods::using_try_as_dyn::target::TargetBase>::set_state
 	jmp	.LBB7_69
 .LBB7_75:
 	lea	rax, [rip + .Lanon.cabb224323f7f456a7965482e4c09287.9]
@@ -380,7 +380,7 @@ main:
 	#APP
 	#NO_APP
 	mov	rdi, rbx
-	call	optional_trait_methods::using_fn::targets::advanced::mul
+	call	<optional_trait_methods::using_try_as_dyn::targets::advanced::AdvancedTarget as optional_trait_methods::using_try_as_dyn::target::TargetExtMul>::mul
 	jmp	.LBB7_69
 .LBB7_74:
 	lea	rax, [rip + .Lanon.cabb224323f7f456a7965482e4c09287.10]
@@ -389,7 +389,7 @@ main:
 	#APP
 	#NO_APP
 	mov	rdi, rbx
-	call	optional_trait_methods::using_fn::targets::advanced::scale_factor
+	call	<optional_trait_methods::using_try_as_dyn::targets::advanced::AdvancedTarget as optional_trait_methods::using_try_as_dyn::target::TargetExtScaleFactor>::scale_factor
 	jmp	.LBB7_69
 .LBB7_70:
 	mov	edi, 1

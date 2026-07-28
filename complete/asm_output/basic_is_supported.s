@@ -1,6 +1,6 @@
 __rustc::rust_begin_unwind:
 	push	rax
-	lea	rsi, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.0]
+	lea	rsi, [rip + .Lanon.cabb224323f7f456a7965482e4c09287.0]
 	mov	edx, 7
 	mov	edi, 2
 	call	qword ptr [rip + write@GOTPCREL]
@@ -49,7 +49,7 @@ __rustc::rust_begin_unwind:
 	je	.LBB2_5
 	cmp	eax, 1
 	jne	.LBB2_8
-	lea	rax, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.5]
+	lea	rax, [rip + .Lanon.cabb224323f7f456a7965482e4c09287.5]
 	mov	rcx, rsp
 	mov	qword ptr [rcx], rax
 	mov	qword ptr [rcx + 8], 16
@@ -66,7 +66,7 @@ __rustc::rust_begin_unwind:
 .LBB2_8:
 	cmp	byte ptr [rsi + 8], 0
 	je	.LBB2_9
-	lea	rax, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.7]
+	lea	rax, [rip + .Lanon.cabb224323f7f456a7965482e4c09287.7]
 	mov	rcx, rsp
 	mov	qword ptr [rcx], rax
 	mov	qword ptr [rcx + 8], 21
@@ -75,26 +75,26 @@ __rustc::rust_begin_unwind:
 	jmp	.LBB2_3
 .LBB2_6:
 	call	<optional_trait_methods::using_is_supported::targets::basic::BasicTarget as optional_trait_methods::using_is_supported::target::Target>::get_state
-	lea	rdi, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.4]
+	lea	rdi, [rip + .Lanon.cabb224323f7f456a7965482e4c09287.4]
 	mov	rsi, rax
 	xor	eax, eax
 	add	rsp, 16
 	pop	rbx
 	jmp	qword ptr [rip + printf@GOTPCREL]
 .LBB2_9:
-	lea	rax, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.6]
+	lea	rax, [rip + .Lanon.cabb224323f7f456a7965482e4c09287.6]
 	mov	rcx, rsp
 	mov	qword ptr [rcx], rax
 	mov	qword ptr [rcx + 8], 13
 	#APP
 	#NO_APP
 .LBB2_3:
-	lea	rsi, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.2]
+	lea	rsi, [rip + .Lanon.cabb224323f7f456a7965482e4c09287.2]
 	mov	rbx, qword ptr [rip + write@GOTPCREL]
 	mov	edx, 16
 	mov	edi, 1
 	call	rbx
-	lea	rsi, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.3]
+	lea	rsi, [rip + .Lanon.cabb224323f7f456a7965482e4c09287.3]
 	mov	edx, 1
 	mov	edi, 1
 	call	rbx
@@ -256,12 +256,12 @@ main:
 .LBB6_18:
 	mov	edx, 16
 	mov	edi, 1
-	lea	rsi, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.2]
+	lea	rsi, [rip + .Lanon.cabb224323f7f456a7965482e4c09287.2]
 	mov	r13, qword ptr [rip + write@GOTPCREL]
 	call	r13
 	mov	edx, 1
 	mov	edi, 1
-	lea	rsi, [rip + .Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.3]
+	lea	rsi, [rip + .Lanon.cabb224323f7f456a7965482e4c09287.3]
 	call	r13
 .LBB6_19:
 	mov	r13, qword ptr [rsp + 1192]
@@ -283,28 +283,28 @@ rust_eh_personality:
 	ret
 .Lfunc_end7:
 
-.Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.0:
+.Lanon.cabb224323f7f456a7965482e4c09287.0:
 	.ascii	"panic!\n"
 
-.Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.1:
+.Lanon.cabb224323f7f456a7965482e4c09287.1:
 	.ascii	"s "
 
-.Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.2:
+.Lanon.cabb224323f7f456a7965482e4c09287.2:
 	.ascii	"Unsupported cmd!"
 
-.Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.3:
+.Lanon.cabb224323f7f456a7965482e4c09287.3:
 	.byte	10
 
-.Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.4:
+.Lanon.cabb224323f7f456a7965482e4c09287.4:
 	.asciz	"%d\n"
 
-.Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.5:
+.Lanon.cabb224323f7f456a7965482e4c09287.5:
 	.ascii	"IncDec extension"
 
-.Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.6:
+.Lanon.cabb224323f7f456a7965482e4c09287.6:
 	.ascii	"Mul extension"
 
-.Lanon.a2c7e94a5c3f8584a21e05a9c4fcb8c4.7:
+.Lanon.cabb224323f7f456a7965482e4c09287.7:
 	.ascii	"ScaleFactor extension"
 
-	.ident	"rustc version 1.97.1 (8bab26f4f 2026-07-14)"
+	.ident	"rustc version 1.99.0-nightly (6f72b5dd5 2026-07-22)"

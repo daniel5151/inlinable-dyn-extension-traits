@@ -7,7 +7,7 @@ __rustc::rust_begin_unwind:
 	call	qword ptr [rip + abort@GOTPCREL]
 .Lfunc_end0:
 
-<optional_trait_methods::using_traits::controller::TargetController<optional_trait_methods::using_traits::targets::advanced::AdvancedTarget>>::parse_command:
+<optional_trait_methods::using_try_as_dyn::controller::TargetController<optional_trait_methods::using_try_as_dyn::targets::advanced::AdvancedTarget>>::parse_command:
 	push	r15
 	push	r14
 	push	rbx
@@ -117,7 +117,7 @@ __rustc::rust_begin_unwind:
 	ret
 .Lfunc_end1:
 
-<optional_trait_methods::using_traits::controller::TargetController<optional_trait_methods::using_traits::targets::advanced::AdvancedTarget>>::handle:
+<optional_trait_methods::using_try_as_dyn::controller::TargetController<optional_trait_methods::using_try_as_dyn::targets::advanced::AdvancedTarget>>::handle:
 	push	r14
 	push	rbx
 	sub	rsp, 24
@@ -139,14 +139,14 @@ __rustc::rust_begin_unwind:
 	mov	rdi, r14
 	cmp	eax, 1
 	je	.LBB2_17
-	call	<optional_trait_methods::using_traits::targets::advanced::AdvancedTarget as optional_trait_methods::using_traits::target::TargetExtIncDec>::inc
+	call	<optional_trait_methods::using_try_as_dyn::targets::advanced::AdvancedTarget as optional_trait_methods::using_try_as_dyn::target::TargetExtIncDec>::inc
 	jmp	.LBB2_12
 .LBB2_5:
 	cmp	byte ptr [rsi + 8], 0
 	je	.LBB2_6
 	mov	rsi, qword ptr [rsi + 16]
 	mov	rdi, r14
-	call	<optional_trait_methods::using_traits::targets::advanced::AdvancedTarget as optional_trait_methods::using_traits::target::TargetBase>::set_state
+	call	<optional_trait_methods::using_try_as_dyn::targets::advanced::AdvancedTarget as optional_trait_methods::using_try_as_dyn::target::TargetBase>::set_state
 	jmp	.LBB2_15
 .LBB2_2:
 	cmp	byte ptr [rsi + 8], 0
@@ -159,11 +159,11 @@ __rustc::rust_begin_unwind:
 	#NO_APP
 	mov	rsi, qword ptr [rsi + 16]
 	mov	rdi, r14
-	call	<optional_trait_methods::using_traits::targets::advanced::AdvancedTarget as optional_trait_methods::using_traits::target::TargetExtScaleFactor>::scale_factor
+	call	<optional_trait_methods::using_try_as_dyn::targets::advanced::AdvancedTarget as optional_trait_methods::using_try_as_dyn::target::TargetExtScaleFactor>::scale_factor
 	jmp	.LBB2_15
 .LBB2_6:
 	mov	rdi, r14
-	call	<optional_trait_methods::using_traits::targets::advanced::AdvancedTarget as optional_trait_methods::using_traits::target::TargetBase>::get_state
+	call	<optional_trait_methods::using_try_as_dyn::targets::advanced::AdvancedTarget as optional_trait_methods::using_try_as_dyn::target::TargetBase>::get_state
 	lea	rdi, [rip + .Lanon.cabb224323f7f456a7965482e4c09287.9]
 	xor	ebx, ebx
 	mov	rsi, rax
@@ -179,16 +179,16 @@ __rustc::rust_begin_unwind:
 	#NO_APP
 	mov	rsi, qword ptr [rsi + 16]
 	mov	rdi, r14
-	call	<optional_trait_methods::using_traits::targets::advanced::AdvancedTarget as optional_trait_methods::using_traits::target::TargetExtMul>::mul
+	call	<optional_trait_methods::using_try_as_dyn::targets::advanced::AdvancedTarget as optional_trait_methods::using_try_as_dyn::target::TargetExtMul>::mul
 	jmp	.LBB2_15
 .LBB2_14:
 	mov	rdi, r14
-	call	<optional_trait_methods::using_traits::targets::advanced::AdvancedTarget as optional_trait_methods::using_traits::target::TargetExtIncDec>::inc
+	call	<optional_trait_methods::using_try_as_dyn::targets::advanced::AdvancedTarget as optional_trait_methods::using_try_as_dyn::target::TargetExtIncDec>::inc
 	test	rax, rax
 	jne	.LBB2_15
 	mov	rdi, r14
 .LBB2_17:
-	call	<optional_trait_methods::using_traits::targets::advanced::AdvancedTarget as optional_trait_methods::using_traits::target::TargetExtIncDec>::dec
+	call	<optional_trait_methods::using_try_as_dyn::targets::advanced::AdvancedTarget as optional_trait_methods::using_try_as_dyn::target::TargetExtIncDec>::dec
 .LBB2_12:
 	test	rax, rax
 	je	.LBB2_13
@@ -254,30 +254,30 @@ optional_trait_methods::commands::parse_isize:
 	ret
 .Lfunc_end3:
 
-<optional_trait_methods::using_traits::targets::advanced::AdvancedTarget as optional_trait_methods::using_traits::target::TargetBase>::get_state:
+<optional_trait_methods::using_try_as_dyn::targets::advanced::AdvancedTarget as optional_trait_methods::using_try_as_dyn::target::TargetBase>::get_state:
 	mov	rax, qword ptr [rdi]
 	ret
 .Lfunc_end4:
 
-<optional_trait_methods::using_traits::targets::advanced::AdvancedTarget as optional_trait_methods::using_traits::target::TargetBase>::set_state:
+<optional_trait_methods::using_try_as_dyn::targets::advanced::AdvancedTarget as optional_trait_methods::using_try_as_dyn::target::TargetBase>::set_state:
 	mov	qword ptr [rdi], rsi
 	xor	eax, eax
 	ret
 .Lfunc_end5:
 
-<optional_trait_methods::using_traits::targets::advanced::AdvancedTarget as optional_trait_methods::using_traits::target::TargetExtIncDec>::dec:
+<optional_trait_methods::using_try_as_dyn::targets::advanced::AdvancedTarget as optional_trait_methods::using_try_as_dyn::target::TargetExtIncDec>::dec:
 	dec	qword ptr [rdi]
 	xor	eax, eax
 	ret
 .Lfunc_end6:
 
-<optional_trait_methods::using_traits::targets::advanced::AdvancedTarget as optional_trait_methods::using_traits::target::TargetExtIncDec>::inc:
+<optional_trait_methods::using_try_as_dyn::targets::advanced::AdvancedTarget as optional_trait_methods::using_try_as_dyn::target::TargetExtIncDec>::inc:
 	inc	qword ptr [rdi]
 	xor	eax, eax
 	ret
 .Lfunc_end7:
 
-<optional_trait_methods::using_traits::targets::advanced::AdvancedTarget as optional_trait_methods::using_traits::target::TargetExtMul>::mul:
+<optional_trait_methods::using_try_as_dyn::targets::advanced::AdvancedTarget as optional_trait_methods::using_try_as_dyn::target::TargetExtMul>::mul:
 	cmp	rsi, 7
 	jne	.LBB8_2
 	lea	rax, [rip + .Lanon.cabb224323f7f456a7965482e4c09287.13]
@@ -292,7 +292,7 @@ optional_trait_methods::commands::parse_isize:
 	ret
 .Lfunc_end8:
 
-<optional_trait_methods::using_traits::targets::advanced::AdvancedTarget as optional_trait_methods::using_traits::target::TargetExtScaleFactor>::scale_factor:
+<optional_trait_methods::using_try_as_dyn::targets::advanced::AdvancedTarget as optional_trait_methods::using_try_as_dyn::target::TargetExtScaleFactor>::scale_factor:
 	mov	qword ptr [rdi + 8], rsi
 	xor	eax, eax
 	ret
@@ -384,12 +384,12 @@ main:
 	mov	rdi, r13
 	mov	rsi, r15
 	mov	rdx, rbp
-	call	<optional_trait_methods::using_traits::controller::TargetController<optional_trait_methods::using_traits::targets::advanced::AdvancedTarget>>::parse_command
+	call	<optional_trait_methods::using_try_as_dyn::controller::TargetController<optional_trait_methods::using_try_as_dyn::targets::advanced::AdvancedTarget>>::parse_command
 	cmp	byte ptr [rsp + 8], -1
 	je	.LBB10_22
 	mov	rdi, rbx
 	mov	rsi, r13
-	call	<optional_trait_methods::using_traits::controller::TargetController<optional_trait_methods::using_traits::targets::advanced::AdvancedTarget>>::handle
+	call	<optional_trait_methods::using_try_as_dyn::controller::TargetController<optional_trait_methods::using_try_as_dyn::targets::advanced::AdvancedTarget>>::handle
 	test	rax, rax
 	jne	.LBB10_18
 	jmp	.LBB10_17

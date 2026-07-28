@@ -552,27 +552,92 @@ impl Target for AdvancedTarget {
 }
 ```
 
-### (TODO?) explore how this could be simplified with specialization
+## 5. Using Nightly `try_as_dyn` (`core::any::try_as_dyn_mut`)
 
--   https://www.reddit.com/r/rust/comments/8wbfi3/conditional_compilation_based_on_traits/
--   https://www.reddit.com/r/rust/comments/g5gly6/any_hacks_to_imitate_specialisation/
+Nightly Rust introduces the experimental `#![feature(try_as_dyn)]` API (`core::any::try_as_dyn` / `try_as_dyn_mut`), tracked in [issue #144361](https://github.com/rust-lang/rust/issues/144361).
 
-### (TODO): solving this problem with `Any`?
+`try_as_dyn_mut` provides a native language feature for dynamic trait coercion. It allows attempting to cast a reference to a type `T` into a trait object `&mut dyn Trait` at runtime, returning `Option<&mut dyn Trait>`:
 
--   After all, this technique is pretty-much just down-casting a base type into a closed-set of known "derived" types, right?
-    -   https://users.rust-lang.org/t/how-to-downcast-from-trait-object/5852
--   According to https://www.reddit.com/r/rust/comments/85ki2p/downcasting_a_trait_object/, there isn't any way to downcast trait objects, but third-party crates can do it
-    -   maybe `traitcast`? https://docs.rs/traitcast/0.5.0/traitcast/index.html?
-        -   Looks like https://github.com/CodeChain-io/intertrait is a strict improvement over it?
-    -   `traitcast` seems to do pretty much this, albeit with some caveats
-        -   not `#![no_std]` compatible
-        -   relies on the `Any` trait
-        -   Uses link-time shenanigans to construct a map of valid conversions
-        -   (haven't benchmarked this), the use of lazy_static implies optimization won't be easy
-        -   still requires users to explicitly specify that the concrete type implements the various traits
-            -   `traitcast!` macro, or the `#[cast_to(...)]` marker
+```rust
+if let Some(ops) = core::any::try_as_dyn_mut::<T, dyn TargetExtIncDec<Error = T::Error>>(&mut self.target) {
+    // T implements TargetExtIncDec!
+    ops.inc()?;
+}
+```
 
-Wouldn't it be nice if you could just write `fn foo_ext(&mut self) -> Option<impl FooExt<Self>>;` instead? Alas, you can't do that in trait definitions.
+### Advantages
+
+-   **Zero Target Boilerplate:** Unlike IDETs (which require default `ext_*` methods on `Target` and `Some(self)` boilerplate in target implementations), `try_as_dyn` requires **no conversion methods** on the base `Target` trait. Target implementers simply implement the traits they support:
+    ```rust
+    impl Target for MyTarget { type Error = &'static str; ... }
+    impl TargetExtIncDec for MyTarget { ... }
+    ```
+-   **Single Source of Truth:** Capability probing relies directly on whether the type implements the extension trait. There are no helper methods (`is_supported` or `ext_*`) that can fall out of sync or be implemented incorrectly.
+-   **Eliminates "Adversarial" Implementation Bugs:** In IDETs, a target implementer could theoretically write an `ext_incdec` method that returns `None` even while implementing `TargetExtIncDec`, or return a reference to a different struct entirely. `try_as_dyn_mut` queries compiler trait resolution directly.
+
+### Disadvantages & Requirements
+
+-   **Nightly Only:** Currently an unstable feature gated behind `#![feature(try_as_dyn)]`.
+-   **`'static` Lifetime Requirement:** Currently requires `'static` bounds (`T: 'static` and `<T as Target>::Error: 'static`).
+-   **Nested Extension Hierarchy Ergonomics:** With IDETs, nested extensions can be hierarchically chained (`target.ext_mul().and_then(|ops| ops.ext_scale_factor())`). With `try_as_dyn_mut`, nested extension checks probe `try_as_dyn_mut::<T, dyn TargetExtScaleFactor<...>>(&mut target)` directly or enforce trait inheritance (`TargetExtScaleFactor: TargetExtMul`).
+-   **Incompatibility with Trait Objects (`dyn Target` / `Box<dyn Target>`):**
+    `try_as_dyn` operates strictly on the static type `T` known at the call site. If the target type is erased to a trait object reference (e.g. `target: &mut dyn Target` or `Box<dyn Target>`), calling `try_as_dyn_mut::<dyn Target, dyn TargetExtIncDec>(target)` checks if the trait object type `dyn Target` itself implements `TargetExtIncDec`—it **does NOT** perform dynamic vtable cross-casting or downcasting of the underlying concrete type (`MyTarget`). It returns `None`!
+
+    By contrast, IDETs declare `ext_incdec(&mut self)` directly on the `Target` trait. Calling `target.ext_incdec()` on `&mut dyn Target` or `Box<dyn Target>` dispatches through `dyn Target`'s vtable to `MyTarget::ext_incdec()`, successfully returning `Some(&mut self as &mut dyn TargetExtIncDec)`. Thus, IDETs work seamlessly across both monomorphized generics (`T: Target`) AND dynamic trait objects (`dyn Target`), whereas `try_as_dyn` is strictly restricted to concrete types (`T: Target`).
+
+### The Catch: Static Type Resolution vs. Dynamic Runtime Enablement (Why IDETs Still Win!)
+
+While `try_as_dyn` appears to simplify IDETs by removing target conversion boilerplate, it has a fundamental design limitation when it comes to **per-instance runtime feature enablement**.
+
+Recall one of our core motivating requirements:
+> **Methods can be dynamically enabled/disabled at _runtime_** (e.g. toggling protocol extensions per-target based on runtime CLI flags or instance settings).
+
+- **With IDETs (`using_traits`):**
+  The capability conversion method on `Target` (`fn ext_incdec(&mut self) -> Option<TargetExtIncDecOps<Self>>`) is an actual method executed on an *instance* of `Target`. Target implementers can inspect runtime state inside `ext_incdec`:
+  ```rust
+  fn ext_incdec(&mut self) -> Option<TargetExtIncDecOps<Self>> {
+      if self.config.enable_incdec {
+          Some(self) // Type-checked at compile time, but conditionally enabled at runtime!
+      } else {
+          None
+      }
+  }
+  ```
+  Crucially, IDETs preserve **compile-time safety**: returning `Some(self)` will fail to compile unless `Self` actually implements `TargetExtIncDec`.
+
+- **With `try_as_dyn` (`using_try_as_dyn`):**
+  `try_as_dyn_mut::<T, dyn Trait>(&mut target)` performs **pure static type resolution**. It queries whether the concrete type `T` implements `TargetExtIncDec` at the type level. If `AdvancedTarget` implements `TargetExtIncDec`, `try_as_dyn_mut` will **always** return `Some(&mut target)` for every instance of `AdvancedTarget`. There is no mechanism in `try_as_dyn` alone to disable support per-instance based on runtime configuration!
+
+#### What if we pair `try_as_dyn` with a sidecar `supports_*` method?
+To support runtime toggling with `try_as_dyn`, a library author would have to introduce a separate sidecar method on `Target` (e.g. `fn supports_incdec(&self) -> bool`):
+```rust
+if self.target.supports_incdec() {
+    if let Some(ops) = try_as_dyn_mut::<T, dyn TargetExtIncDec<Error = T::Error>>(&mut self.target) {
+        ops.inc()?;
+    }
+}
+```
+However, this reintroduces major drawbacks:
+1. **Destroys "Single Source of Truth":** Now the target implementer must maintain both `impl TargetExtIncDec for MyTarget` AND `fn supports_incdec(&self) -> bool`.
+2. **Runtime Mismatch Risk:** If `supports_incdec()` returns `true` at runtime but the developer forgot to write `impl TargetExtIncDec for MyTarget`, `try_as_dyn_mut` returns `None`. The library must perform runtime error checking or fallback handling for this state inconsistency.
+3. **Double-Branching Overhead:** The controller must evaluate both the sidecar bool check and the `try_as_dyn_mut` option, adding unnecessary runtime branching.
+
+**Conclusion:** For APIs that require per-instance runtime feature toggling, **IDETs still win!** IDETs combine runtime instance checking and type-safe trait object coercion into a single, atomic method invocation enforced by the compiler.
+
+### Codegen Comparison relative to IDETs
+
+How does `try_as_dyn` compare to IDETs (`using_traits`) in generated assembly and compiler optimization?
+
+-   **Release Mode (`-O3` / `--release`) — 100% Identical Codegen:**
+    When `TargetController<T>` is monomorphized for a concrete target type `T`, LLVM optimizes `try_as_dyn_mut` at compile-time. If `T` implements the extension trait, LLVM resolves `try_as_dyn_mut` directly to `Some(&mut target)` and inlines the handler; if `T` does not implement the trait, LLVM resolves it to `None` and completely prunes the branch.
+    As measured across all benchmark targets (`asm_stats.py`), instruction counts for `parse_command` and `handle` are **100% identical** between IDETs (`using_traits`) and `try_as_dyn` (`using_try_as_dyn`):
+    -   `BasicTarget`: **223 instrs** (100% DCE of unused extension parsers & handlers)
+    -   `FaultyTarget`: **272 instrs** (selective DCE of `Mul` and `ScaleFactor`)
+    -   `AdvancedTarget`: **344 instrs** (full protocol support)
+-   **Debug Mode (`-O0`) — Runtime Trait Resolution:**
+    In unoptimized debug builds, `try_as_dyn_mut` invokes core trait resolution machinery, whereas IDETs execute a direct monomorphized method call returning `Some(self)`. However, benchmark timing under stdin streaming shows both execute within tight statistical noise (~115 ms).
+
+In summary, `try_as_dyn` provides the **exact same zero-cost assembly and dead-code elimination benefits as IDETs** for static type-level feature gating, while removing target-side boilerplate. However, IDETs remain the superior solution when per-instance runtime feature toggling is required.
 
 ## Summary and Comparisons
 
@@ -585,15 +650,15 @@ Wouldn't it be nice if you could just write `fn foo_ext(&mut self) -> Option<imp
 
 #### Methods can be enabled/disabled at _Runtime_
 
-Every technique except for `cargo` features and specialization.
+Every technique except for `cargo` features, specialization, and pure `try_as_dyn` (which operates on static types rather than instance state).
 
 #### Easy for API consumers to understand + implement
 
-|                                                    | `cargo` Features | `is_supported` | Options | Fn Pointers | IDETs | Specialization |
-| -------------------------------------------------- | ---------------- | -------------- | ------- | ----------- | ----- | -------------- |
-| Looks like a "typical" Rust API                    | ✔️                | ✔️              | ✔️\*     | ❌           | ➖     | ✔️              |
-| Uses "standard" method signatures                  | ✔️                | ✔️              | ❌       | ✔️           | ✔️     | ✔️              |
-| Single "source of truth" for method implementation | ✔️                | ❌              | ✔️       | ❌\*\*       | ❌\*\* | ✔️              |
+|                                                    | `cargo` Features | `is_supported` | Options | Fn Pointers | IDETs | `try_as_dyn` | Specialization |
+| -------------------------------------------------- | ---------------- | -------------- | ------- | ----------- | ----- | ------------ | -------------- |
+| Looks like a "typical" Rust API                    | ✔️                | ✔️              | ✔️\*     | ❌           | ➖     | ✔️            | ✔️              |
+| Uses "standard" method signatures                  | ✔️                | ✔️              | ❌       | ✔️           | ✔️     | ✔️            | ✔️              |
+| Single "source of truth" for method implementation | ✔️                | ❌              | ✔️       | ❌\*\*       | ❌\*\* | ✔️            | ✔️              |
 
 \* The `OptResult` type could be a source of confusion
 
@@ -601,21 +666,21 @@ Every technique except for `cargo` features and specialization.
 
 #### Easy for API authors to work with + maintain
 
-|                                             | `cargo` Features | `is_supported` | Options | Fn Pointers | IDETs | Specialization |
-| ------------------------------------------- | ---------------- | -------------- | ------- | ----------- | ----- | -------------- |
-| Minimal boilerplate to invoke a method      | ✔️                | ➖              | ❌       | ➖           | ➖     | ✔️              |
-| Check if method exists _before_ invoking it | N/A              | ✔️              | ❌       | ✔️           | ✔️     | N/A            |
-| Easy to handle the "missing method" case    | ✔️                | ✔️              | ❌       | ✔️           | ✔️     | ✔️              |
+|                                             | `cargo` Features | `is_supported` | Options | Fn Pointers | IDETs | `try_as_dyn` | Specialization |
+| ------------------------------------------- | ---------------- | -------------- | ------- | ----------- | ----- | ------------ | -------------- |
+| Minimal boilerplate to invoke a method      | ✔️                | ➖              | ❌       | ➖           | ➖     | ✔️            | ✔️              |
+| Check if method exists _before_ invoking it | N/A              | ✔️              | ❌       | ✔️           | ✔️     | ✔️            | N/A            |
+| Easy to handle the "missing method" case    | ✔️                | ✔️              | ❌       | ✔️           | ✔️     | ✔️            | ✔️              |
 
 #### Compile-time safety + performance
 
 "If it compiles, it's a valid implementation"
 
-|                                         | `cargo` Features | `is_supported` | Options | Fn Pointers | IDETs | Specialization |
-| --------------------------------------- | ---------------- | -------------- | ------- | ----------- | ----- | -------------- |
-| Compile-time Mutually-Dependent methods | ✔️                | ❌              | ❌       | ✔️           | ✔️     | ✔️              |
-| Compile-time Mutually-Exclusive methods | ✔️                | ❌              | ❌       | ✔️           | ✔️\*   | ❔              |
-| Ensures effective dead-code-elimination | ✔️++              | ✔️\*\*          | ❌       | ✔️\*\*       | ✔️\*\* | ✔️              |
+|                                         | `cargo` Features | `is_supported` | Options | Fn Pointers | IDETs | `try_as_dyn` | Specialization |
+| --------------------------------------- | ---------------- | -------------- | ------- | ----------- | ----- | ------------ | -------------- |
+| Compile-time Mutually-Dependent methods | ✔️                | ❌              | ❌       | ✔️           | ✔️     | ✔️            | ✔️              |
+| Compile-time Mutually-Exclusive methods | ✔️                | ❌              | ❌       | ✔️           | ✔️\*   | ✔️\*          | ❔              |
+| Ensures effective dead-code-elimination | ✔️++              | ✔️\*\*          | ❌       | ✔️\*\*       | ✔️\*\* | ✔️\*\*        | ✔️              |
 
 \* Assuming the implementation adheres to conventions and is not "adversarial"
 
@@ -627,7 +692,7 @@ Every technique except for `cargo` features and specialization.
 
 Based on local benchmarks and assembly inspection:
 -   **Inlining & Vtables:** Using `#[inline(always)]` doesn't improve the quality of the generated code directly, but it does seem to help the dead-code-eliminator to remove the unused vtables, resulting in a marginally smaller binary (which is crucial in embedded/`no_std` applications).
--   **Function Pointers vs IDETs:** The generated assembly for the function pointers approach (`using_fn`) and the IDETs traits approach (`using_traits`) is virtually identical instruction-for-instruction across all targets and functions.
+-   **Function Pointers vs IDETs vs `try_as_dyn`:** The generated assembly for the function pointers approach (`using_fn`), IDETs traits approach (`using_traits`), and nightly `try_as_dyn` approach (`using_try_as_dyn`) is virtually identical instruction-for-instruction across all targets and functions.
 -   **Standalone Assembly Symbols:** Marking `parse_command` and `handle` with `#[inline(never)]` (via the `interpretable_asm` feature) isolates them as standalone symbols in `asm_output/*.s`, allowing automated metrics collection (`asm_stats.py`) to measure exact instruction counts per function without interference from the outer event loop.
 -   **Target Leaf Function Inlining:** Target methods (`get_state`, `set_state`, `inc`, `dec`, etc.) retain unconditional `#[inline(never)]` annotations. In our simplified benchmark targets, these methods perform trivial state mutations; marking them `#[inline(never)]` models real-world protocol implementations (such as `gdbstub` targets) where leaf handlers perform non-trivial I/O, hardware register access, or memory manipulation that an optimizing compiler would not inline into the main packet loop.
 
@@ -635,23 +700,23 @@ Based on local benchmarks and assembly inspection:
 
 Comparing generated assembly for `parse_command` and `handle` across targets (`asm_output/*.s`) highlights how capability-gated parsing achieves fine-grained dead-code elimination proportional to the exact set of extensions implemented by each target:
 
-| Implementation / Metric            | `BasicTarget`<br>*(Base Protocol ONLY)*                           | `FaultyTarget`<br>*(Base + `IncDec`)*                       | `AdvancedTarget`<br>*(All Extensions)* |
-| :--------------------------------- | :---------------------------------------------------------------- | :---------------------------------------------------------- | :------------------------------------- |
-| **`parse_command`**                |                                                                   |                                                             |                                        |
-| • `cfg_gates`                      | **22 instrs**<br>• **100% DCE** of enum variants & parser         | **50 instrs**<br>• Selective DCE of `Mul` and `ScaleFactor` | **90 instrs**<br>• Full parser         |
-| • `is_supported` / `traits` / `fn` | **28 instrs**<br>• **100% DCE** of `IncDec`, `Mul`, `ScaleFactor` | **49 instrs**<br>• Selective DCE of `Mul` and `ScaleFactor` | **90 / 91 instrs**<br>• Full parser    |
-| • `options`                        | **90 instrs**<br>• Zero DCE (speculative parse)                   | **90 instrs**<br>• Zero DCE (speculative parse)             | **90 instrs**<br>• Full parser         |
-| **`handle`**                       |                                                                   |                                                             |                                        |
-| • `cfg_gates`                      | **12 instrs**<br>• **100% DCE** (omits unneeded match arms)       | **35 instrs**<br>• Selective DCE of handlers                | **62 instrs**<br>• Full handler        |
-| • `traits` / `fn`                  | **31 instrs**<br>• **100% DCE** of extension handlers             | **53 instrs**<br>• Selective DCE of handlers                | **69 instrs**<br>• Full handler        |
-| • `is_supported`                   | **48 instrs**<br>• Checks `_supported` bools                      | **58 instrs**<br>• Selective DCE of handlers                | **62 instrs**<br>• Full handler        |
-| • `options`                        | **69 instrs**<br>• Retains all extension branches                 | **91 instrs**<br>• Retains all extension branches           | **126 instrs**<br>• Full handler       |
-| **Total Measured Instructions**    |                                                                   |                                                             |                                        |
-| • `cfg_gates`                      | **188 instrs**                                                    | **251 instrs**                                              | **332 instrs**                         |
-| • `traits` / `fn`                  | **223 instrs**                                                    | **272 instrs**                                              | **344 instrs**                         |
-| • `is_supported`                   | **229 instrs**                                                    | **273 instrs**                                              | **332 instrs**                         |
-| • `options`                        | **347 instrs**                                                    | **373 instrs**                                              | **431 instrs**                         |
-| **Instruction Reduction**          | **~34–46% reduction**                                             | **~27–33% reduction**                                       | **~20–23% reduction**                  |
+| Implementation / Metric                        | `BasicTarget`<br>*(Base Protocol ONLY)*                           | `FaultyTarget`<br>*(Base + `IncDec`)*                       | `AdvancedTarget`<br>*(All Extensions)* |
+| :--------------------------------------------- | :---------------------------------------------------------------- | :---------------------------------------------------------- | :------------------------------------- |
+| **`parse_command`**                            |                                                                   |                                                             |                                        |
+| • `cfg_gates`                                  | **22 instrs**<br>• **100% DCE** of enum variants & parser         | **50 instrs**<br>• Selective DCE of `Mul` and `ScaleFactor` | **90 instrs**<br>• Full parser         |
+| • `is_supported` / `traits` / `fn` / `try_dyn` | **28 instrs**<br>• **100% DCE** of `IncDec`, `Mul`, `ScaleFactor` | **49 instrs**<br>• Selective DCE of `Mul` and `ScaleFactor` | **90 / 91 instrs**<br>• Full parser    |
+| • `options`                                    | **90 instrs**<br>• Zero DCE (speculative parse)                   | **90 instrs**<br>• Zero DCE (speculative parse)             | **90 instrs**<br>• Full parser         |
+| **`handle`**                                   |                                                                   |                                                             |                                        |
+| • `cfg_gates`                                  | **12 instrs**<br>• **100% DCE** (omits unneeded match arms)       | **35 instrs**<br>• Selective DCE of handlers                | **62 instrs**<br>• Full handler        |
+| • `traits` / `fn` / `try_dyn`                  | **31 instrs**<br>• **100% DCE** of extension handlers             | **53 instrs**<br>• Selective DCE of handlers                | **69 instrs**<br>• Full handler        |
+| • `is_supported`                               | **48 instrs**<br>• Checks `_supported` bools                      | **58 instrs**<br>• Selective DCE of handlers                | **62 instrs**<br>• Full handler        |
+| • `options`                                    | **69 instrs**<br>• Retains all extension branches                 | **91 instrs**<br>• Retains all extension branches           | **126 instrs**<br>• Full handler       |
+| **Total Measured Instructions**                |                                                                   |                                                             |                                        |
+| • `cfg_gates`                                  | **188 instrs**                                                    | **251 instrs**                                              | **332 instrs**                         |
+| • `traits` / `fn` / `try_dyn`                  | **223 instrs**                                                    | **272 instrs**                                              | **344 instrs**                         |
+| • `is_supported`                               | **229 instrs**                                                    | **273 instrs**                                              | **332 instrs**                         |
+| • `options`                                    | **347 instrs**                                                    | **373 instrs**                                              | **431 instrs**                         |
+| **Instruction Reduction**                      | **~34–46% reduction**                                             | **~27–33% reduction**                                       | **~20–23% reduction**                  |
 
 Key observation: On targets with partial protocol support (`BasicTarget` and `FaultyTarget`), compile-time and runtime capability-gated dispatch (`cfg_gates`, `is_supported`, `using_fn`, and `using_traits`) enables LLVM to prune both unused packet parsing logic in `parse_command` AND unsupported command handlers in `handle`. Conversely, `using_options` emits the full 90-instruction parser and bloated handler unconditionally across all targets, resulting in **up to 46% more instructions** in the target executable (347 instrs vs 188–223 instrs).
 
@@ -681,27 +746,29 @@ Below are the `hyperfine` benchmark results comparing **`cargo` features** (`usi
 
 ##### Debug Mode (131,072 iterations)
 
-| Implementation                      | Mean ± Std Dev       | Min … Max         | Speedup      |
-| :---------------------------------- | :------------------- | :---------------- | :----------- |
-| **`cargo` Features** (`cfg_gates`)  | **85.9 ms ± 3.7 ms** | 81.0 ms … 95.5 ms | 1.05x slower |
-| **`is_supported`** (`is_supported`) | **82.1 ms ± 1.9 ms** | 77.6 ms … 85.2 ms | 1.00x        |
-| **Options** (`using_options`)       | **83.6 ms ± 2.3 ms** | 79.5 ms … 88.5 ms | 1.02x slower |
-| **Fn Pointers** (`using_fn`)        | **83.4 ms ± 3.2 ms** | 77.8 ms … 91.0 ms | 1.02x slower |
-| **IDETs** (`using_traits`)          | **83.3 ms ± 2.4 ms** | 79.2 ms … 88.0 ms | 1.01x slower |
+| Implementation                      | Mean ± Std Dev        | Min … Max           |
+| :---------------------------------- | :-------------------- | :------------------ |
+| **`cargo` Features** (`cfg_gates`)  | **110.0 ms ± 1.2 ms** | 108.5 ms … 112.5 ms |
+| **`is_supported`** (`is_supported`) | **114.7 ms ± 1.2 ms** | 113.1 ms … 117.8 ms |
+| **Options** (`using_options`)       | **116.7 ms ± 1.0 ms** | 115.3 ms … 119.5 ms |
+| **Fn Pointers** (`using_fn`)        | **117.3 ms ± 1.3 ms** | 115.5 ms … 120.3 ms |
+| **IDETs** (`using_traits`)          | **115.9 ms ± 1.1 ms** | 114.4 ms … 118.6 ms |
+| **`try_as_dyn`** (`try_as_dyn`)     | **115.7 ms ± 1.0 ms** | 114.2 ms … 117.5 ms |
 
-*In Debug mode (`-O0`), all implementations execute virtually identically (~82.1–85.9 ms), within overlapping statistical noise (±1.9 to 3.7 ms stddev).*
+*In Debug mode (`-O0`), all implementations execute virtually identically (~110–117 ms), within tight statistical noise.*
 
 ##### Release Mode (262,144 iterations)
 
-| Implementation                      | Mean ± Std Dev        | Min … Max           | Speedup      |
-| :---------------------------------- | :-------------------- | :------------------ | :----------- |
-| **`cargo` Features** (`cfg_gates`)  | **180.6 ms ± 6.9 ms** | 169.3 ms … 190.2 ms | 1.02x slower |
-| **`is_supported`** (`is_supported`) | **178.6 ms ± 4.4 ms** | 172.6 ms … 188.1 ms | 1.01x slower |
-| **Options** (`using_options`)       | **177.0 ms ± 3.7 ms** | 167.2 ms … 183.5 ms | 1.00x        |
-| **Fn Pointers** (`using_fn`)        | **180.4 ms ± 8.0 ms** | 169.5 ms … 198.4 ms | 1.02x slower |
-| **IDETs** (`using_traits`)          | **177.9 ms ± 5.6 ms** | 169.2 ms … 188.8 ms | 1.01x slower |
+| Implementation                      | Mean ± Std Dev        | Min … Max           |
+| :---------------------------------- | :-------------------- | :------------------ |
+| **`cargo` Features** (`cfg_gates`)  | **198.8 ms ± 2.7 ms** | 194.3 ms … 202.9 ms |
+| **`is_supported`** (`is_supported`) | **199.1 ms ± 3.3 ms** | 194.3 ms … 203.9 ms |
+| **Options** (`using_options`)       | **209.6 ms ± 4.1 ms** | 204.5 ms … 216.5 ms |
+| **Fn Pointers** (`using_fn`)        | **198.5 ms ± 2.9 ms** | 194.8 ms … 203.7 ms |
+| **IDETs** (`using_traits`)          | **197.8 ms ± 3.5 ms** | 193.7 ms … 204.4 ms |
+| **`try_as_dyn`** (`try_as_dyn`)     | **199.7 ms ± 4.3 ms** | 193.4 ms … 206.5 ms |
 
-*In Release mode (`-O3`), LLVM completely devirtualizes and inlines both dynamic dispatch and packet parsing logic across all five approaches, rendering runtime performance virtually identical (all within statistical noise at ~177–180 ms).*
+*In Release mode (`-O3`), LLVM completely devirtualizes and inlines capability checks across `cfg_gates`, `is_supported`, `using_fn`, `using_traits`, and `try_as_dyn`, rendering runtime performance virtually identical (~197–199 ms), while `using_options` incurs overhead (~209 ms) due to un-pruned branches and enum unwrapping.*
 
 ## Conclusion
 

@@ -7,7 +7,7 @@ __rustc::rust_begin_unwind:
 	call	qword ptr [rip + abort@GOTPCREL]
 .Lfunc_end0:
 
-<optional_trait_methods::using_fn::controller::TargetController<optional_trait_methods::using_fn::targets::basic::BasicTarget>>::parse_command:
+<optional_trait_methods::using_try_as_dyn::controller::TargetController<optional_trait_methods::using_try_as_dyn::targets::basic::BasicTarget>>::parse_command:
 	push	rbx
 	mov	rbx, rdi
 	test	rdx, rdx
@@ -41,7 +41,7 @@ __rustc::rust_begin_unwind:
 	ret
 .Lfunc_end1:
 
-<optional_trait_methods::using_fn::controller::TargetController<optional_trait_methods::using_fn::targets::basic::BasicTarget>>::handle:
+<optional_trait_methods::using_try_as_dyn::controller::TargetController<optional_trait_methods::using_try_as_dyn::targets::basic::BasicTarget>>::handle:
 	push	rbx
 	movzx	eax, byte ptr [rsi]
 	test	eax, eax
@@ -66,11 +66,11 @@ __rustc::rust_begin_unwind:
 	cmp	byte ptr [rsi + 8], 0
 	je	.LBB2_4
 	mov	rsi, qword ptr [rsi + 16]
-	call	optional_trait_methods::using_fn::targets::basic::set_state
+	call	<optional_trait_methods::using_try_as_dyn::targets::basic::BasicTarget as optional_trait_methods::using_try_as_dyn::target::TargetBase>::set_state
 	mov	rbx, rax
 	jmp	.LBB2_6
 .LBB2_4:
-	call	optional_trait_methods::using_fn::targets::basic::get_state
+	call	<optional_trait_methods::using_try_as_dyn::targets::basic::BasicTarget as optional_trait_methods::using_try_as_dyn::target::TargetBase>::get_state
 	lea	rdi, [rip + .Lanon.cabb224323f7f456a7965482e4c09287.4]
 	xor	ebx, ebx
 	mov	rsi, rax
@@ -127,12 +127,12 @@ optional_trait_methods::commands::parse_isize:
 	ret
 .Lfunc_end3:
 
-optional_trait_methods::using_fn::targets::basic::get_state:
+<optional_trait_methods::using_try_as_dyn::targets::basic::BasicTarget as optional_trait_methods::using_try_as_dyn::target::TargetBase>::get_state:
 	mov	rax, qword ptr [rdi]
 	ret
 .Lfunc_end4:
 
-optional_trait_methods::using_fn::targets::basic::set_state:
+<optional_trait_methods::using_try_as_dyn::targets::basic::BasicTarget as optional_trait_methods::using_try_as_dyn::target::TargetBase>::set_state:
 	mov	qword ptr [rdi], rsi
 	xor	eax, eax
 	ret
@@ -223,12 +223,12 @@ main:
 	mov	rdi, r12
 	mov	rsi, r15
 	mov	rdx, rbp
-	call	<optional_trait_methods::using_fn::controller::TargetController<optional_trait_methods::using_fn::targets::basic::BasicTarget>>::parse_command
+	call	<optional_trait_methods::using_try_as_dyn::controller::TargetController<optional_trait_methods::using_try_as_dyn::targets::basic::BasicTarget>>::parse_command
 	cmp	byte ptr [rsp + 8], -1
 	je	.LBB6_22
 	mov	rdi, rsp
 	mov	rsi, r12
-	call	<optional_trait_methods::using_fn::controller::TargetController<optional_trait_methods::using_fn::targets::basic::BasicTarget>>::handle
+	call	<optional_trait_methods::using_try_as_dyn::controller::TargetController<optional_trait_methods::using_try_as_dyn::targets::basic::BasicTarget>>::handle
 	test	rax, rax
 	jne	.LBB6_18
 	jmp	.LBB6_17
