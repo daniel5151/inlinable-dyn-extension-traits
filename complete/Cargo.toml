@@ -5,7 +5,7 @@ authors = ["Daniel Prilik <danielprilik@gmail.com>"]
 edition = "2024"
 
 [features]
-default = ["target_advanced", "using_traits", "interpretable_asm", "always_inline"]
+default = ["target_advanced", "using_traits", "always_inline"]
 
 always_inline = []
 interpretable_asm = []
@@ -24,12 +24,13 @@ target_faulty = []
 
 [dependencies]
 libc = { version = "0.2", default-features = false }
-rand_core = { version = "0.6", default-features = false, features = ["getrandom"] }
 rand_chacha = { version = "0.3", default-features = false }
+rand_core = { version = "0.6", default-features = false }
 
 [profile.release]
 panic = "abort"
 opt-level = "s"
+codegen-units = 1
 
 [profile.dev]
 panic = "abort"

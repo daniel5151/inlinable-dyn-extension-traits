@@ -26,7 +26,7 @@ impl<T: Target> TargetController<T> {
 
     // NOTE: `#[inline(never)]` is used here specifically for pedagogical/assembly
     // inspection purposes, ensuring `parse_command` is emitted as a standalone
-    // symbol in `asm_output/`.
+    // symbol in `asm/noinline/<target-triple>/`.
     //
     // Unlike IDETs (`using_traits`) and Fn Pointers (`using_fn`), the
     // `using_options` pattern does NOT provide capability-query methods on
@@ -76,7 +76,7 @@ impl<T: Target> TargetController<T> {
 
     // NOTE: `#[inline(never)]` is used here specifically for pedagogical/assembly
     // inspection purposes, ensuring `handle` is emitted as a standalone symbol in
-    // `asm_output/`.
+    // `asm/noinline/<target-triple>/`.
     #[cfg_attr(feature = "interpretable_asm", inline(never))]
     pub fn handle(&mut self, cmd: &Command) -> Result<(), Error<T::Error>> {
         match cmd {

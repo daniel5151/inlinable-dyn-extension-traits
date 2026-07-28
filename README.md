@@ -1,12 +1,59 @@
 # Optional Trait Methods in Rust
 
-An exploration into various ways optional trait methods can be implemented in Rust.
+This repository compares six ways to model optional groups of trait methods:
 
--   The `complete` folder contains a big-blob of example code which shows off the various techniques.
-    -   The code is a bit of a mess, but it's done to make the outputted assembly as easy to analyze as possible.
-        -   it's a `#![no_std]` binary which links with `libc`
-        -   doesn't use any of rust's formatting code.
-        -   makes extensive use of `cfg_if` to remove any dead code
-    -   The `godbolt.sh` script outputs the crate as a single file that can be copy/pasted into godbolt.org
-        -   `godbolt.sh` takes two arguments: the `Target` implementation (i.e: `basic`, `advanced`, `faulty`), and optional trait method implementation (i.e: `option`, `fn`, `traits`).
--   `writeup.md` contains the draft version of a writeup discussing the various techniques
+- Cargo feature gates
+- Boolean `is_supported` methods
+- Optional method results
+- Function-pointer operation tables
+- Inlineable dyn extension traits (IDETs)
+- Nightly `try_as_dyn`
+
+The main discussion and qualified conclusions are in [writeup.md](writeup.md).
+
+Runnable experiments are under [`complete/`](complete/).
+
+## Reproducing experiments
+
+The repository pins its compiler in `rust-toolchain.toml`. `nightly` is used in
+order to experiment with `try_as_dyn`, which, at the time of writing (July 28,
+2026) is not stable.
+
+`sanity_check.sh` tests, lints, release-builds, and runs end-to-end checks for
+all 18 combinations of three target types and six optional-method
+implementations.
+
+```sh
+cd complete
+./sanity_check.sh
+```
+
+Assembly generation is explicit about the compilation target and does not need
+a target linker or emulator:
+
+```sh
+cargo install --version 0.2.1 rustfilt
+rustup target add x86_64-unknown-linux-gnu
+./generate_asm.sh --target x86_64-unknown-linux-gnu
+```
+
+Generated listings live under:
+
+```text
+complete/asm/{inlined,noinline}/<rust-target-triple>/
+```
+
+For local timing experiments:
+
+```sh
+cargo install hyperfine
+./run_hyperfine.sh 1000000 1000000 42 30 5
+```
+
+All five arguments are required: debug iterations, release iterations, seed,
+measured runs, and warmup runs. The benchmark uses one deterministic input
+corpus for every binary, benchmarks both unoptimized debug builds and the same
+`-Os` release profile as the assembly experiment, suppresses output, records
+environment metadata, and runs candidates in both forward and reverse order.
+Timing results are written under `complete/target/benchmark-results/` and are
+intentionally not treated as portable facts.

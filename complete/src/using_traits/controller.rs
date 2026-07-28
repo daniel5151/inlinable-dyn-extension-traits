@@ -24,7 +24,7 @@ impl<T: Target> TargetController<T> {
 
     // NOTE: `#[inline(never)]` is used here specifically for pedagogical/assembly
     // inspection purposes, ensuring `parse_command` is emitted as a standalone
-    // symbol in `asm_output/`.
+    // symbol in `asm/noinline/<target-triple>/`.
     //
     // Monomorphization still inlines `Target::ext_*` into this function, preserving
     // full IDET-based dead-code elimination within `parse_command`. In
@@ -81,7 +81,7 @@ impl<T: Target> TargetController<T> {
 
     // NOTE: `#[inline(never)]` is used here specifically for pedagogical/assembly
     // inspection purposes, ensuring `handle` is emitted as a standalone symbol in
-    // `asm_output/`.
+    // `asm/noinline/<target-triple>/`.
     //
     // Monomorphization still inlines target capability checks into this function,
     // preserving dead-code elimination of unsupported extension handlers.

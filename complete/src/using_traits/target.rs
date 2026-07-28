@@ -48,3 +48,65 @@ define_ops!(TargetBase -> TargetBaseOps);
 define_ops!(TargetExtIncDec -> TargetExtIncDecOps);
 define_ops!(TargetExtMul -> TargetExtMulOps);
 define_ops!(TargetExtScaleFactor -> TargetExtScaleFactorOps);
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    struct RuntimeTarget {
+        state: isize,
+        incdec_enabled: bool,
+    }
+
+    impl Target for RuntimeTarget {
+        type Error = ();
+
+        fn base(&mut self) -> TargetBaseOps<'_, Self> {
+            self
+        }
+
+        fn ext_incdec(&mut self) -> Option<TargetExtIncDecOps<'_, Self>> {
+            self.incdec_enabled.then_some(self)
+        }
+    }
+
+    impl TargetBase for RuntimeTarget {
+        fn get_state(&self) -> isize {
+            self.state
+        }
+
+        fn set_state(&mut self, value: isize) -> Result<(), Self::Error> {
+            self.state = value;
+            Ok(())
+        }
+    }
+
+    impl TargetExtIncDec for RuntimeTarget {
+        fn inc(&mut self) -> Result<(), Self::Error> {
+            self.state += 1;
+            Ok(())
+        }
+
+        fn dec(&mut self) -> Result<(), Self::Error> {
+            self.state -= 1;
+            Ok(())
+        }
+    }
+
+    fn query_through_erased_target(target: &mut dyn Target<Error = ()>) -> bool {
+        assert_eq!(target.base().get_state(), 0);
+        target.ext_incdec().is_some()
+    }
+
+    #[test]
+    fn runtime_capability_query_works_through_dyn_target() {
+        let mut target = RuntimeTarget {
+            state: 0,
+            incdec_enabled: false,
+        };
+        assert!(!query_through_erased_target(&mut target));
+
+        target.incdec_enabled = true;
+        assert!(query_through_erased_target(&mut target));
+    }
+}

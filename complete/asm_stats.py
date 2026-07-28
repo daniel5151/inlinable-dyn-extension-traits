@@ -1,153 +1,236 @@
 #!/usr/bin/env python3
+"""Summarize target-specific Rust assembly listings.
+
+The parser deliberately accepts the ELF and Mach-O label conventions exercised
+by the checked-in targets.
+It counts textual instructions, not encoded bytes or execution cost. The metric is
+useful for checking dead-code elimination within one pinned toolchain/target, but
+must not be interpreted as a portable performance measurement.
 """
-asm_stats.py - Analyze assembly function sizes across optional trait method implementations.
-"""
+
+from __future__ import annotations
 
 import argparse
-import glob
-import os
+import json
+import re
 import sys
+from collections import defaultdict
+from pathlib import Path
 
-def parse_asm_file(filepath):
-    """
-    Parses a demangled .s assembly file and extracts metrics for each function symbol.
-    Returns dict: { fn_short_name: { 'instructions': int, 'total_lines': int, 'full_name': str } }
-    """
-    functions = {}
-    current_symbol = None
-    current_full_name = None
-    instr_count = 0
-    line_count = 0
+IMPLEMENTATIONS = (
+    "cfg_gates",
+    "is_supported",
+    "options",
+    "fn",
+    "traits",
+    "try_as_dyn",
+)
+TARGETS = ("basic", "advanced", "faulty")
+PRIORITY = (
+    "parse_command",
+    "handle",
+    "run_optional_trait_methods",
+    "unsupported_cmd",
+    "parse_isize",
+    "get_state",
+    "set_state",
+    "inc",
+    "dec",
+    "mul",
+    "scale_factor",
+    "strip_prefix",
+)
+LOCAL_LABEL_PREFIXES = (
+    ".",
+    "$",
+    "LBB",
+    "Ltmp",
+    "Lloh",
+    "Lfunc",
+    "Lexception",
+    "LJTI",
+    "Lswitch",
+    "GCC_except",
+    "l_anon",
+)
 
-    with open(filepath, 'r', encoding='utf-8', errors='ignore') as f:
-        for line in f:
-            raw_line = line.strip()
 
-            # Check for start of a function label
-            # Match lines like: <optional_trait_methods::using_fn::...>::parse_command: or main:
-            if line.endswith(':\n') and not line.startswith('.') and not line.startswith('#'):
-                label = raw_line[:-1]
-                # Extract short symbol name
-                if '::' in label:
-                    short_name = label.rsplit('::', 1)[-1]
-                    if '>' in short_name:
-                        short_name = short_name.split('>')[-1].strip(':').strip()
-                    if short_name.startswith('parse_command'):
-                        short_name = 'parse_command'
-                    elif short_name.startswith('handle'):
-                        short_name = 'handle'
-                    elif short_name.startswith('unsupported_cmd'):
-                        short_name = 'unsupported_cmd'
-                else:
-                    short_name = label
+def is_global_label(line: str) -> bool:
+    if not line.endswith(":\n") or line[:1].isspace():
+        return False
+    label = line.strip()[:-1]
+    return bool(label) and not label.startswith(LOCAL_LABEL_PREFIXES)
 
-                current_symbol = short_name
-                current_full_name = label
-                instr_count = 0
-                line_count = 0
+
+def is_instruction(line: str) -> bool:
+    if not line[:1].isspace():
+        return False
+    stripped = line.strip()
+    return bool(stripped) and not stripped.startswith((".", "#", "//", ";", "@"))
+
+
+def short_name(label: str) -> str:
+    if "::strip_prefix::" in label:
+        return "strip_prefix"
+    for name in PRIORITY:
+        if re.search(rf"(?:::|\.){re.escape(name)}(?:$|<)", label) or label.rstrip(
+            ":"
+        ).endswith(name):
+            return name
+    cleaned = label.lstrip("_")
+    return cleaned.rsplit("::", 1)[-1]
+
+
+def parse_asm_file(path: Path) -> dict:
+    functions: list[dict] = []
+    current_label: str | None = None
+    instructions = 0
+    source_lines = 0
+
+    def finish_function() -> None:
+        nonlocal current_label, instructions, source_lines
+        if current_label is not None:
+            functions.append(
+                {
+                    "label": current_label,
+                    "name": short_name(current_label),
+                    "instructions": instructions,
+                    "source_lines": source_lines,
+                }
+            )
+        current_label = None
+        instructions = 0
+        source_lines = 0
+
+    with path.open("r", encoding="utf-8", errors="replace") as assembly:
+        for line in assembly:
+            if is_global_label(line):
+                finish_function()
+                current_label = line.strip()[:-1]
                 continue
+            if current_label is not None and is_instruction(line):
+                instructions += 1
+                source_lines += 1
+            elif current_label is not None and line.strip():
+                source_lines += 1
+    finish_function()
 
-            # Check for end of function marker (.Lfunc_endN:)
-            if raw_line.startswith('.Lfunc_end'):
-                if current_symbol:
-                    functions[current_symbol] = {
-                        'instructions': instr_count,
-                        'total_lines': line_count,
-                        'full_name': current_full_name,
-                    }
-                    current_symbol = None
-                continue
+    grouped: defaultdict[str, dict[str, int]] = defaultdict(
+        lambda: {"instructions": 0, "source_lines": 0}
+    )
+    for function in functions:
+        grouped[function["name"]]["instructions"] += function["instructions"]
+        grouped[function["name"]]["source_lines"] += function["source_lines"]
 
-            if current_symbol:
-                if not raw_line or raw_line.startswith('#'):
-                    continue
-                line_count += 1
-                # Assembly instruction lines start with tab in rustc asm output
-                if line.startswith('\t') and not raw_line.startswith('.'):
-                    instr_count += 1
+    return {
+        "functions": functions,
+        "grouped": dict(grouped),
+        "total_instructions": sum(item["instructions"] for item in functions),
+        "total_source_lines": sum(item["source_lines"] for item in functions),
+    }
 
-    return functions
 
-def main():
-    parser = argparse.ArgumentParser(description="Assembly function size & insight analyzer")
-    parser.add_argument("--dir", default="asm_output", help="Directory containing .s files (default: asm_output)")
-    parser.add_argument("-t", "--target", choices=["basic", "advanced", "faulty"], help="Filter by target")
-    parser.add_argument("-f", "--func", help="Filter by function name substring (e.g. parse_command, handle)")
-    parser.add_argument("--lines", action="store_true", help="Report total ASM lines instead of instruction counts")
-    args = parser.parse_args()
+def discover_triples(root: Path, mode: str) -> list[str]:
+    mode_dir = root / mode
+    if not mode_dir.is_dir():
+        return []
+    return sorted(path.name for path in mode_dir.iterdir() if path.is_dir())
 
-    asm_dir = args.dir
-    if not os.path.exists(asm_dir):
-        if os.path.exists(os.path.join("complete", asm_dir)):
-            asm_dir = os.path.join("complete", asm_dir)
-        else:
-            print(f"Error: Directory '{asm_dir}' not found.", file=sys.stderr)
-            sys.exit(1)
 
-    targets = ["basic", "advanced", "faulty"] if not args.target else [args.target]
-    impls = ["cfg_gates", "is_supported", "options", "fn", "traits", "try_as_dyn"]
-    metric_key = "total_lines" if args.lines else "instructions"
-    metric_name = "ASM Lines" if args.lines else "Instructions"
+def print_table(triple: str, target: str, data: dict, metric: str) -> None:
+    print(f"Target triple: {triple} | target: {target} | metric: {metric}")
+    header = f"{'Function':<30}" + "".join(
+        f" | {implementation:<14}" for implementation in IMPLEMENTATIONS
+    )
+    print(header)
+    print("-" * len(header))
 
-    print(f"=== Assembly Function Size Insights ({metric_name}) ===")
+    names = set()
+    for result in data.values():
+        names.update(result["grouped"])
+    ordered_names = sorted(
+        names, key=lambda name: (PRIORITY.index(name) if name in PRIORITY else 999, name)
+    )
+
+    for name in ordered_names:
+        values = []
+        for implementation in IMPLEMENTATIONS:
+            value = data[implementation]["grouped"].get(name, {}).get(metric)
+            values.append(f" | {str(value) if value is not None else '-':>14}")
+        print(f"{name:<30}{''.join(values)}")
+
+    total_key = "total_instructions" if metric == "instructions" else "total_source_lines"
+    totals = "".join(
+        f" | {data[implementation][total_key]:>14}" for implementation in IMPLEMENTATIONS
+    )
+    print("-" * len(header))
+    print(f"{'TOTAL (recognized functions)':<30}{totals}")
     print()
 
-    for tgt in targets:
-        print(f"--- Target: {tgt.upper()} ---")
-        data = {}
-        all_funcs = set()
-        total_file_instructions = {}
 
-        for impl in impls:
-            filepath = os.path.join(asm_dir, f"{tgt}_{impl}.s")
-            data[impl] = {}
-            if os.path.exists(filepath):
-                fns = parse_asm_file(filepath)
-                tot = 0
-                for fname, metrics in fns.items():
-                    if args.func and args.func.lower() not in fname.lower():
-                        continue
-                    data[impl][fname] = metrics[metric_key]
-                    all_funcs.add(fname)
-                    tot += metrics[metric_key]
-                total_file_instructions[impl] = tot
-            else:
-                total_file_instructions[impl] = 0
+def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--root", type=Path, default=Path("asm"))
+    parser.add_argument("--mode", choices=("inlined", "noinline"), default="noinline")
+    parser.add_argument("--target-triple", action="append", dest="triples")
+    parser.add_argument("--target", choices=TARGETS, action="append", dest="targets")
+    parser.add_argument("--metric", choices=("instructions", "source_lines"), default="instructions")
+    parser.add_argument("--json", type=Path, dest="json_path")
+    parser.add_argument(
+        "--strict",
+        action="store_true",
+        help="fail on missing files, zero recognized instructions, or missing key symbols",
+    )
+    args = parser.parse_args()
 
-        priority = ["parse_command", "handle", "main", "unsupported_cmd", "parse_isize", "get_state", "set_state", "inc", "dec", "mul", "scale_factor"]
-        sorted_funcs = sorted(all_funcs, key=lambda x: (priority.index(x) if x in priority else 99, x))
+    triples = args.triples or discover_triples(args.root, args.mode)
+    targets = args.targets or list(TARGETS)
+    if not triples:
+        print(f"no target triples found under {args.root / args.mode}", file=sys.stderr)
+        return 2
 
-        header = f"{'Function':<22} | {'cfg_gates':<12} | {'is_supported':<12} | {'using_options':<13} | {'using_fn':<12} | {'using_traits':<12} | {'try_as_dyn':<12}"
-        divider = "-" * len(header)
-        print(header)
-        print(divider)
+    report: dict[str, dict] = {}
+    errors: list[str] = []
+    for triple in triples:
+        report[triple] = {}
+        for target in targets:
+            by_implementation = {}
+            for implementation in IMPLEMENTATIONS:
+                path = (
+                    args.root
+                    / args.mode
+                    / triple
+                    / f"{target}_{implementation}.s"
+                )
+                if not path.is_file():
+                    errors.append(f"missing assembly file: {path}")
+                    continue
+                result = parse_asm_file(path)
+                by_implementation[implementation] = result
+                if result["total_instructions"] == 0:
+                    errors.append(f"no instructions recognized in: {path}")
+                required = {"run_optional_trait_methods"}
+                if args.mode == "noinline":
+                    required.update(("parse_command", "handle"))
+                missing = required.difference(result["grouped"])
+                if missing:
+                    errors.append(f"missing {sorted(missing)} in: {path}")
 
-        for fn in sorted_funcs:
-            cfg_val = data["cfg_gates"].get(fn, "-")
-            sup_val = data["is_supported"].get(fn, "-")
-            opts_val = data["options"].get(fn, "-")
-            fn_val = data["fn"].get(fn, "-")
-            traits_val = data["traits"].get(fn, "-")
-            try_dyn_val = data["try_as_dyn"].get(fn, "-")
+            if len(by_implementation) == len(IMPLEMENTATIONS):
+                report[triple][target] = by_implementation
+                print_table(triple, target, by_implementation, args.metric)
 
-            s_cfg = f"{cfg_val:>5}" if cfg_val != "-" else f"{'-':>5}"
-            s_sup = f"{sup_val:>5}" if sup_val != "-" else f"{'-':>5}"
-            s_opts = f"{opts_val:>5}" if opts_val != "-" else f"{'-':>5}"
-            s_fn = f"{fn_val:>5}" if fn_val != "-" else f"{'-':>5}"
-            s_traits = f"{traits_val:>5}" if traits_val != "-" else f"{'-':>5}"
-            s_try_dyn = f"{try_dyn_val:>5}" if try_dyn_val != "-" else f"{'-':>5}"
+    if args.json_path:
+        args.json_path.parent.mkdir(parents=True, exist_ok=True)
+        args.json_path.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
 
-            print(f"{fn:<22} | {s_cfg:<12} | {s_sup:<12} | {s_opts:<13} | {s_fn:<12} | {s_traits:<12} | {s_try_dyn:<12}")
+    if errors:
+        for error in errors:
+            print(f"error: {error}", file=sys.stderr)
+        if args.strict:
+            return 1
+    return 0
 
-        print(divider)
-        tot_cfg = total_file_instructions.get("cfg_gates", 0)
-        tot_sup = total_file_instructions.get("is_supported", 0)
-        tot_opts = total_file_instructions.get("options", 0)
-        tot_fn = total_file_instructions.get("fn", 0)
-        tot_traits = total_file_instructions.get("traits", 0)
-        tot_try_dyn = total_file_instructions.get("try_as_dyn", 0)
-        print(f"{'TOTAL (measured)':<22} | {tot_cfg:>5}        | {tot_sup:>5}        | {tot_opts:>5}         | {tot_fn:>5}        | {tot_traits:>5}        | {tot_try_dyn:>5}")
-        print()
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

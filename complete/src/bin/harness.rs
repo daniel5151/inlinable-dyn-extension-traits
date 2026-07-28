@@ -4,13 +4,27 @@ use rand_core::SeedableRng;
 use std::io::Write;
 use std::io::{self};
 
-fn main() {
-    let num_commands = std::env::args()
-        .nth(1)
-        .and_then(|arg| arg.parse::<usize>().ok())
-        .unwrap_or(100);
+fn usage() -> ! {
+    eprintln!("usage: harness <positive-command-count> <seed-u64>");
+    std::process::exit(2);
+}
 
-    let mut rng = ChaCha8Rng::from_entropy();
+fn main() {
+    let mut args = std::env::args().skip(1);
+    let num_commands = args
+        .next()
+        .and_then(|arg| arg.parse::<usize>().ok())
+        .filter(|count| *count > 0)
+        .unwrap_or_else(|| usage());
+    let seed = args
+        .next()
+        .and_then(|arg| arg.parse::<u64>().ok())
+        .unwrap_or_else(|| usage());
+    if args.next().is_some() {
+        usage();
+    }
+
+    let mut rng = ChaCha8Rng::seed_from_u64(seed);
     let stdout = io::stdout();
     let mut handle = stdout.lock();
 

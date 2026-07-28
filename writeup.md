@@ -628,16 +628,24 @@ However, this reintroduces major drawbacks:
 
 How does `try_as_dyn` compare to IDETs (`using_traits`) in generated assembly and compiler optimization?
 
--   **Release Mode (`-O3` / `--release`) — 100% Identical Codegen:**
-    When `TargetController<T>` is monomorphized for a concrete target type `T`, LLVM optimizes `try_as_dyn_mut` at compile-time. If `T` implements the extension trait, LLVM resolves `try_as_dyn_mut` directly to `Some(&mut target)` and inlines the handler; if `T` does not implement the trait, LLVM resolves it to `None` and completely prunes the branch.
-    As measured across all benchmark targets (`asm_stats.py`), instruction counts for `parse_command` and `handle` are **100% identical** between IDETs (`using_traits`) and `try_as_dyn` (`using_try_as_dyn`):
-    -   `BasicTarget`: **223 instrs** (100% DCE of unused extension parsers & handlers)
-    -   `FaultyTarget`: **272 instrs** (selective DCE of `Mul` and `ScaleFactor`)
-    -   `AdvancedTarget`: **344 instrs** (full protocol support)
--   **Debug Mode (`-O0`) — Runtime Trait Resolution:**
-    In unoptimized debug builds, `try_as_dyn_mut` invokes core trait resolution machinery, whereas IDETs execute a direct monomorphized method call returning `Some(self)`. However, benchmark timing under stdin streaming shows both execute within tight statistical noise (~115 ms).
+In release mode, the answer is simple: **the generated code is identical in
+this experiment.** Once `TargetController<T>` is monomorphized, LLVM can resolve
+`try_as_dyn_mut` to `Some` or `None` and throw away the unused branch. The final
+`run_optional_trait_methods` function is identical between IDETs and
+`try_as_dyn` on all three targets:
 
-In summary, `try_as_dyn` provides the **exact same zero-cost assembly and dead-code elimination benefits as IDETs** for static type-level feature gating, while removing target-side boilerplate. However, IDETs remain the superior solution when per-instance runtime feature toggling is required.
+-   `BasicTarget`: **114 x86 instructions / 91 AArch64 instructions**
+-   `FaultyTarget`: **144 x86 instructions / 129 AArch64 instructions**
+-   `AdvancedTarget`: **252 x86 instructions / 246 AArch64 instructions**
+
+Debug mode is a different story: `try_as_dyn_mut` still invokes the runtime
+trait-resolution machinery, whereas an IDET is just a direct method call which
+returns `Some(self)`.
+
+So for statically-known capabilities, `try_as_dyn` gets the same optimized
+codegen as IDETs without the target-side conversion methods. IDETs still have
+one important trick that `try_as_dyn` doesn't: their answer can vary from one
+target instance to another at runtime.
 
 ## Summary and Comparisons
 
@@ -690,15 +698,28 @@ Every technique except for `cargo` features, specialization, and pure `try_as_dy
 
 [daniel5151/inlinable-dyn-extension-traits](https://github.com/daniel5151/inlinable-dyn-extension-traits) contains sample code for many of these methods, and includes assembly listings.
 
-Based on local benchmarks and assembly inspection:
--   **Inlining & Vtables:** Using `#[inline(always)]` doesn't improve the quality of the generated code directly, but it does seem to help the dead-code-eliminator to remove the unused vtables, resulting in a marginally smaller binary (which is crucial in embedded/`no_std` applications).
--   **Function Pointers vs IDETs vs `try_as_dyn`:** The generated assembly for the function pointers approach (`using_fn`), IDETs traits approach (`using_traits`), and nightly `try_as_dyn` approach (`using_try_as_dyn`) is virtually identical instruction-for-instruction across all targets and functions.
--   **Standalone Assembly Symbols:** Marking `parse_command` and `handle` with `#[inline(never)]` (via the `interpretable_asm` feature) isolates them as standalone symbols in `asm_output/*.s`, allowing automated metrics collection (`asm_stats.py`) to measure exact instruction counts per function without interference from the outer event loop.
+So, does all of this actually optimize away?
+
+On the pinned compiler, the answer is yes! The fully-inlined run loop for
+function pointers, IDETs, and `try_as_dyn` is instruction-for-instruction
+identical across all three targets and both checked-in architectures.
+
+There are a couple details worth keeping in mind while looking at the numbers:
+
+-   The small capability-conversion helpers use `always_inline`.
+-   `parse_command` and `handle` can be marked `#[inline(never)]` to keep them
+    visible as standalone assembly functions for inspection.
 -   **Target Leaf Function Inlining:** Target methods (`get_state`, `set_state`, `inc`, `dec`, etc.) retain unconditional `#[inline(never)]` annotations. In our simplified benchmark targets, these methods perform trivial state mutations; marking them `#[inline(never)]` models real-world protocol implementations (such as `gdbstub` targets) where leaf handlers perform non-trivial I/O, hardware register access, or memory manipulation that an optimizing compiler would not inline into the main packet loop.
+
+There is also one important limitation: these assembly examples use concrete
+targets whose capability answers are constant. That's exactly what lets LLVM
+turn the checks into compile-time `Some` / `None` decisions. A target whose
+answer changes at runtime is going to keep that branch.
 
 #### Target-Level Assembly DCE Inspection (`BasicTarget` vs `FaultyTarget` vs `AdvancedTarget`)
 
-Comparing generated assembly for `parse_command` and `handle` across targets (`asm_output/*.s`) highlights how capability-gated parsing achieves fine-grained dead-code elimination proportional to the exact set of extensions implemented by each target:
+Looking at `parse_command` and `handle` separately makes it easy to see exactly
+what LLVM throws away for each target:
 
 | Implementation / Metric                        | `BasicTarget`<br>*(Base Protocol ONLY)*                           | `FaultyTarget`<br>*(Base + `IncDec`)*                       | `AdvancedTarget`<br>*(All Extensions)* |
 | :--------------------------------------------- | :---------------------------------------------------------------- | :---------------------------------------------------------- | :------------------------------------- |
@@ -707,68 +728,88 @@ Comparing generated assembly for `parse_command` and `handle` across targets (`a
 | • `is_supported` / `traits` / `fn` / `try_dyn` | **28 instrs**<br>• **100% DCE** of `IncDec`, `Mul`, `ScaleFactor` | **49 instrs**<br>• Selective DCE of `Mul` and `ScaleFactor` | **90 / 91 instrs**<br>• Full parser    |
 | • `options`                                    | **90 instrs**<br>• Zero DCE (speculative parse)                   | **90 instrs**<br>• Zero DCE (speculative parse)             | **90 instrs**<br>• Full parser         |
 | **`handle`**                                   |                                                                   |                                                             |                                        |
-| • `cfg_gates`                                  | **12 instrs**<br>• **100% DCE** (omits unneeded match arms)       | **35 instrs**<br>• Selective DCE of handlers                | **62 instrs**<br>• Full handler        |
-| • `traits` / `fn` / `try_dyn`                  | **31 instrs**<br>• **100% DCE** of extension handlers             | **53 instrs**<br>• Selective DCE of handlers                | **69 instrs**<br>• Full handler        |
-| • `is_supported`                               | **48 instrs**<br>• Checks `_supported` bools                      | **58 instrs**<br>• Selective DCE of handlers                | **62 instrs**<br>• Full handler        |
-| • `options`                                    | **69 instrs**<br>• Retains all extension branches                 | **91 instrs**<br>• Retains all extension branches           | **126 instrs**<br>• Full handler       |
-| **Total Measured Instructions**                |                                                                   |                                                             |                                        |
-| • `cfg_gates`                                  | **188 instrs**                                                    | **251 instrs**                                              | **332 instrs**                         |
-| • `traits` / `fn` / `try_dyn`                  | **223 instrs**                                                    | **272 instrs**                                              | **344 instrs**                         |
-| • `is_supported`                               | **229 instrs**                                                    | **273 instrs**                                              | **332 instrs**                         |
-| • `options`                                    | **347 instrs**                                                    | **373 instrs**                                              | **431 instrs**                         |
-| **Instruction Reduction**                      | **~34–46% reduction**                                             | **~27–33% reduction**                                       | **~20–23% reduction**                  |
+| • `cfg_gates`                                  | **9 instrs**<br>• Omits unneeded match arms                       | **32 instrs**<br>• Selective DCE of handlers                | **57 instrs**<br>• Full handler        |
+| • `traits` / `fn` / `try_dyn`                  | **20 instrs**<br>• DCE of extension handlers                      | **39 instrs**<br>• Selective DCE of handlers                | **61 instrs**<br>• Full handler        |
+| • `is_supported`                               | **34 instrs**<br>• Retains more fallback handling                 | **49 instrs**<br>• Selective DCE of handlers                | **57 instrs**<br>• Full handler        |
+| • `options`                                    | **44 instrs**<br>• Retains extension branches                     | **72 instrs**<br>• Retains extension branches               | **107 instrs**<br>• Full handler       |
 
-Key observation: On targets with partial protocol support (`BasicTarget` and `FaultyTarget`), compile-time and runtime capability-gated dispatch (`cfg_gates`, `is_supported`, `using_fn`, and `using_traits`) enables LLVM to prune both unused packet parsing logic in `parse_command` AND unsupported command handlers in `handle`. Conversely, `using_options` emits the full 90-instruction parser and bloated handler unconditionally across all targets, resulting in **up to 46% more instructions** in the target executable (347 instrs vs 188–223 instrs).
+The important bit: when support is known for a concrete target, every
+capability-gated approach lets LLVM remove both the unused parser and its
+handler. `using_options` can't check support before parsing, so it keeps the
+full 90-instruction parser even for `BasicTarget`.
 
-*Note on the instruction spike in `handle` for `options` on `AdvancedTarget`:* Unlike capability-gated approaches where LLVM proves extension support before invocation and prunes fallback paths, `using_options` invokes methods returning `OptResult<(), E>` (`Result<(), MaybeUnimpl<E>>`). LLVM must emit defensive code for `map_unimpl()` enum unwrapping (`MaybeUnimpl` -> `Option`), runtime `Some`/`None` branching to `unsupported_cmd()`, and `(inc_impl, dec_impl)` tuple checks for `Error::InvalidImpl`. This nearly doubles the instruction count of `handle` even when all extensions are supported (126 instrs vs. 62–69 instrs).
+Why does `using_options` also have such a large `handle`? Its `OptResult`
+return values still need to be unpacked and checked at runtime, including the
+`InvalidImpl` case for the `(inc, dec)` pair. That leaves it with 107 x86
+instructions on `AdvancedTarget`, versus 57–61 for the capability-gated
+approaches.
 
-##### Interpretable Assembly vs. Fully-Inlined Production Assembly
+##### Why Are There Two Sets of Assembly Listings?
 
-The repository builds two separate sets of assembly listings:
+The `noinline` listings are meant to be read: `parse_command` and `handle` stay
+as separate functions, making it easy to count instructions and see which
+branches survived.
 
-1. **Interpretable Assembly (`asm_output/`)**: Compiled with the repo-wide `interpretable_asm` feature (which applies `#[inline(never)]` to key functions like `parse_command` and `handle`). This isolates `parse_command` and `handle` into distinct, named assembly symbols so `asm_stats.py` can measure exact instruction counts per function.
-2. **Fully-Inlined Production Assembly (`asm_output_inlined/`)**: Compiled without `interpretable_asm` (omitting `#[inline(never)]`). In this mode, LLVM flattens the entire parsing, handling, and main execution loop into a single streamlined block.
+The `inlined` listings are closer to the real optimized program. LLVM is free
+to fold parsing and dispatch into `run_optional_trait_methods`, which lets us
+check that `#[inline(never)]` isn't somehow "faking" the DCE result:
 
-Comparing the fully-inlined assembly outputs (`asm_output_inlined/`) demonstrates that `#[inline(never)]` is strictly an inspection aid and does not "fake" the Dead-Code Elimination effect:
+- **`basic_traits.s` / `basic_fn.s` (Inlined)**: LLVM completely deletes all parsing byte checks for `+`, `-`, `+-`, `*`, `*~`, and their associated parser paths. The selected x86 run loop is **114 instructions**.
+- **`basic_options.s` (Inlined)**: Lacking capability pre-checks, LLVM retains speculative parsing branches. The selected x86 run loop is **224 instructions**.
 
-- **`basic_traits.s` / `basic_fn.s` (Inlined)**: LLVM completely deletes all parsing byte checks for `+`, `-`, `+-`, `*`, `*~`, integer parsing routines, and associated string constants, producing a total binary size of **4.1 KB (216 assembly lines)** while maintaining realistic standalone calls to target leaf handlers (`get_state` / `set_state`).
-- **`basic_options.s` (Inlined)**: Lacking capability pre-checks, LLVM is forced to retain all speculative parsing branches and string constants, resulting in a binary size of **7.3 KB (397 assembly lines)**—**a ~46% reduction in total assembly lines for `basic_traits` (216 vs 397)**.
+So the DCE still works end-to-end once all the inspection-only annotations are
+removed. One caveat: these listings come from an `rlib`, so the size of the
+whole `.s` file is not the size of a final linked binary.
 
-This confirms that IDET capability-gated dispatch enables LLVM to achieve end-to-end Dead-Code Elimination across the entire compiled binary.
+#### How I Measured This
 
-#### Assembly & Benchmarking Methodology
-To measure realistic end-to-end command parsing and trait/function dispatch performance, commands are streamed via stdin from an external Rust harness (`src/bin/harness.rs`).
+The assembly is generated with the repository's pinned nightly toolchain.
+`generate_asm.sh` compiles the library target, which means I can generate x86
+assembly from macOS without needing a linker or emulator for that target.
+`asm_stats.py` counts textual instructions—not encoded bytes, and definitely
+not runtime cost.
 
-*   *Harness & Streaming:* The Rust harness uses `SeedableRng::from_entropy()` to stream randomized command lines (`p`, `s <n>`, `+`, `-`, `+-`, `* <n>`, `*~ <n>`) over stdout, which are piped directly into stdin of the controller binary.
-*   *Hyperfine Integration:* Each `hyperfine` trial run streams a fresh randomized input sequence directly into the benchmarked target (`./target/release/harness N | ./target/release/bench-<impl>`). This guarantees independent randomization for every trial run while cleanly isolating relative performance differences between the five implementations.
+For timing, `run_hyperfine.sh` generates one deterministic command stream and
+feeds that same input to every implementation. All of them use
+`AdvancedTarget`, so every extension is enabled. Printing is replaced with
+`black_box` to keep syscall noise out of the result, and the benchmarks run in
+both forward and reverse order to make order-dependent noise easier to spot.
 
-Below are the `hyperfine` benchmark results comparing **`cargo` features** (`using_cfg_gates`), `is_supported` (`using_is_supported`), **Options** (`using_options`), **Fn Pointers** (`using_fn`), and **IDETs** (`using_traits`) across 131,072 iterations in Debug mode and 262,144 iterations in Release mode:
+The following results were measured on the current AArch64 macOS host using 1,000,000 commands generated with seed 42, 30 measured runs, and 5 warmup runs.
 
-##### Debug Mode (131,072 iterations)
+##### Debug Mode (`-O0`)
 
-| Implementation                      | Mean ± Std Dev        | Min … Max           |
-| :---------------------------------- | :-------------------- | :------------------ |
-| **`cargo` Features** (`cfg_gates`)  | **110.0 ms ± 1.2 ms** | 108.5 ms … 112.5 ms |
-| **`is_supported`** (`is_supported`) | **114.7 ms ± 1.2 ms** | 113.1 ms … 117.8 ms |
-| **Options** (`using_options`)       | **116.7 ms ± 1.0 ms** | 115.3 ms … 119.5 ms |
-| **Fn Pointers** (`using_fn`)        | **117.3 ms ± 1.3 ms** | 115.5 ms … 120.3 ms |
-| **IDETs** (`using_traits`)          | **115.9 ms ± 1.1 ms** | 114.4 ms … 118.6 ms |
-| **`try_as_dyn`** (`try_as_dyn`)     | **115.7 ms ± 1.0 ms** | 114.2 ms … 117.5 ms |
+| Implementation | Forward mean ± std dev (min … max)       | Reverse mean ± std dev (min … max)       |
+| :------------- | :--------------------------------------- | :--------------------------------------- |
+| `cfg_gates`    | 99.73 ms ± 2.47 ms (96.64 … 107.89 ms)   | 105.55 ms ± 6.06 ms (99.21 … 122.19 ms)  |
+| `is_supported` | 103.10 ms ± 4.59 ms (98.86 … 119.91 ms)  | 105.97 ms ± 6.38 ms (102.26 … 129.11 ms) |
+| `options`      | 104.70 ms ± 3.32 ms (101.25 … 119.33 ms) | 107.83 ms ± 6.49 ms (103.95 … 130.20 ms) |
+| `fn`           | 102.99 ms ± 2.92 ms (99.08 … 113.47 ms)  | 104.86 ms ± 1.76 ms (102.92 … 110.01 ms) |
+| `traits`       | 104.69 ms ± 2.08 ms (101.98 … 113.48 ms) | 107.61 ms ± 5.93 ms (102.97 … 124.72 ms) |
+| `try_as_dyn`   | 109.38 ms ± 3.44 ms (106.30 … 123.67 ms) | 108.92 ms ± 3.34 ms (105.69 … 121.86 ms) |
 
-*In Debug mode (`-O0`), all implementations execute virtually identically (~110–117 ms), within tight statistical noise.*
+##### Release Mode (`-Os`)
 
-##### Release Mode (262,144 iterations)
+| Implementation | Forward mean ± std dev (min … max)    | Reverse mean ± std dev (min … max)    |
+| :------------- | :------------------------------------ | :------------------------------------ |
+| `cfg_gates`    | 14.23 ms ± 2.69 ms (12.50 … 27.69 ms) | 13.83 ms ± 1.15 ms (12.85 … 17.87 ms) |
+| `is_supported` | 13.66 ms ± 0.58 ms (12.53 … 14.65 ms) | 13.74 ms ± 1.02 ms (12.71 … 18.68 ms) |
+| `options`      | 13.70 ms ± 1.19 ms (12.63 … 18.92 ms) | 13.57 ms ± 0.45 ms (12.55 … 14.19 ms) |
+| `fn`           | 14.43 ms ± 1.39 ms (12.77 … 19.47 ms) | 14.56 ms ± 2.24 ms (12.67 … 23.84 ms) |
+| `traits`       | 14.25 ms ± 1.28 ms (12.62 … 19.08 ms) | 13.64 ms ± 0.85 ms (12.60 … 17.49 ms) |
+| `try_as_dyn`   | 13.66 ms ± 1.13 ms (12.60 … 18.86 ms) | 13.69 ms ± 0.69 ms (12.11 … 15.55 ms) |
 
-| Implementation                      | Mean ± Std Dev        | Min … Max           |
-| :---------------------------------- | :-------------------- | :------------------ |
-| **`cargo` Features** (`cfg_gates`)  | **198.8 ms ± 2.7 ms** | 194.3 ms … 202.9 ms |
-| **`is_supported`** (`is_supported`) | **199.1 ms ± 3.3 ms** | 194.3 ms … 203.9 ms |
-| **Options** (`using_options`)       | **209.6 ms ± 4.1 ms** | 204.5 ms … 216.5 ms |
-| **Fn Pointers** (`using_fn`)        | **198.5 ms ± 2.9 ms** | 194.8 ms … 203.7 ms |
-| **IDETs** (`using_traits`)          | **197.8 ms ± 3.5 ms** | 193.7 ms … 204.4 ms |
-| **`try_as_dyn`** (`try_as_dyn`)     | **199.7 ms ± 4.3 ms** | 193.4 ms … 206.5 ms |
+Debug mode is fairly noisy. `try_as_dyn` is slowest in both orders, while the
+fastest result flips from `cfg_gates` to function pointers. That roughly lines
+up with the amount of unoptimized glue each approach needs, but this is still
+an end-to-end parser benchmark—I wouldn't pin the difference on any one call or
+branch.
 
-*In Release mode (`-O3`), LLVM completely devirtualizes and inlines capability checks across `cfg_gates`, `is_supported`, `using_fn`, `using_traits`, and `try_as_dyn`, rendering runtime performance virtually identical (~197–199 ms), while `using_options` incurs overhead (~209 ms) due to un-pruned branches and enum unwrapping.*
+Release mode is the more interesting result: it's basically a wash. LLVM
+reduces most approaches to nearly the same hot loop, and reversing the benchmark
+order changes the apparent winner. The stable result here is the codegen / DCE
+comparison above, not a claim that one approach is universally a few percent
+faster than another.
 
 ## Conclusion
 

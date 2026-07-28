@@ -47,10 +47,13 @@ pub fn parse_isize(bytes: &[u8]) -> Option<isize> {
             return None;
         }
         val = val.checked_mul(10)?;
-        val = val.checked_add(d as isize)?;
+        val = if is_neg {
+            val.checked_sub(d as isize)?
+        } else {
+            val.checked_add(d as isize)?
+        };
     }
-    let sign = if is_neg { -1 } else { 1 };
-    val.checked_mul(sign)
+    Some(val)
 }
 
 #[cfg(test)]
@@ -63,6 +66,14 @@ mod tests {
         assert_eq!(parse_isize(b"42"), Some(42));
         assert_eq!(parse_isize(b"-42"), Some(-42));
         assert_eq!(parse_isize(b"+42"), Some(42));
+        assert_eq!(
+            parse_isize(isize::MAX.to_string().as_bytes()),
+            Some(isize::MAX)
+        );
+        assert_eq!(
+            parse_isize(isize::MIN.to_string().as_bytes()),
+            Some(isize::MIN)
+        );
         assert_eq!(parse_isize(b"0"), Some(0));
         assert_eq!(parse_isize(b""), None);
         assert_eq!(parse_isize(b"-"), None);

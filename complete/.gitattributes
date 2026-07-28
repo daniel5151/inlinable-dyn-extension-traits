@@ -1,1 +1,1 @@
-asm_output/* linguist-documentation
+asm/**/*.s linguist-generated=true

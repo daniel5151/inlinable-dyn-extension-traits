@@ -24,7 +24,7 @@ impl<T: Target> TargetController<T> {
 
     // NOTE: `#[inline(never)]` is used here specifically for pedagogical/assembly
     // inspection purposes, ensuring `parse_command` is emitted as a standalone
-    // symbol in `asm_output/`.
+    // symbol in `asm/noinline/<target-triple>/`.
     #[cfg_attr(feature = "interpretable_asm", inline(never))]
     pub fn parse_command(&mut self, buf: &[u8]) -> Option<Command> {
         /* IncDec extension parsing - gated at compile time */
@@ -73,7 +73,7 @@ impl<T: Target> TargetController<T> {
 
     // NOTE: `#[inline(never)]` is used here specifically for pedagogical/assembly
     // inspection purposes, ensuring `handle` is emitted as a standalone symbol in
-    // `asm_output/`.
+    // `asm/noinline/<target-triple>/`.
     #[cfg_attr(feature = "interpretable_asm", inline(never))]
     pub fn handle(&mut self, cmd: &Command) -> Result<(), Error<T::Error>> {
         match cmd {
