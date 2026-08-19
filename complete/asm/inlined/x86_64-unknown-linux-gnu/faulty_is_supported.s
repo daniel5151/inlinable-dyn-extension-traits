@@ -397,132 +397,136 @@ run_optional_trait_methods:
 	.cfi_offset %r14, -32
 	.cfi_offset %r15, -24
 	.cfi_offset %rbp, -16
-	movq	$0, 8(%rsp)
+	leaq	8(%rsp), %rbx
+	movq	$0, (%rbx)
 	leaq	152(%rsp), %r14
-	xorl	%ebx, %ebx
 	movl	$1040, %edx
 	movq	%r14, %rdi
 	xorl	%esi, %esi
 	callq	*memset@GOTPCREL(%rip)
 	xorps	%xmm0, %xmm0
-	leaq	16(%rsp), %rsi
-	movaps	%xmm0, 112(%rsi)
-	movaps	%xmm0, 96(%rsi)
-	movaps	%xmm0, 80(%rsi)
-	movaps	%xmm0, 64(%rsi)
-	movaps	%xmm0, 48(%rsi)
-	movaps	%xmm0, 32(%rsi)
-	movaps	%xmm0, 16(%rsi)
-	movaps	%xmm0, (%rsi)
+	leaq	16(%rsp), %r15
+	movaps	%xmm0, 112(%r15)
+	movaps	%xmm0, 96(%r15)
+	movaps	%xmm0, 80(%r15)
+	movaps	%xmm0, 64(%r15)
+	movaps	%xmm0, 48(%r15)
+	movaps	%xmm0, 32(%r15)
+	movaps	%xmm0, 16(%r15)
+	movaps	%xmm0, (%r15)
+	movq	<optional_trait_methods::line_reader::LineReader>::read_line@GOTPCREL(%rip), %rbp
+	leaq	.Lanon.fbebf1d6be2aa9712a8fc24462aecec3.1(%rip), %r12
+.LBB13_1:
 	movl	$128, %edx
 	movq	%r14, %rdi
-	callq	*<optional_trait_methods::line_reader::LineReader>::read_line@GOTPCREL(%rip)
-	testq	%rax, %rax
-	je	.LBB13_32
-	leaq	152(%rsp), %rbx
-	leaq	16(%rsp), %r14
-	movq	<optional_trait_methods::line_reader::LineReader>::read_line@GOTPCREL(%rip), %r13
-	leaq	8(%rsp), %r15
-	leaq	.Lanon.fbebf1d6be2aa9712a8fc24462aecec3.1(%rip), %r12
-	movq	<optional_trait_methods::using_is_supported::targets::faulty::FaultyTarget as optional_trait_methods::using_is_supported::target::Target>::get_state@GOTPCREL(%rip), %rbp
-.LBB13_2:
-	testq	%rdx, %rdx
-	je	.LBB13_29
-	cmpq	$2, %rdx
-	je	.LBB13_9
-	cmpq	$1, %rdx
-	jne	.LBB13_10
-	movzbl	(%rax), %eax
-	cmpl	$43, %eax
-	je	.LBB13_28
-	cmpl	$112, %eax
-	je	.LBB13_27
-	cmpl	$45, %eax
-	je	.LBB13_31
-	jmp	.LBB13_8
-.LBB13_9:
-	cmpw	$11563, (%rax)
-	je	.LBB13_31
-.LBB13_10:
-	cmpw	$8307, (%rax)
-	jne	.LBB13_8
-	movq	%rdx, %rdi
-	addq	$-2, %rdi
-	je	.LBB13_8
-	movzbl	2(%rax), %ecx
-	cmpl	$45, %ecx
-	je	.LBB13_13
-	cmpl	$43, %ecx
-	jne	.LBB13_15
-	xorl	%ecx, %ecx
-	jmp	.LBB13_17
-.LBB13_27:
-	movq	%r15, %rdi
+	movq	%r15, %rsi
 	callq	*%rbp
-	movq	%rax, %rdi
-	callq	optional_trait_methods::print_macros::write_isize_line
-	jmp	.LBB13_29
-.LBB13_28:
-	movq	%r15, %rdi
-	callq	*<optional_trait_methods::using_is_supported::targets::faulty::FaultyTarget as optional_trait_methods::using_is_supported::target::Target>::inc@GOTPCREL(%rip)
-	jmp	.LBB13_29
-.LBB13_13:
-	movb	$1, %cl
-.LBB13_17:
-	addq	$-3, %rdx
-	je	.LBB13_8
-	addq	$3, %rax
-	movq	%rdx, %rdi
-	jmp	.LBB13_19
-.LBB13_15:
-	addq	$2, %rax
-	xorl	%ecx, %ecx
-.LBB13_19:
-	xorl	%edx, %edx
-	xorl	%esi, %esi
-.LBB13_20:
-	movb	(%rax,%rdx), %r8b
-	addb	$-48, %r8b
-	cmpb	$9, %r8b
-	ja	.LBB13_8
-	imulq	$10, %rsi, %rsi
-	jo	.LBB13_8
-	movzbl	%r8b, %r8d
-	testb	%cl, %cl
-	je	.LBB13_23
-	subq	%r8, %rsi
-	jo	.LBB13_8
-	jmp	.LBB13_25
-.LBB13_23:
-	addq	%r8, %rsi
-	jo	.LBB13_8
+	testq	%rax, %rax
+	je	.LBB13_2
+	testq	%rdx, %rdx
+	je	.LBB13_1
+	cmpq	$2, %rdx
+	je	.LBB13_11
+	cmpq	$1, %rdx
+	jne	.LBB13_12
+	movzbl	(%rax), %eax
+	cmpl	$112, %eax
+	je	.LBB13_34
+	cmpl	$45, %eax
+	je	.LBB13_29
+	cmpl	$43, %eax
+	jne	.LBB13_25
+	movq	(%rsp), %rax
+	andq	$-256, %rax
+	jmp	.LBB13_30
+.LBB13_11:
+	cmpw	$11563, (%rax)
+	je	.LBB13_10
+.LBB13_12:
+	cmpw	$8307, (%rax)
+	setne	%sil
+	movq	%rdx, %rcx
+	addq	$-2, %rcx
+	sete	%dil
+	orb	%sil, %dil
+	je	.LBB13_13
 .LBB13_25:
-	incq	%rdx
-	cmpq	%rdx, %rdi
-	jne	.LBB13_20
-	movq	%r15, %rdi
-	callq	*<optional_trait_methods::using_is_supported::targets::faulty::FaultyTarget as optional_trait_methods::using_is_supported::target::Target>::set_state@GOTPCREL(%rip)
-	jmp	.LBB13_29
-.LBB13_8:
 	movl	$16, %esi
 	movq	%r12, %rdi
 	callq	optional_trait_methods::print_macros::write_line
-.LBB13_29:
-	movl	$128, %edx
+	jmp	.LBB13_1
+.LBB13_13:
+	movzbl	2(%rax), %esi
+	cmpl	$45, %esi
+	je	.LBB13_14
+	cmpl	$43, %esi
+	jne	.LBB13_16
+	xorl	%esi, %esi
+	jmp	.LBB13_18
+.LBB13_34:
 	movq	%rbx, %rdi
-	movq	%r14, %rsi
-	callq	*%r13
-	testq	%rax, %rax
-	jne	.LBB13_2
-	xorl	%ebx, %ebx
-	jmp	.LBB13_32
-.LBB13_31:
-	leaq	.Lanon.fbebf1d6be2aa9712a8fc24462aecec3.7(%rip), %rdi
-	movl	$38, %esi
-	callq	optional_trait_methods::print_macros::write_line
-	movl	$1, %ebx
-.LBB13_32:
-	movl	%ebx, %eax
+	callq	*<optional_trait_methods::using_is_supported::targets::faulty::FaultyTarget as optional_trait_methods::using_is_supported::target::Target>::get_state@GOTPCREL(%rip)
+	movq	%rax, %rdi
+	callq	optional_trait_methods::print_macros::write_isize_line
+	jmp	.LBB13_1
+.LBB13_14:
+	movb	$1, %sil
+.LBB13_18:
+	addq	$-3, %rdx
+	je	.LBB13_25
+	addq	$3, %rax
+	movq	%rdx, %rcx
+	jmp	.LBB13_20
+.LBB13_16:
+	addq	$2, %rax
+	xorl	%esi, %esi
+.LBB13_20:
+	xorl	%edx, %edx
+	xorl	%r13d, %r13d
+.LBB13_21:
+	movb	(%rax,%rdx), %dil
+	addb	$-48, %dil
+	cmpb	$9, %dil
+	ja	.LBB13_25
+	imulq	$10, %r13, %r13
+	jo	.LBB13_25
+	movzbl	%dil, %edi
+	testb	%sil, %sil
+	je	.LBB13_24
+	subq	%rdi, %r13
+	jo	.LBB13_25
+	jmp	.LBB13_27
+.LBB13_24:
+	addq	%rdi, %r13
+	jo	.LBB13_25
+.LBB13_27:
+	incq	%rdx
+	cmpq	%rdx, %rcx
+	jne	.LBB13_21
+	movq	%rbx, %rdi
+	movq	%r13, %rsi
+	callq	*<optional_trait_methods::using_is_supported::targets::faulty::FaultyTarget as optional_trait_methods::using_is_supported::target::Target>::set_state@GOTPCREL(%rip)
+	movq	%r13, (%rsp)
+	jmp	.LBB13_1
+.LBB13_10:
+	movq	(%rsp), %rax
+	andq	$-256, %rax
+	orq	$2, %rax
+	jmp	.LBB13_30
+.LBB13_29:
+	movq	(%rsp), %rax
+	andq	$-256, %rax
+	incq	%rax
+.LBB13_30:
+	testb	%al, %al
+	jne	.LBB13_32
+	movq	%rax, (%rsp)
+	movq	%rbx, %rdi
+	callq	*<optional_trait_methods::using_is_supported::targets::faulty::FaultyTarget as optional_trait_methods::using_is_supported::target::Target>::inc@GOTPCREL(%rip)
+	jmp	.LBB13_1
+.LBB13_2:
+	xorl	%eax, %eax
+.LBB13_33:
 	addq	$1192, %rsp
 	.cfi_def_cfa_offset 56
 	popq	%rbx
@@ -538,6 +542,13 @@ run_optional_trait_methods:
 	popq	%rbp
 	.cfi_def_cfa_offset 8
 	retq
+.LBB13_32:
+	.cfi_def_cfa_offset 1248
+	leaq	.Lanon.fbebf1d6be2aa9712a8fc24462aecec3.7(%rip), %rdi
+	movl	$38, %esi
+	callq	optional_trait_methods::print_macros::write_line
+	movl	$1, %eax
+	jmp	.LBB13_33
 .Lfunc_end13:
 	.size	run_optional_trait_methods, .Lfunc_end13-run_optional_trait_methods
 	.cfi_endproc

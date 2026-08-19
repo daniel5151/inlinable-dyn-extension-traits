@@ -56,7 +56,9 @@ impl<T: Target> TargetController<T> {
         if self.target.ext_mul_supported() && self.target.ext_scale_factor_supported() {
             crate::__dead_code_marker!("Parse ScaleFactor extension");
             if let Some(n) = buf.strip_prefix(b"*~ ").and_then(parse_isize) {
-                return Some(Command::Mul(ext::MulCommand::ScaleFactor(n)));
+                return Some(Command::MulScaleFactor(
+                    ext::MulScaleFactorCommand::ScaleFactor(n),
+                ));
             }
         }
 
@@ -112,9 +114,14 @@ impl<T: Target> TargetController<T> {
                         self.target.mul(*n).map_err(Error::Target)?;
                     }
                 }
-                ext::MulCommand::ScaleFactor(n) => {
+            },
+
+            /* ScaleFactor nested extension */
+            Command::MulScaleFactor(scale_factor_cmd) => match scale_factor_cmd {
+                ext::MulScaleFactorCommand::ScaleFactor(n) => {
                     crate::__dead_code_marker!("ScaleFactor extension");
-                    if !self.target.ext_mul_supported() || !self.target.ext_scale_factor_supported()
+                    if !self.target.ext_mul_supported()
+                        || !self.target.ext_scale_factor_supported()
                     {
                         self.unsupported_cmd()?;
                     } else {

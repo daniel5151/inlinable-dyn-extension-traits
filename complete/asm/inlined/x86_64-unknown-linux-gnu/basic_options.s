@@ -369,223 +369,275 @@ run_optional_trait_methods:
 	.cfi_offset %r14, -32
 	.cfi_offset %r15, -24
 	.cfi_offset %rbp, -16
-	movq	$0, 8(%rsp)
-	leaq	152(%rsp), %rbx
+	leaq	8(%rsp), %rbx
+	movq	$0, (%rbx)
+	leaq	152(%rsp), %r14
 	movl	$1040, %edx
-	movq	%rbx, %rdi
+	movq	%r14, %rdi
 	xorl	%esi, %esi
 	callq	*memset@GOTPCREL(%rip)
 	xorps	%xmm0, %xmm0
-	leaq	16(%rsp), %rsi
-	movaps	%xmm0, 112(%rsi)
-	movaps	%xmm0, 96(%rsi)
-	movaps	%xmm0, 80(%rsi)
-	movaps	%xmm0, 64(%rsi)
-	movaps	%xmm0, 48(%rsi)
-	movaps	%xmm0, 32(%rsi)
-	movaps	%xmm0, 16(%rsi)
-	movaps	%xmm0, (%rsi)
+	leaq	16(%rsp), %r15
+	movaps	%xmm0, 112(%r15)
+	movaps	%xmm0, 96(%r15)
+	movaps	%xmm0, 80(%r15)
+	movaps	%xmm0, 64(%r15)
+	movaps	%xmm0, 48(%r15)
+	movaps	%xmm0, 32(%r15)
+	movaps	%xmm0, 16(%r15)
+	movaps	%xmm0, (%r15)
+	movq	<optional_trait_methods::line_reader::LineReader>::read_line@GOTPCREL(%rip), %rbp
+	leaq	.LJTI11_0(%rip), %r13
+	leaq	.Lanon.91b310177bbb1fd3423110ae485c90a5.3(%rip), %r12
+.LBB11_1:
 	movl	$128, %edx
-	movq	%rbx, %rdi
-	callq	*<optional_trait_methods::line_reader::LineReader>::read_line@GOTPCREL(%rip)
-	testq	%rax, %rax
-	je	.LBB11_63
-	leaq	152(%rsp), %rbx
-	leaq	16(%rsp), %r14
-	movq	<optional_trait_methods::line_reader::LineReader>::read_line@GOTPCREL(%rip), %r13
-	leaq	.Lanon.91b310177bbb1fd3423110ae485c90a5.3(%rip), %r15
-	leaq	8(%rsp), %r12
-	movq	<optional_trait_methods::using_options::targets::basic::BasicTarget as optional_trait_methods::using_options::target::Target>::get_state@GOTPCREL(%rip), %rbp
-.LBB11_2:
-	testq	%rdx, %rdx
-	je	.LBB11_62
-	cmpq	$2, %rdx
-	je	.LBB11_9
-	cmpq	$1, %rdx
-	jne	.LBB11_10
-	movzbl	(%rax), %eax
-	cmpl	$43, %eax
-	je	.LBB11_58
-	cmpl	$45, %eax
-	je	.LBB11_58
-	cmpl	$112, %eax
-	jne	.LBB11_58
-	movq	%r12, %rdi
+	movq	%r14, %rdi
+	movq	%r15, %rsi
 	callq	*%rbp
-	movq	%rax, %rdi
-	callq	optional_trait_methods::print_macros::write_isize_line
-	jmp	.LBB11_62
-.LBB11_9:
-	cmpw	$11563, (%rax)
-	je	.LBB11_58
+	testq	%rax, %rax
+	je	.LBB11_69
+	testq	%rdx, %rdx
+	je	.LBB11_1
+	cmpq	$2, %rdx
+	je	.LBB11_10
+	cmpq	$1, %rdx
+	jne	.LBB11_11
+	movzbl	(%rax), %eax
+	cmpl	$112, %eax
+	je	.LBB11_63
+	cmpl	$45, %eax
+	je	.LBB11_9
+	cmpl	$43, %eax
+	jne	.LBB11_59
+	movq	(%rsp), %rsi
+	andq	$-256, %rsi
+	movl	$2, %eax
+	cmpq	$1, %rax
+	movl	$2, %ecx
+	adcq	$-1, %rcx
+	movslq	(%r13,%rcx,4), %rcx
+	addq	%r13, %rcx
+	jmpq	*%rcx
 .LBB11_10:
-	leaq	-2(%rdx), %rcx
+	cmpw	$11563, (%rax)
+	je	.LBB11_32
+.LBB11_11:
 	cmpw	$8234, (%rax)
-	jne	.LBB11_24
-	testq	%rcx, %rcx
-	je	.LBB11_24
+	setne	%sil
+	movq	%rdx, %rcx
+	addq	$-2, %rcx
+	sete	%dil
+	orb	%sil, %dil
+	je	.LBB11_12
+.LBB11_24:
+	cmpq	$3, %rdx
+	jb	.LBB11_43
+	leaq	-3(%rdx), %rdi
+	jmp	.LBB11_26
+.LBB11_12:
 	movzbl	2(%rax), %esi
 	cmpl	$45, %esi
 	je	.LBB11_13
 	cmpl	$43, %esi
 	jne	.LBB11_15
-	xorl	%esi, %esi
+	xorl	%edi, %edi
 	jmp	.LBB11_17
 .LBB11_13:
-	movb	$1, %sil
+	movb	$1, %dil
 .LBB11_17:
-	movq	%rdx, %r8
-	addq	$-3, %r8
-	je	.LBB11_64
-	leaq	3(%rax), %rdi
+	movq	%rdx, %r9
+	addq	$-3, %r9
+	je	.LBB11_70
+	leaq	3(%rax), %r8
 	jmp	.LBB11_19
 .LBB11_15:
-	leaq	2(%rax), %rdi
-	xorl	%esi, %esi
-	movq	%rcx, %r8
+	leaq	2(%rax), %r8
+	xorl	%edi, %edi
+	movq	%rcx, %r9
 .LBB11_19:
-	xorl	%r9d, %r9d
 	xorl	%r10d, %r10d
+	xorl	%esi, %esi
 .LBB11_20:
-	movb	(%rdi,%r9), %r11b
+	movb	(%r8,%r10), %r11b
 	addb	$-48, %r11b
 	cmpb	$9, %r11b
 	ja	.LBB11_24
-	imulq	$10, %r10, %r10
+	imulq	$10, %rsi, %rsi
 	jo	.LBB11_24
-	movzbl	%r11b, %r11d
-	testb	%sil, %sil
-	je	.LBB11_23
-	subq	%r11, %r10
-	jo	.LBB11_24
-	jmp	.LBB11_31
-.LBB11_23:
-	addq	%r11, %r10
-	jo	.LBB11_24
-.LBB11_31:
-	incq	%r9
-	cmpq	%r9, %r8
-	jne	.LBB11_20
-	jmp	.LBB11_58
-.LBB11_24:
-	cmpq	$3, %rdx
-	jb	.LBB11_42
-	leaq	-3(%rdx), %rsi
-	jmp	.LBB11_26
-.LBB11_64:
-	xorl	%esi, %esi
-.LBB11_26:
-	movzwl	(%rax), %edi
-	xorl	$32298, %edi
-	movzbl	2(%rax), %r8d
-	xorl	$32, %r8d
-	orw	%di, %r8w
-	jne	.LBB11_42
-	testq	%rsi, %rsi
-	je	.LBB11_42
-	movzbl	3(%rax), %edi
-	cmpl	$45, %edi
-	je	.LBB11_29
-	cmpl	$43, %edi
-	jne	.LBB11_33
-	xorl	%edi, %edi
-	jmp	.LBB11_35
-.LBB11_29:
-	movb	$1, %dil
-.LBB11_35:
-	movq	%rdx, %rsi
-	addq	$-4, %rsi
-	je	.LBB11_42
-	leaq	4(%rax), %r8
-	jmp	.LBB11_37
-.LBB11_33:
-	leaq	3(%rax), %r8
-	xorl	%edi, %edi
-.LBB11_37:
-	xorl	%r9d, %r9d
-	xorl	%r10d, %r10d
-.LBB11_38:
-	movb	(%r8,%r9), %r11b
-	addb	$-48, %r11b
-	cmpb	$9, %r11b
-	ja	.LBB11_42
-	imulq	$10, %r10, %r10
-	jo	.LBB11_42
 	movzbl	%r11b, %r11d
 	testb	%dil, %dil
-	je	.LBB11_41
-	subq	%r11, %r10
-	jo	.LBB11_42
-	jmp	.LBB11_47
-.LBB11_41:
-	addq	%r11, %r10
-	jo	.LBB11_42
-.LBB11_47:
-	incq	%r9
-	cmpq	%r9, %rsi
-	jne	.LBB11_38
-	jmp	.LBB11_58
-.LBB11_42:
+	je	.LBB11_23
+	subq	%r11, %rsi
+	jo	.LBB11_24
+	jmp	.LBB11_30
+.LBB11_23:
+	addq	%r11, %rsi
+	jo	.LBB11_24
+.LBB11_30:
+	incq	%r10
+	cmpq	%r10, %r9
+	jne	.LBB11_20
+	movl	$3, %eax
+	jmp	.LBB11_64
+.LBB11_70:
+	xorl	%edi, %edi
+.LBB11_26:
+	movzwl	(%rax), %esi
+	xorl	$32298, %esi
+	movzbl	2(%rax), %r8d
+	xorl	$32, %r8d
+	orw	%si, %r8w
+	setne	%sil
+	testq	%rdi, %rdi
+	sete	%r8b
+	orb	%sil, %r8b
+	je	.LBB11_27
+.LBB11_43:
 	cmpw	$8307, (%rax)
-	jne	.LBB11_58
+	setne	%sil
 	testq	%rcx, %rcx
-	je	.LBB11_58
+	sete	%dil
+	orb	%sil, %dil
+	jne	.LBB11_59
 	movzbl	2(%rax), %esi
 	cmpl	$45, %esi
 	je	.LBB11_45
 	cmpl	$43, %esi
-	jne	.LBB11_49
+	jne	.LBB11_50
 	xorl	%edi, %edi
-	jmp	.LBB11_51
+	jmp	.LBB11_52
+.LBB11_27:
+	movzbl	3(%rax), %esi
+	cmpl	$45, %esi
+	je	.LBB11_28
+	cmpl	$43, %esi
+	jne	.LBB11_34
+	xorl	%r8d, %r8d
+	jmp	.LBB11_36
 .LBB11_45:
 	movb	$1, %dil
-.LBB11_51:
+.LBB11_52:
 	addq	$-3, %rdx
-	je	.LBB11_58
+	je	.LBB11_59
 	addq	$3, %rax
-	jmp	.LBB11_53
-.LBB11_49:
+	jmp	.LBB11_54
+.LBB11_50:
 	addq	$2, %rax
 	xorl	%edi, %edi
 	movq	%rcx, %rdx
-.LBB11_53:
+.LBB11_54:
 	xorl	%ecx, %ecx
 	xorl	%esi, %esi
-.LBB11_54:
+.LBB11_55:
 	movb	(%rax,%rcx), %r8b
 	addb	$-48, %r8b
 	cmpb	$9, %r8b
-	ja	.LBB11_58
+	ja	.LBB11_59
 	imulq	$10, %rsi, %rsi
-	jo	.LBB11_58
+	jo	.LBB11_59
 	movzbl	%r8b, %r8d
 	testb	%dil, %dil
-	je	.LBB11_57
+	je	.LBB11_58
 	subq	%r8, %rsi
-	jo	.LBB11_58
-	jmp	.LBB11_60
-.LBB11_57:
+	jo	.LBB11_59
+	jmp	.LBB11_61
+.LBB11_58:
 	addq	%r8, %rsi
-	jo	.LBB11_58
-.LBB11_60:
+	jo	.LBB11_59
+.LBB11_61:
 	incq	%rcx
 	cmpq	%rcx, %rdx
-	jne	.LBB11_54
-	movq	%r12, %rdi
-	callq	*<optional_trait_methods::using_options::targets::basic::BasicTarget as optional_trait_methods::using_options::target::Target>::set_state@GOTPCREL(%rip)
-	jmp	.LBB11_62
-.LBB11_58:
-	movl	$16, %esi
-	movq	%r15, %rdi
-	callq	optional_trait_methods::print_macros::write_line
-.LBB11_62:
-	movl	$128, %edx
+	jne	.LBB11_55
+	movl	$1, %eax
+	jmp	.LBB11_64
+.LBB11_28:
+	movb	$1, %r8b
+.LBB11_36:
+	movq	%rdx, %rdi
+	addq	$-4, %rdi
+	je	.LBB11_43
+	leaq	4(%rax), %r9
+	jmp	.LBB11_38
+.LBB11_34:
+	leaq	3(%rax), %r9
+	xorl	%r8d, %r8d
+.LBB11_38:
+	xorl	%r10d, %r10d
+	xorl	%esi, %esi
+.LBB11_39:
+	movb	(%r9,%r10), %r11b
+	addb	$-48, %r11b
+	cmpb	$9, %r11b
+	ja	.LBB11_43
+	imulq	$10, %rsi, %rsi
+	jo	.LBB11_43
+	movzbl	%r11b, %r11d
+	testb	%r8b, %r8b
+	je	.LBB11_42
+	subq	%r11, %rsi
+	jo	.LBB11_43
+	jmp	.LBB11_47
+.LBB11_42:
+	addq	%r11, %rsi
+	jo	.LBB11_43
+.LBB11_47:
+	incq	%r10
+	cmpq	%r10, %rdi
+	jne	.LBB11_39
+	movl	$4, %eax
+	jmp	.LBB11_64
+.LBB11_32:
+	movq	(%rsp), %rsi
+	andq	$-256, %rsi
+	orq	$2, %rsi
+	movl	$2, %eax
+	cmpq	$1, %rax
+	movl	$2, %ecx
+	adcq	$-1, %rcx
+	movslq	(%r13,%rcx,4), %rcx
+	addq	%r13, %rcx
+	jmpq	*%rcx
+.LBB11_65:
+	testb	$1, %al
+	movq	%rsi, (%rsp)
 	movq	%rbx, %rdi
-	movq	%r14, %rsi
-	callq	*%r13
-	testq	%rax, %rax
-	jne	.LBB11_2
+	je	.LBB11_66
+	callq	*<optional_trait_methods::using_options::targets::basic::BasicTarget as optional_trait_methods::using_options::target::Target>::set_state@GOTPCREL(%rip)
+	jmp	.LBB11_1
+.LBB11_66:
+	callq	*<optional_trait_methods::using_options::targets::basic::BasicTarget as optional_trait_methods::using_options::target::Target>::get_state@GOTPCREL(%rip)
+	movq	%rax, %rdi
+	callq	optional_trait_methods::print_macros::write_isize_line
+	jmp	.LBB11_1
 .LBB11_63:
+	xorl	%eax, %eax
+	movq	(%rsp), %rsi
+.LBB11_64:
+	cmpq	$1, %rax
+	movq	%rax, %rcx
+	adcq	$-1, %rcx
+	movslq	(%r13,%rcx,4), %rcx
+	addq	%r13, %rcx
+	jmpq	*%rcx
+.LBB11_68:
+	movq	%rsi, (%rsp)
+.LBB11_59:
+	movl	$16, %esi
+	movq	%r12, %rdi
+	callq	optional_trait_methods::print_macros::write_line
+	jmp	.LBB11_1
+.LBB11_9:
+	movq	(%rsp), %rsi
+	andq	$-256, %rsi
+	incq	%rsi
+	movl	$2, %eax
+	cmpq	$1, %rax
+	movl	$2, %ecx
+	adcq	$-1, %rcx
+	movslq	(%r13,%rcx,4), %rcx
+	addq	%r13, %rcx
+	jmpq	*%rcx
+.LBB11_69:
 	xorl	%eax, %eax
 	addq	$1192, %rsp
 	.cfi_def_cfa_offset 56
@@ -605,6 +657,13 @@ run_optional_trait_methods:
 .Lfunc_end11:
 	.size	run_optional_trait_methods, .Lfunc_end11-run_optional_trait_methods
 	.cfi_endproc
+	.section	.rodata.run_optional_trait_methods,"a",@progbits
+	.p2align	2, 0x0
+.LJTI11_0:
+	.long	.LBB11_65-.LJTI11_0
+	.long	.LBB11_68-.LJTI11_0
+	.long	.LBB11_68-.LJTI11_0
+	.long	.LBB11_68-.LJTI11_0
 
 	.type	.Lanon.91b310177bbb1fd3423110ae485c90a5.0,@object
 	.section	.rodata..Lanon.91b310177bbb1fd3423110ae485c90a5.0,"a",@progbits

@@ -55,7 +55,9 @@ impl<T: Target> TargetController<T> {
         if try_as_dyn_mut::<T, dyn TargetExtScaleFactor<Error = T::Error>>(&mut self.target).is_some() {
             crate::__dead_code_marker!("Parse ScaleFactor extension");
             if let Some(n) = buf.strip_prefix(b"*~ ").and_then(parse_isize) {
-                return Some(Command::Mul(ext::MulCommand::ScaleFactor(n)));
+                return Some(Command::MulScaleFactor(
+                    ext::MulScaleFactorCommand::ScaleFactor(n),
+                ));
             }
         }
 
@@ -110,8 +112,16 @@ impl<T: Target> TargetController<T> {
                         self.unsupported_cmd()?;
                     }
                 }
-                ext::MulCommand::ScaleFactor(n) => {
-                    if let Some(scale_ops) = try_as_dyn_mut::<T, dyn TargetExtScaleFactor<Error = T::Error>>(&mut self.target) {
+            },
+
+            /* ScaleFactor nested extension */
+            Command::MulScaleFactor(scale_factor_cmd) => match scale_factor_cmd {
+                ext::MulScaleFactorCommand::ScaleFactor(n) => {
+                    if let Some(scale_ops) =
+                        try_as_dyn_mut::<T, dyn TargetExtScaleFactor<Error = T::Error>>(
+                            &mut self.target,
+                        )
+                    {
                         crate::__dead_code_marker!("ScaleFactor nested extension");
                         scale_ops.scale_factor(*n).map_err(Error::Target)?;
                     } else {

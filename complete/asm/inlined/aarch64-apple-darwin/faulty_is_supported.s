@@ -292,122 +292,129 @@ Lloh17:
 	.globl	_run_optional_trait_methods
 	.p2align	2
 _run_optional_trait_methods:
-	stp	x28, x27, [sp, #-64]!
-	stp	x22, x21, [sp, #16]
-	stp	x20, x19, [sp, #32]
-	stp	x29, x30, [sp, #48]
-	add	x29, sp, #48
+	stp	x28, x27, [sp, #-80]!
+	stp	x24, x23, [sp, #16]
+	stp	x22, x21, [sp, #32]
+	stp	x20, x19, [sp, #48]
+	stp	x29, x30, [sp, #64]
+	add	x29, sp, #64
 	sub	sp, sp, #1184
 	str	xzr, [sp]
-	sub	x19, x29, #176
+	sub	x20, x29, #192
 	str	xzr, [sp, #8]
 	add	x0, sp, #16
 	mov	w1, #1040
 	bl	_bzero
 	movi.2d	v0, #0000000000000000
-	stp	q0, q0, [x19, #96]
-	stp	q0, q0, [x19, #64]
-	stp	q0, q0, [x19, #32]
-	stp	q0, q0, [x19]
-	add	x0, sp, #16
-	sub	x1, x29, #176
-	mov	w2, #128
-	bl	_<optional_trait_methods::line_reader::LineReader>::read_line
-	cbz	x0, LBB13_30
-	mov	w20, #11563
-	mov	w21, #8307
-	mov	w22, #10
+	stp	q0, q0, [x20, #96]
+	stp	q0, q0, [x20, #64]
+	stp	q0, q0, [x20, #32]
+	mov	w21, #11563
+	mov	w22, #8307
+	mov	w23, #10
 Lloh18:
 	adrp	x19, l_anon.7cbdb8a643882e910ba4dcd9c7e93ff2.1@PAGE
 Lloh19:
 	add	x19, x19, l_anon.7cbdb8a643882e910ba4dcd9c7e93ff2.1@PAGEOFF
-LBB13_2:
-	cbz	x1, LBB13_11
+	stp	q0, q0, [x20]
+LBB13_1:
+	add	x0, sp, #16
+	sub	x1, x29, #192
+	mov	w2, #128
+	bl	_<optional_trait_methods::line_reader::LineReader>::read_line
+	cbz	x0, LBB13_33
+	cbz	x1, LBB13_1
 	subs	x8, x1, #2
-	b.eq	LBB13_8
+	b.eq	LBB13_9
 	cmp	x1, #1
-	b.ne	LBB13_9
+	b.ne	LBB13_10
 	ldrb	w8, [x0]
-	cmp	w8, #43
-	b.eq	LBB13_16
 	cmp	w8, #112
 	b.eq	LBB13_15
 	cmp	w8, #45
 	b.eq	LBB13_29
-	b	LBB13_10
-LBB13_8:
-	ldrh	w9, [x0]
-	cmp	w9, w20
-	b.eq	LBB13_29
+	cmp	w8, #43
+	b.ne	LBB13_11
+	and	x24, x24, #0xffffffffffffff00
+	b	LBB13_30
 LBB13_9:
 	ldrh	w9, [x0]
 	cmp	w9, w21
+	b.eq	LBB13_28
+LBB13_10:
+	ldrh	w9, [x0]
+	cmp	w9, w22
 	ccmp	x8, #0, #4, eq
 	b.ne	LBB13_12
-LBB13_10:
+LBB13_11:
 	mov	x0, x19
 	mov	w1, #16
 	bl	_optional_trait_methods::print_macros::write_line
-LBB13_11:
-	add	x0, sp, #16
-	sub	x1, x29, #176
-	mov	w2, #128
-	bl	_<optional_trait_methods::line_reader::LineReader>::read_line
-	cbnz	x0, LBB13_2
-	b	LBB13_30
+	b	LBB13_1
 LBB13_12:
 	ldrb	w9, [x0, #2]!
 	cmp	w9, #45
-	b.eq	LBB13_17
+	b.eq	LBB13_16
 	cmp	w9, #43
-	b.ne	LBB13_20
+	b.ne	LBB13_19
 	mov	w9, #0
-	b	LBB13_18
+	b	LBB13_17
 LBB13_15:
 	add	x0, sp, #8
 	bl	_<optional_trait_methods::using_is_supported::targets::faulty::FaultyTarget as optional_trait_methods::using_is_supported::target::Target>::get_state
 	bl	_optional_trait_methods::print_macros::write_isize_line
-	b	LBB13_11
+	b	LBB13_1
 LBB13_16:
-	add	x0, sp, #8
-	bl	_<optional_trait_methods::using_is_supported::targets::faulty::FaultyTarget as optional_trait_methods::using_is_supported::target::Target>::inc
-	b	LBB13_11
-LBB13_17:
 	mov	w9, #1
-LBB13_18:
+LBB13_17:
 	sub	x8, x1, #3
-	cbz	x8, LBB13_10
+	cbz	x8, LBB13_11
 	add	x0, x0, #1
-	b	LBB13_21
-LBB13_20:
+	b	LBB13_20
+LBB13_19:
 	mov	w9, #0
+LBB13_20:
+	mov	x20, #0
 LBB13_21:
-	mov	x1, #0
-LBB13_22:
 	ldrb	w10, [x0], #1
 	sub	w10, w10, #48
 	cmp	w10, #9
-	b.hi	LBB13_10
-	smulh	x12, x1, x22
-	add	x11, x1, x1, lsl #2
+	b.hi	LBB13_11
+	smulh	x12, x20, x23
+	add	x11, x20, x20, lsl #2
 	lsl	x11, x11, #1
 	cmp	x12, x11, asr #63
-	b.ne	LBB13_10
+	b.ne	LBB13_11
 	and	x10, x10, #0xff
-	tbz	w9, #0, LBB13_26
-	subs	x1, x11, x10
-	b.vs	LBB13_10
-	b	LBB13_27
+	tbz	w9, #0, LBB13_25
+	subs	x20, x11, x10
+	b.vs	LBB13_11
+	b	LBB13_26
+LBB13_25:
+	adds	x20, x11, x10
+	b.vs	LBB13_11
 LBB13_26:
-	adds	x1, x11, x10
-	b.vs	LBB13_10
-LBB13_27:
 	subs	x8, x8, #1
-	b.ne	LBB13_22
+	b.ne	LBB13_21
 	add	x0, sp, #8
+	mov	x1, x20
 	bl	_<optional_trait_methods::using_is_supported::targets::faulty::FaultyTarget as optional_trait_methods::using_is_supported::target::Target>::set_state
-	b	LBB13_11
+	mov	x24, x20
+	b	LBB13_1
+LBB13_28:
+	and	x8, x24, #0xffffffffffffff00
+	orr	x24, x8, #0x2
+	b	LBB13_30
 LBB13_29:
+	and	x8, x24, #0xffffffffffffff00
+	orr	x24, x8, #0x1
+LBB13_30:
+	tst	x24, #0xff
+	b.ne	LBB13_32
+	add	x0, sp, #8
+	bl	_<optional_trait_methods::using_is_supported::targets::faulty::FaultyTarget as optional_trait_methods::using_is_supported::target::Target>::inc
+	b	LBB13_1
+LBB13_32:
 Lloh20:
 	adrp	x0, l_anon.7cbdb8a643882e910ba4dcd9c7e93ff2.7@PAGE
 Lloh21:
@@ -415,12 +422,13 @@ Lloh21:
 	mov	w1, #38
 	bl	_optional_trait_methods::print_macros::write_line
 	mov	w0, #1
-LBB13_30:
+LBB13_33:
 	add	sp, sp, #1184
-	ldp	x29, x30, [sp, #48]
-	ldp	x20, x19, [sp, #32]
-	ldp	x22, x21, [sp, #16]
-	ldp	x28, x27, [sp], #64
+	ldp	x29, x30, [sp, #64]
+	ldp	x20, x19, [sp, #48]
+	ldp	x22, x21, [sp, #32]
+	ldp	x24, x23, [sp, #16]
+	ldp	x28, x27, [sp], #80
 	ret
 	.loh AdrpAdd	Lloh18, Lloh19
 	.loh AdrpAdd	Lloh20, Lloh21

@@ -17,6 +17,11 @@ pub mod ext {
     #[derive(Clone, Copy, Debug)]
     pub enum MulCommand {
         Mul(isize),
+    }
+
+    #[cfg(cmd_mul_scale_factor)] // (only used in using_cfg_gates case)
+    #[derive(Clone, Copy, Debug)]
+    pub enum MulScaleFactorCommand {
         ScaleFactor(isize),
     }
 }
@@ -28,6 +33,8 @@ pub enum Command {
     IncDec(ext::IncDecCommand),
     #[cfg(cmd_mul)] // (only used in using_cfg_gates case)
     Mul(ext::MulCommand),
+    #[cfg(cmd_mul_scale_factor)] // (only used in using_cfg_gates case)
+    MulScaleFactor(ext::MulScaleFactorCommand),
 }
 
 #[cfg_attr(feature = "interpretable_asm", inline(never))]

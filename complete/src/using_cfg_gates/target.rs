@@ -13,6 +13,6 @@ pub trait Target {
     #[cfg(ext_mul)]
     fn mul(&mut self, n: isize) -> Result<(), Self::Error>;
 
-    #[cfg(ext_mul)]
+    #[cfg(ext_mul_scale_factor)]
     fn scale_factor(&mut self, factor: isize) -> Result<(), Self::Error>;
 }

@@ -407,287 +407,334 @@ run_optional_trait_methods:
 	.cfi_offset %r14, -32
 	.cfi_offset %r15, -24
 	.cfi_offset %rbp, -16
-	movq	$0, 32(%rsp)
-	movq	$1, 40(%rsp)
+	leaq	32(%rsp), %rbx
+	movq	$0, (%rbx)
+	movq	$1, 8(%rbx)
 	leaq	184(%rsp), %r14
-	xorl	%ebx, %ebx
 	movl	$1040, %edx
 	movq	%r14, %rdi
 	xorl	%esi, %esi
 	callq	*memset@GOTPCREL(%rip)
 	xorps	%xmm0, %xmm0
-	leaq	48(%rsp), %rsi
-	movaps	%xmm0, 112(%rsi)
-	movaps	%xmm0, 96(%rsi)
-	movaps	%xmm0, 80(%rsi)
-	movaps	%xmm0, 64(%rsi)
-	movaps	%xmm0, 48(%rsi)
-	movaps	%xmm0, 32(%rsi)
-	movaps	%xmm0, 16(%rsi)
-	movaps	%xmm0, (%rsi)
+	leaq	48(%rsp), %r15
+	movaps	%xmm0, 112(%r15)
+	movaps	%xmm0, 96(%r15)
+	movaps	%xmm0, 80(%r15)
+	movaps	%xmm0, 64(%r15)
+	movaps	%xmm0, 48(%r15)
+	movaps	%xmm0, 32(%r15)
+	movaps	%xmm0, 16(%r15)
+	movaps	%xmm0, (%r15)
+	movq	<optional_trait_methods::line_reader::LineReader>::read_line@GOTPCREL(%rip), %r12
+	leaq	.LJTI13_0(%rip), %r13
+.LBB13_1:
 	movl	$128, %edx
 	movq	%r14, %rdi
-	callq	*<optional_trait_methods::line_reader::LineReader>::read_line@GOTPCREL(%rip)
+	movq	%r15, %rsi
+	callq	*%r12
 	testq	%rax, %rax
-	je	.LBB13_78
-	leaq	184(%rsp), %rbx
-	leaq	48(%rsp), %r14
-	movq	<optional_trait_methods::line_reader::LineReader>::read_line@GOTPCREL(%rip), %rbp
-	leaq	8(%rsp), %r15
-	leaq	32(%rsp), %r12
-	leaq	.Lanon.58d60646bb498b4dae1b5f42e7355e91.3(%rip), %r13
-.LBB13_2:
+	je	.LBB13_85
 	testq	%rdx, %rdx
-	je	.LBB13_76
+	je	.LBB13_1
 	cmpq	$2, %rdx
 	je	.LBB13_9
 	cmpq	$1, %rdx
-	jne	.LBB13_10
+	jne	.LBB13_11
 	movzbl	(%rax), %eax
-	cmpl	$43, %eax
-	je	.LBB13_64
-	cmpl	$45, %eax
-	je	.LBB13_68
 	cmpl	$112, %eax
-	jne	.LBB13_60
-	movq	%r12, %rdi
-	callq	*<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::get_state@GOTPCREL(%rip)
-	movq	%rax, %rdi
-	callq	optional_trait_methods::print_macros::write_isize_line
-	jmp	.LBB13_76
+	je	.LBB13_18
+	cmpl	$45, %eax
+	je	.LBB13_17
+	cmpl	$43, %eax
+	jne	.LBB13_77
+	andq	$-256, %rbp
+	movl	$2, %eax
+	cmpq	$1, %rax
+	movl	$2, %ecx
+	adcq	$-1, %rcx
+	movslq	(%r13,%rcx,4), %rcx
+	addq	%r13, %rcx
+	jmpq	*%rcx
 .LBB13_9:
 	cmpw	$11563, (%rax)
-	jne	.LBB13_10
-	movq	%r15, %rdi
-	movq	%r12, %rsi
-	callq	*<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::inc@GOTPCREL(%rip)
-	cmpl	$1, 8(%rsp)
-	jne	.LBB13_75
-	movq	16(%rsp), %rdi
-	testq	%rdi, %rdi
-	jne	.LBB13_67
-	movq	%r15, %rdi
-	movq	%r12, %rsi
-	callq	*<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::dec@GOTPCREL(%rip)
-	cmpb	$0, 8(%rsp)
-	je	.LBB13_73
-	jmp	.LBB13_66
-.LBB13_10:
-	leaq	-2(%rdx), %rsi
+	jne	.LBB13_11
+	andq	$-256, %rbp
+	orq	$2, %rbp
+	movl	$2, %eax
+	cmpq	$1, %rax
+	movl	$2, %ecx
+	adcq	$-1, %rcx
+	movslq	(%r13,%rcx,4), %rcx
+	addq	%r13, %rcx
+	jmpq	*%rcx
+.LBB13_11:
 	cmpw	$8234, (%rax)
-	jne	.LBB13_24
-	testq	%rsi, %rsi
-	je	.LBB13_24
-	movzbl	2(%rax), %ecx
-	cmpl	$45, %ecx
-	je	.LBB13_13
-	cmpl	$43, %ecx
-	jne	.LBB13_15
-	xorl	%edi, %edi
-	jmp	.LBB13_17
-.LBB13_75:
-	movq	%r15, %rdi
-	movq	%r12, %rsi
-	callq	*<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::dec@GOTPCREL(%rip)
-	cmpb	$0, 8(%rsp)
-	jne	.LBB13_72
-	jmp	.LBB13_76
-.LBB13_68:
-	movq	%r15, %rdi
-	movq	%r12, %rsi
-	callq	*<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::dec@GOTPCREL(%rip)
-	jmp	.LBB13_65
-.LBB13_13:
-	movb	$1, %dil
+	setne	%sil
+	movq	%rdx, %rcx
+	addq	$-2, %rcx
+	sete	%dil
+	orb	%sil, %dil
+	je	.LBB13_14
+.LBB13_12:
+	cmpq	$3, %rdx
+	jb	.LBB13_33
+	leaq	-3(%rdx), %rsi
+	jmp	.LBB13_32
+.LBB13_14:
+	movzbl	2(%rax), %esi
+	cmpl	$45, %esi
+	je	.LBB13_19
+	cmpl	$43, %esi
+	jne	.LBB13_22
+	xorl	%esi, %esi
+	jmp	.LBB13_20
 .LBB13_17:
-	movq	%rdx, %r9
-	addq	$-3, %r9
-	je	.LBB13_79
-	leaq	3(%rax), %r8
-	jmp	.LBB13_19
-.LBB13_64:
-	movq	%r15, %rdi
-	movq	%r12, %rsi
-	callq	*<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::inc@GOTPCREL(%rip)
+	andq	$-256, %rbp
+	incq	%rbp
+	movl	$2, %eax
+	cmpq	$1, %rax
+	movl	$2, %ecx
+	adcq	$-1, %rcx
+	movslq	(%r13,%rcx,4), %rcx
+	addq	%r13, %rcx
+	jmpq	*%rcx
+.LBB13_18:
+	xorl	%eax, %eax
 	jmp	.LBB13_65
-.LBB13_15:
-	leaq	2(%rax), %r8
-	xorl	%edi, %edi
-	movq	%rsi, %r9
 .LBB13_19:
-	xorl	%r10d, %r10d
-	xorl	%ecx, %ecx
+	movb	$1, %sil
 .LBB13_20:
-	movb	(%r8,%r10), %r11b
+	movq	%rdx, %r8
+	addq	$-3, %r8
+	je	.LBB13_31
+	leaq	3(%rax), %rdi
+	jmp	.LBB13_23
+.LBB13_22:
+	leaq	2(%rax), %rdi
+	xorl	%esi, %esi
+	movq	%rcx, %r8
+.LBB13_23:
+	xorl	%r10d, %r10d
+	xorl	%r9d, %r9d
+.LBB13_24:
+	movb	(%rdi,%r10), %r11b
 	addb	$-48, %r11b
 	cmpb	$9, %r11b
-	ja	.LBB13_24
-	imulq	$10, %rcx, %rcx
-	jo	.LBB13_24
+	ja	.LBB13_12
+	imulq	$10, %r9, %r9
+	jo	.LBB13_12
 	movzbl	%r11b, %r11d
-	testb	%dil, %dil
-	je	.LBB13_23
-	subq	%r11, %rcx
-	jo	.LBB13_24
-	jmp	.LBB13_31
-.LBB13_23:
-	addq	%r11, %rcx
-	jo	.LBB13_24
-.LBB13_31:
+	testb	%sil, %sil
+	je	.LBB13_28
+	subq	%r11, %r9
+	jo	.LBB13_12
+	jmp	.LBB13_29
+.LBB13_28:
+	addq	%r11, %r9
+	jo	.LBB13_12
+.LBB13_29:
 	incq	%r10
-	cmpq	%r10, %r9
-	jne	.LBB13_20
-	movq	%r15, %rdi
-	movq	%r12, %rsi
-	movq	%rcx, %rdx
-	callq	*<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::mul@GOTPCREL(%rip)
-	jmp	.LBB13_65
-.LBB13_24:
-	cmpq	$3, %rdx
-	jb	.LBB13_43
-	leaq	-3(%rdx), %rdi
-	jmp	.LBB13_26
-.LBB13_79:
-	xorl	%edi, %edi
-.LBB13_26:
-	movzwl	(%rax), %ecx
-	xorl	$32298, %ecx
+	cmpq	%r10, %r8
+	jne	.LBB13_24
+	movl	$3, %eax
+	jmp	.LBB13_64
+.LBB13_31:
+	xorl	%esi, %esi
+.LBB13_32:
+	movzwl	(%rax), %edi
+	xorl	$32298, %edi
 	movzbl	2(%rax), %r8d
 	xorl	$32, %r8d
-	orw	%cx, %r8w
-	jne	.LBB13_43
-	testq	%rdi, %rdi
-	je	.LBB13_43
-	movzbl	3(%rax), %ecx
-	cmpl	$45, %ecx
-	je	.LBB13_29
-	cmpl	$43, %ecx
-	jne	.LBB13_34
-	xorl	%r8d, %r8d
-	jmp	.LBB13_36
-.LBB13_29:
-	movb	$1, %r8b
-.LBB13_36:
-	movq	%rdx, %rdi
-	addq	$-4, %rdi
-	je	.LBB13_43
-	leaq	4(%rax), %r9
-	jmp	.LBB13_38
-.LBB13_34:
-	leaq	3(%rax), %r9
-	xorl	%r8d, %r8d
-.LBB13_38:
-	xorl	%r10d, %r10d
-	xorl	%ecx, %ecx
-.LBB13_39:
-	movb	(%r9,%r10), %r11b
-	addb	$-48, %r11b
-	cmpb	$9, %r11b
-	ja	.LBB13_43
-	imulq	$10, %rcx, %rcx
-	jo	.LBB13_43
-	movzbl	%r11b, %r11d
-	testb	%r8b, %r8b
-	je	.LBB13_42
-	subq	%r11, %rcx
-	jo	.LBB13_43
-	jmp	.LBB13_48
-.LBB13_42:
-	addq	%r11, %rcx
-	jo	.LBB13_43
-.LBB13_48:
-	incq	%r10
-	cmpq	%r10, %rdi
-	jne	.LBB13_39
-	movq	%r15, %rdi
-	movq	%r12, %rsi
-	movq	%rcx, %rdx
-	callq	*<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::scale_factor@GOTPCREL(%rip)
-.LBB13_65:
-	cmpb	$0, 8(%rsp)
-	je	.LBB13_76
-.LBB13_66:
-	movq	16(%rsp), %rdi
-	testq	%rdi, %rdi
-	jne	.LBB13_67
-	jmp	.LBB13_60
-.LBB13_43:
-	cmpw	$8307, (%rax)
-	jne	.LBB13_60
+	orw	%di, %r8w
+	setne	%dil
 	testq	%rsi, %rsi
-	je	.LBB13_60
-	movzbl	2(%rax), %ecx
-	cmpl	$45, %ecx
-	je	.LBB13_46
-	cmpl	$43, %ecx
-	jne	.LBB13_51
-	xorl	%ecx, %ecx
-	jmp	.LBB13_53
-.LBB13_46:
-	movb	$1, %cl
-.LBB13_53:
-	addq	$-3, %rdx
-	je	.LBB13_60
-	addq	$3, %rax
-	jmp	.LBB13_55
-.LBB13_51:
-	addq	$2, %rax
-	xorl	%ecx, %ecx
-	movq	%rsi, %rdx
-.LBB13_55:
-	xorl	%edi, %edi
+	sete	%r8b
+	orb	%dil, %r8b
+	je	.LBB13_37
+.LBB13_33:
+	cmpw	$8307, (%rax)
+	setne	%sil
+	testq	%rcx, %rcx
+	sete	%dil
+	orb	%sil, %dil
+	jne	.LBB13_77
+	movzbl	2(%rax), %esi
+	cmpl	$45, %esi
+	je	.LBB13_40
+	cmpl	$43, %esi
+	jne	.LBB13_43
 	xorl	%esi, %esi
-.LBB13_56:
+	jmp	.LBB13_41
+.LBB13_37:
+	movzbl	3(%rax), %edi
+	cmpl	$45, %edi
+	je	.LBB13_52
+	cmpl	$43, %edi
+	jne	.LBB13_55
+	xorl	%edi, %edi
+	jmp	.LBB13_53
+.LBB13_40:
+	movb	$1, %sil
+.LBB13_41:
+	addq	$-3, %rdx
+	je	.LBB13_77
+	addq	$3, %rax
+	jmp	.LBB13_44
+.LBB13_43:
+	addq	$2, %rax
+	xorl	%esi, %esi
+	movq	%rcx, %rdx
+.LBB13_44:
+	xorl	%edi, %edi
+	xorl	%ecx, %ecx
+.LBB13_45:
 	movb	(%rax,%rdi), %r8b
 	addb	$-48, %r8b
 	cmpb	$9, %r8b
-	ja	.LBB13_60
-	imulq	$10, %rsi, %rsi
-	jo	.LBB13_60
+	ja	.LBB13_77
+	imulq	$10, %rcx, %rcx
+	jo	.LBB13_77
 	movzbl	%r8b, %r8d
-	testb	%cl, %cl
-	je	.LBB13_59
-	subq	%r8, %rsi
-	jo	.LBB13_60
-	jmp	.LBB13_62
-.LBB13_59:
-	addq	%r8, %rsi
-	jo	.LBB13_60
-.LBB13_62:
+	testb	%sil, %sil
+	je	.LBB13_49
+	subq	%r8, %rcx
+	jo	.LBB13_77
+	jmp	.LBB13_50
+.LBB13_49:
+	addq	%r8, %rcx
+	jo	.LBB13_77
+.LBB13_50:
 	incq	%rdi
 	cmpq	%rdi, %rdx
-	jne	.LBB13_56
-	movq	%r12, %rdi
-	callq	*<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::set_state@GOTPCREL(%rip)
-	jmp	.LBB13_76
-.LBB13_60:
-	movl	$16, %esi
-	movq	%r13, %rdi
-	callq	optional_trait_methods::print_macros::write_line
-.LBB13_76:
-	movl	$128, %edx
+	jne	.LBB13_45
+	movl	$1, %eax
+	movq	%rcx, %rbp
+	jmp	.LBB13_65
+.LBB13_52:
+	movb	$1, %dil
+.LBB13_53:
+	movq	%rdx, %rsi
+	addq	$-4, %rsi
+	je	.LBB13_33
+	leaq	4(%rax), %r8
+	jmp	.LBB13_56
+.LBB13_55:
+	leaq	3(%rax), %r8
+	xorl	%edi, %edi
+.LBB13_56:
+	xorl	%r10d, %r10d
+	xorl	%r9d, %r9d
+.LBB13_57:
+	movb	(%r8,%r10), %r11b
+	addb	$-48, %r11b
+	cmpb	$9, %r11b
+	ja	.LBB13_33
+	imulq	$10, %r9, %r9
+	jo	.LBB13_33
+	movzbl	%r11b, %r11d
+	testb	%dil, %dil
+	je	.LBB13_61
+	subq	%r11, %r9
+	jo	.LBB13_33
+	jmp	.LBB13_62
+.LBB13_61:
+	addq	%r11, %r9
+	jo	.LBB13_33
+.LBB13_62:
+	incq	%r10
+	cmpq	%r10, %rsi
+	jne	.LBB13_57
+	movl	$4, %eax
+.LBB13_64:
+	movq	%r9, %rbp
+.LBB13_65:
+	cmpq	$1, %rax
+	movq	%rax, %rcx
+	adcq	$-1, %rcx
+	movslq	(%r13,%rcx,4), %rcx
+	addq	%r13, %rcx
+	jmpq	*%rcx
+.LBB13_66:
 	movq	%rbx, %rdi
-	movq	%r14, %rsi
-	callq	*%rbp
-	testq	%rax, %rax
-	jne	.LBB13_2
-	xorl	%ebx, %ebx
-	jmp	.LBB13_78
-.LBB13_72:
+	testb	$1, %al
+	je	.LBB13_73
+	movq	%rbp, %rsi
+	callq	*<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::set_state@GOTPCREL(%rip)
+	jmp	.LBB13_1
+.LBB13_68:
+	leaq	8(%rsp), %rdi
+	movq	%rbx, %rsi
+	movq	%rbp, %rdx
+	callq	*<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::mul@GOTPCREL(%rip)
+	jmp	.LBB13_75
+.LBB13_69:
+	leaq	8(%rsp), %rdi
+	movq	%rbx, %rsi
+	movq	%rbp, %rdx
+	callq	*<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::scale_factor@GOTPCREL(%rip)
+	jmp	.LBB13_75
+.LBB13_70:
+	testb	%bpl, %bpl
+	je	.LBB13_74
+	movzbl	%bpl, %eax
+	cmpl	$1, %eax
+	leaq	8(%rsp), %rdi
+	movq	%rbx, %rsi
+	jne	.LBB13_78
+	callq	*<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::dec@GOTPCREL(%rip)
+	jmp	.LBB13_75
+.LBB13_73:
+	callq	*<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::get_state@GOTPCREL(%rip)
+	movq	%rax, %rdi
+	callq	optional_trait_methods::print_macros::write_isize_line
+	jmp	.LBB13_1
+.LBB13_74:
+	leaq	8(%rsp), %rdi
+	movq	%rbx, %rsi
+	callq	*<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::inc@GOTPCREL(%rip)
+.LBB13_75:
+	cmpb	$0, 8(%rsp)
+	je	.LBB13_1
+.LBB13_76:
 	movq	16(%rsp), %rdi
 	testq	%rdi, %rdi
-	je	.LBB13_73
-.LBB13_67:
-	movq	24(%rsp), %rsi
-	jmp	.LBB13_74
-.LBB13_73:
-	leaq	.Lanon.58d60646bb498b4dae1b5f42e7355e91.10(%rip), %rdi
-	movl	$23, %esi
-.LBB13_74:
+	jne	.LBB13_83
+.LBB13_77:
+	movl	$16, %esi
+	leaq	.Lanon.58d60646bb498b4dae1b5f42e7355e91.3(%rip), %rdi
 	callq	optional_trait_methods::print_macros::write_line
-	movl	$1, %ebx
+	jmp	.LBB13_1
 .LBB13_78:
-	movl	%ebx, %eax
+	callq	*<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::inc@GOTPCREL(%rip)
+	cmpl	$1, 8(%rsp)
+	jne	.LBB13_81
+	movq	16(%rsp), %rdi
+	testq	%rdi, %rdi
+	jne	.LBB13_83
+	leaq	8(%rsp), %rdi
+	movq	%rbx, %rsi
+	callq	*<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::dec@GOTPCREL(%rip)
+	cmpb	$0, 8(%rsp)
+	jne	.LBB13_76
+	jmp	.LBB13_87
+.LBB13_81:
+	leaq	8(%rsp), %rdi
+	movq	%rbx, %rsi
+	callq	*<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::dec@GOTPCREL(%rip)
+	cmpb	$0, 8(%rsp)
+	je	.LBB13_1
+	movq	16(%rsp), %rdi
+	testq	%rdi, %rdi
+	je	.LBB13_87
+.LBB13_83:
+	movq	24(%rsp), %rsi
+.LBB13_84:
+	callq	optional_trait_methods::print_macros::write_line
+	movl	$1, %eax
+	jmp	.LBB13_86
+.LBB13_85:
+	xorl	%eax, %eax
+.LBB13_86:
 	addq	$1224, %rsp
 	.cfi_def_cfa_offset 56
 	popq	%rbx
@@ -703,9 +750,21 @@ run_optional_trait_methods:
 	popq	%rbp
 	.cfi_def_cfa_offset 8
 	retq
+.LBB13_87:
+	.cfi_def_cfa_offset 1280
+	leaq	.Lanon.58d60646bb498b4dae1b5f42e7355e91.10(%rip), %rdi
+	movl	$23, %esi
+	jmp	.LBB13_84
 .Lfunc_end13:
 	.size	run_optional_trait_methods, .Lfunc_end13-run_optional_trait_methods
 	.cfi_endproc
+	.section	.rodata.run_optional_trait_methods,"a",@progbits
+	.p2align	2, 0x0
+.LJTI13_0:
+	.long	.LBB13_66-.LJTI13_0
+	.long	.LBB13_70-.LJTI13_0
+	.long	.LBB13_68-.LJTI13_0
+	.long	.LBB13_69-.LJTI13_0
 
 	.type	.Lanon.58d60646bb498b4dae1b5f42e7355e91.0,@object
 	.section	.rodata..Lanon.58d60646bb498b4dae1b5f42e7355e91.0,"a",@progbits

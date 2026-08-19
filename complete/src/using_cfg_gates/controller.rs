@@ -52,11 +52,13 @@ impl<T: Target> TargetController<T> {
         }
 
         /* ScaleFactor extension parsing - gated at compile time */
-        #[cfg(ext_mul)]
+        #[cfg(ext_mul_scale_factor)]
         {
             crate::__dead_code_marker!("Parse ScaleFactor extension");
             if let Some(n) = buf.strip_prefix(b"*~ ").and_then(parse_isize) {
-                return Some(Command::Mul(ext::MulCommand::ScaleFactor(n)));
+                return Some(Command::MulScaleFactor(
+                    ext::MulScaleFactorCommand::ScaleFactor(n),
+                ));
             }
         }
 
@@ -106,7 +108,12 @@ impl<T: Target> TargetController<T> {
                     crate::__dead_code_marker!("Mul extension");
                     self.target.mul(*n).map_err(Error::Target)?;
                 }
-                ext::MulCommand::ScaleFactor(n) => {
+            },
+
+            /* ScaleFactor nested extension */
+            #[cfg(ext_mul_scale_factor)]
+            Command::MulScaleFactor(scale_factor_cmd) => match scale_factor_cmd {
+                ext::MulScaleFactorCommand::ScaleFactor(n) => {
                     crate::__dead_code_marker!("ScaleFactor extension");
                     self.target.scale_factor(*n).map_err(Error::Target)?;
                 }

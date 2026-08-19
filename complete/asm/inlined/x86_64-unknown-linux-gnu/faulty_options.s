@@ -382,253 +382,295 @@ run_optional_trait_methods:
 	.cfi_offset %r14, -32
 	.cfi_offset %r15, -24
 	.cfi_offset %rbp, -16
-	movq	$0, 24(%rsp)
+	movq	%rsp, %rax
+	movq	$0, (%rax)
 	leaq	168(%rsp), %r14
-	xorl	%ebx, %ebx
 	movl	$1040, %edx
 	movq	%r14, %rdi
 	xorl	%esi, %esi
 	callq	*memset@GOTPCREL(%rip)
 	xorps	%xmm0, %xmm0
-	leaq	32(%rsp), %rsi
-	movaps	%xmm0, 112(%rsi)
-	movaps	%xmm0, 96(%rsi)
-	movaps	%xmm0, 80(%rsi)
-	movaps	%xmm0, 64(%rsi)
-	movaps	%xmm0, 48(%rsi)
-	movaps	%xmm0, 32(%rsi)
-	movaps	%xmm0, 16(%rsi)
-	movaps	%xmm0, (%rsi)
+	leaq	32(%rsp), %r15
+	movaps	%xmm0, 112(%r15)
+	movaps	%xmm0, 96(%r15)
+	movaps	%xmm0, 80(%r15)
+	movaps	%xmm0, 64(%r15)
+	movaps	%xmm0, 48(%r15)
+	movaps	%xmm0, 32(%r15)
+	movaps	%xmm0, 16(%r15)
+	movaps	%xmm0, (%r15)
+	movq	<optional_trait_methods::line_reader::LineReader>::read_line@GOTPCREL(%rip), %r12
+	leaq	.LJTI12_0(%rip), %rbx
+	leaq	.Lanon.e1b5db914fe3a57d7d2dc395a5eecb23.3(%rip), %r13
+.LBB12_1:
 	movl	$128, %edx
 	movq	%r14, %rdi
-	callq	*<optional_trait_methods::line_reader::LineReader>::read_line@GOTPCREL(%rip)
+	movq	%r15, %rsi
+	callq	*%r12
 	testq	%rax, %rax
-	je	.LBB12_70
-	leaq	168(%rsp), %rbx
-	leaq	32(%rsp), %r14
-	movq	<optional_trait_methods::line_reader::LineReader>::read_line@GOTPCREL(%rip), %rbp
-	movq	%rsp, %r15
-	leaq	24(%rsp), %r12
-	leaq	.Lanon.e1b5db914fe3a57d7d2dc395a5eecb23.3(%rip), %r13
-.LBB12_2:
+	je	.LBB12_75
 	testq	%rdx, %rdx
-	je	.LBB12_9
+	je	.LBB12_1
 	cmpq	$2, %rdx
-	je	.LBB12_11
+	je	.LBB12_9
 	cmpq	$1, %rdx
-	jne	.LBB12_12
+	jne	.LBB12_11
 	movzbl	(%rax), %eax
-	cmpl	$43, %eax
-	je	.LBB12_64
-	cmpl	$45, %eax
-	je	.LBB12_60
 	cmpl	$112, %eax
-	jne	.LBB12_60
-	movq	%r12, %rdi
-	callq	*<optional_trait_methods::using_options::targets::faulty::FaultyTarget as optional_trait_methods::using_options::target::Target>::get_state@GOTPCREL(%rip)
-	movq	%rax, %rdi
-	callq	optional_trait_methods::print_macros::write_isize_line
-	jmp	.LBB12_9
-.LBB12_11:
+	je	.LBB12_18
+	cmpl	$45, %eax
+	je	.LBB12_17
+	cmpl	$43, %eax
+	jne	.LBB12_74
+	andq	$-256, %rbp
+	movl	$2, %eax
+	cmpq	$1, %rax
+	movl	$2, %ecx
+	adcq	$-1, %rcx
+	movslq	(%rbx,%rcx,4), %rcx
+	addq	%rbx, %rcx
+	jmpq	*%rcx
+.LBB12_9:
 	cmpw	$11563, (%rax)
-	jne	.LBB12_12
-	movq	%r15, %rdi
-	movq	%r12, %rsi
-	callq	*<optional_trait_methods::using_options::targets::faulty::FaultyTarget as optional_trait_methods::using_options::target::Target>::inc@GOTPCREL(%rip)
-	cmpl	$1, (%rsp)
-	jne	.LBB12_68
-	jmp	.LBB12_65
-.LBB12_12:
-	leaq	-2(%rdx), %rcx
+	jne	.LBB12_11
+	andq	$-256, %rbp
+	orq	$2, %rbp
+	movl	$2, %eax
+	cmpq	$1, %rax
+	movl	$2, %ecx
+	adcq	$-1, %rcx
+	movslq	(%rbx,%rcx,4), %rcx
+	addq	%rbx, %rcx
+	jmpq	*%rcx
+.LBB12_11:
 	cmpw	$8234, (%rax)
-	jne	.LBB12_26
-	testq	%rcx, %rcx
-	je	.LBB12_26
+	setne	%sil
+	movq	%rdx, %rcx
+	addq	$-2, %rcx
+	sete	%dil
+	orb	%sil, %dil
+	je	.LBB12_14
+.LBB12_12:
+	cmpq	$3, %rdx
+	jb	.LBB12_33
+	leaq	-3(%rdx), %rsi
+	jmp	.LBB12_32
+.LBB12_14:
 	movzbl	2(%rax), %esi
 	cmpl	$45, %esi
-	je	.LBB12_15
+	je	.LBB12_19
 	cmpl	$43, %esi
-	jne	.LBB12_17
+	jne	.LBB12_22
 	xorl	%esi, %esi
-	jmp	.LBB12_19
-.LBB12_15:
-	movb	$1, %sil
+	jmp	.LBB12_20
+.LBB12_17:
+	andq	$-256, %rbp
+	incq	%rbp
+	movl	$2, %eax
+	cmpq	$1, %rax
+	movl	$2, %ecx
+	adcq	$-1, %rcx
+	movslq	(%rbx,%rcx,4), %rcx
+	addq	%rbx, %rcx
+	jmpq	*%rcx
+.LBB12_18:
+	xorl	%eax, %eax
+	jmp	.LBB12_65
 .LBB12_19:
+	movb	$1, %sil
+.LBB12_20:
 	movq	%rdx, %r8
 	addq	$-3, %r8
-	je	.LBB12_71
+	je	.LBB12_31
 	leaq	3(%rax), %rdi
-	jmp	.LBB12_21
-.LBB12_64:
-	movq	%r15, %rdi
-	movq	%r12, %rsi
-	callq	*<optional_trait_methods::using_options::targets::faulty::FaultyTarget as optional_trait_methods::using_options::target::Target>::inc@GOTPCREL(%rip)
-	cmpb	$0, (%rsp)
-	je	.LBB12_9
-.LBB12_65:
-	movq	8(%rsp), %rdi
-	testq	%rdi, %rdi
-	jne	.LBB12_66
-	jmp	.LBB12_60
-.LBB12_17:
+	jmp	.LBB12_23
+.LBB12_22:
 	leaq	2(%rax), %rdi
 	xorl	%esi, %esi
 	movq	%rcx, %r8
-.LBB12_21:
-	xorl	%r9d, %r9d
+.LBB12_23:
 	xorl	%r10d, %r10d
-.LBB12_22:
-	movb	(%rdi,%r9), %r11b
+	xorl	%r9d, %r9d
+.LBB12_24:
+	movb	(%rdi,%r10), %r11b
 	addb	$-48, %r11b
 	cmpb	$9, %r11b
-	ja	.LBB12_26
-	imulq	$10, %r10, %r10
-	jo	.LBB12_26
+	ja	.LBB12_12
+	imulq	$10, %r9, %r9
+	jo	.LBB12_12
 	movzbl	%r11b, %r11d
 	testb	%sil, %sil
-	je	.LBB12_25
-	subq	%r11, %r10
-	jo	.LBB12_26
-	jmp	.LBB12_33
-.LBB12_25:
-	addq	%r11, %r10
-	jo	.LBB12_26
-.LBB12_33:
-	incq	%r9
-	cmpq	%r9, %r8
-	jne	.LBB12_22
-	jmp	.LBB12_60
-.LBB12_26:
-	cmpq	$3, %rdx
-	jb	.LBB12_44
-	leaq	-3(%rdx), %rsi
-	jmp	.LBB12_28
-.LBB12_71:
-	xorl	%esi, %esi
+	je	.LBB12_28
+	subq	%r11, %r9
+	jo	.LBB12_12
+	jmp	.LBB12_29
 .LBB12_28:
+	addq	%r11, %r9
+	jo	.LBB12_12
+.LBB12_29:
+	incq	%r10
+	cmpq	%r10, %r8
+	jne	.LBB12_24
+	movl	$3, %eax
+	jmp	.LBB12_64
+.LBB12_31:
+	xorl	%esi, %esi
+.LBB12_32:
 	movzwl	(%rax), %edi
 	xorl	$32298, %edi
 	movzbl	2(%rax), %r8d
 	xorl	$32, %r8d
 	orw	%di, %r8w
-	jne	.LBB12_44
+	setne	%dil
 	testq	%rsi, %rsi
-	je	.LBB12_44
-	movzbl	3(%rax), %edi
-	cmpl	$45, %edi
-	je	.LBB12_31
-	cmpl	$43, %edi
-	jne	.LBB12_35
-	xorl	%edi, %edi
-	jmp	.LBB12_37
-.LBB12_31:
-	movb	$1, %dil
-.LBB12_37:
-	movq	%rdx, %rsi
-	addq	$-4, %rsi
-	je	.LBB12_44
-	leaq	4(%rax), %r8
-	jmp	.LBB12_39
-.LBB12_35:
-	leaq	3(%rax), %r8
-	xorl	%edi, %edi
-.LBB12_39:
-	xorl	%r9d, %r9d
-	xorl	%r10d, %r10d
-.LBB12_40:
-	movb	(%r8,%r9), %r11b
-	addb	$-48, %r11b
-	cmpb	$9, %r11b
-	ja	.LBB12_44
-	imulq	$10, %r10, %r10
-	jo	.LBB12_44
-	movzbl	%r11b, %r11d
-	testb	%dil, %dil
-	je	.LBB12_43
-	subq	%r11, %r10
-	jo	.LBB12_44
-	jmp	.LBB12_49
-.LBB12_43:
-	addq	%r11, %r10
-	jo	.LBB12_44
-.LBB12_49:
-	incq	%r9
-	cmpq	%r9, %rsi
-	jne	.LBB12_40
-	jmp	.LBB12_60
-.LBB12_44:
+	sete	%r8b
+	orb	%dil, %r8b
+	je	.LBB12_37
+.LBB12_33:
 	cmpw	$8307, (%rax)
-	jne	.LBB12_60
+	setne	%sil
 	testq	%rcx, %rcx
-	je	.LBB12_60
+	sete	%dil
+	orb	%sil, %dil
+	jne	.LBB12_74
 	movzbl	2(%rax), %esi
 	cmpl	$45, %esi
-	je	.LBB12_47
+	je	.LBB12_40
 	cmpl	$43, %esi
-	jne	.LBB12_51
+	jne	.LBB12_43
+	xorl	%esi, %esi
+	jmp	.LBB12_41
+.LBB12_37:
+	movzbl	3(%rax), %edi
+	cmpl	$45, %edi
+	je	.LBB12_52
+	cmpl	$43, %edi
+	jne	.LBB12_55
 	xorl	%edi, %edi
 	jmp	.LBB12_53
-.LBB12_47:
-	movb	$1, %dil
-.LBB12_53:
+.LBB12_40:
+	movb	$1, %sil
+.LBB12_41:
 	addq	$-3, %rdx
-	je	.LBB12_60
+	je	.LBB12_74
 	addq	$3, %rax
-	jmp	.LBB12_55
-.LBB12_51:
+	jmp	.LBB12_44
+.LBB12_43:
 	addq	$2, %rax
-	xorl	%edi, %edi
-	movq	%rcx, %rdx
-.LBB12_55:
-	xorl	%ecx, %ecx
 	xorl	%esi, %esi
-.LBB12_56:
-	movb	(%rax,%rcx), %r8b
+	movq	%rcx, %rdx
+.LBB12_44:
+	xorl	%edi, %edi
+	xorl	%ecx, %ecx
+.LBB12_45:
+	movb	(%rax,%rdi), %r8b
 	addb	$-48, %r8b
 	cmpb	$9, %r8b
-	ja	.LBB12_60
-	imulq	$10, %rsi, %rsi
-	jo	.LBB12_60
+	ja	.LBB12_74
+	imulq	$10, %rcx, %rcx
+	jo	.LBB12_74
 	movzbl	%r8b, %r8d
+	testb	%sil, %sil
+	je	.LBB12_49
+	subq	%r8, %rcx
+	jo	.LBB12_74
+	jmp	.LBB12_50
+.LBB12_49:
+	addq	%r8, %rcx
+	jo	.LBB12_74
+.LBB12_50:
+	incq	%rdi
+	cmpq	%rdi, %rdx
+	jne	.LBB12_45
+	movl	$1, %eax
+	movq	%rcx, %rbp
+	jmp	.LBB12_65
+.LBB12_52:
+	movb	$1, %dil
+.LBB12_53:
+	movq	%rdx, %rsi
+	addq	$-4, %rsi
+	je	.LBB12_33
+	leaq	4(%rax), %r8
+	jmp	.LBB12_56
+.LBB12_55:
+	leaq	3(%rax), %r8
+	xorl	%edi, %edi
+.LBB12_56:
+	xorl	%r10d, %r10d
+	xorl	%r9d, %r9d
+.LBB12_57:
+	movb	(%r8,%r10), %r11b
+	addb	$-48, %r11b
+	cmpb	$9, %r11b
+	ja	.LBB12_33
+	imulq	$10, %r9, %r9
+	jo	.LBB12_33
+	movzbl	%r11b, %r11d
 	testb	%dil, %dil
-	je	.LBB12_59
-	subq	%r8, %rsi
-	jo	.LBB12_60
+	je	.LBB12_61
+	subq	%r11, %r9
+	jo	.LBB12_33
 	jmp	.LBB12_62
-.LBB12_59:
-	addq	%r8, %rsi
-	jo	.LBB12_60
+.LBB12_61:
+	addq	%r11, %r9
+	jo	.LBB12_33
 .LBB12_62:
-	incq	%rcx
-	cmpq	%rcx, %rdx
-	jne	.LBB12_56
-	movq	%r12, %rdi
+	incq	%r10
+	cmpq	%r10, %rsi
+	jne	.LBB12_57
+	movl	$4, %eax
+.LBB12_64:
+	movq	%r9, %rbp
+.LBB12_65:
+	cmpq	$1, %rax
+	movq	%rax, %rcx
+	adcq	$-1, %rcx
+	movslq	(%rbx,%rcx,4), %rcx
+	addq	%rbx, %rcx
+	jmpq	*%rcx
+.LBB12_66:
+	movq	%rsp, %rdi
+	testb	$1, %al
+	je	.LBB12_71
+	movq	%rbp, %rsi
 	callq	*<optional_trait_methods::using_options::targets::faulty::FaultyTarget as optional_trait_methods::using_options::target::Target>::set_state@GOTPCREL(%rip)
-	jmp	.LBB12_9
-.LBB12_60:
+	jmp	.LBB12_1
+.LBB12_68:
+	testb	%bpl, %bpl
+	je	.LBB12_72
+	movzbl	%bpl, %eax
+	cmpl	$1, %eax
+	je	.LBB12_74
+	leaq	8(%rsp), %rdi
+	movq	%rsp, %rsi
+	callq	*<optional_trait_methods::using_options::targets::faulty::FaultyTarget as optional_trait_methods::using_options::target::Target>::inc@GOTPCREL(%rip)
+	cmpl	$1, 8(%rsp)
+	je	.LBB12_73
+	jmp	.LBB12_78
+.LBB12_71:
+	callq	*<optional_trait_methods::using_options::targets::faulty::FaultyTarget as optional_trait_methods::using_options::target::Target>::get_state@GOTPCREL(%rip)
+	movq	%rax, %rdi
+	callq	optional_trait_methods::print_macros::write_isize_line
+	jmp	.LBB12_1
+.LBB12_72:
+	leaq	8(%rsp), %rdi
+	movq	%rsp, %rsi
+	callq	*<optional_trait_methods::using_options::targets::faulty::FaultyTarget as optional_trait_methods::using_options::target::Target>::inc@GOTPCREL(%rip)
+	cmpb	$0, 8(%rsp)
+	je	.LBB12_1
+.LBB12_73:
+	movq	16(%rsp), %rdi
+	testq	%rdi, %rdi
+	jne	.LBB12_77
+.LBB12_74:
 	movl	$16, %esi
 	movq	%r13, %rdi
 	callq	optional_trait_methods::print_macros::write_line
-.LBB12_9:
-	movl	$128, %edx
-	movq	%rbx, %rdi
-	movq	%r14, %rsi
-	callq	*%rbp
-	testq	%rax, %rax
-	jne	.LBB12_2
-	xorl	%ebx, %ebx
-	jmp	.LBB12_70
-.LBB12_66:
-	movq	16(%rsp), %rsi
-	jmp	.LBB12_69
-.LBB12_68:
-	leaq	.Lanon.e1b5db914fe3a57d7d2dc395a5eecb23.9(%rip), %rdi
-	movl	$23, %esi
-.LBB12_69:
-	callq	optional_trait_methods::print_macros::write_line
-	movl	$1, %ebx
-.LBB12_70:
-	movl	%ebx, %eax
+	jmp	.LBB12_1
+.LBB12_75:
+	xorl	%eax, %eax
+.LBB12_76:
 	addq	$1208, %rsp
 	.cfi_def_cfa_offset 56
 	popq	%rbx
@@ -644,9 +686,27 @@ run_optional_trait_methods:
 	popq	%rbp
 	.cfi_def_cfa_offset 8
 	retq
+.LBB12_77:
+	.cfi_def_cfa_offset 1264
+	movq	24(%rsp), %rsi
+	jmp	.LBB12_79
+.LBB12_78:
+	leaq	.Lanon.e1b5db914fe3a57d7d2dc395a5eecb23.9(%rip), %rdi
+	movl	$23, %esi
+.LBB12_79:
+	callq	optional_trait_methods::print_macros::write_line
+	movl	$1, %eax
+	jmp	.LBB12_76
 .Lfunc_end12:
 	.size	run_optional_trait_methods, .Lfunc_end12-run_optional_trait_methods
 	.cfi_endproc
+	.section	.rodata.run_optional_trait_methods,"a",@progbits
+	.p2align	2, 0x0
+.LJTI12_0:
+	.long	.LBB12_66-.LJTI12_0
+	.long	.LBB12_68-.LJTI12_0
+	.long	.LBB12_74-.LJTI12_0
+	.long	.LBB12_74-.LJTI12_0
 
 	.type	.Lanon.e1b5db914fe3a57d7d2dc395a5eecb23.0,@object
 	.section	.rodata..Lanon.e1b5db914fe3a57d7d2dc395a5eecb23.0,"a",@progbits

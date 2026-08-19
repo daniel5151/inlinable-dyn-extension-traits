@@ -46,8 +46,7 @@ _<optional_trait_methods::using_is_supported::controller::TargetController<optio
 	ldrb	w8, [x0]
 	cmp	w8, #112
 	b.ne	LBB2_7
-	strb	wzr, [x19]
-	str	xzr, [x19, #8]
+	str	xzr, [x19]
 	b	LBB2_8
 LBB2_4:
 	ldrh	w8, [x0], #2
@@ -57,13 +56,12 @@ LBB2_4:
 	sub	x1, x1, #2
 	bl	_optional_trait_methods::commands::parse_isize
 	tbz	w0, #0, LBB2_7
-	strb	wzr, [x19]
 	mov	w8, #1
-	stp	x8, x1, [x19, #8]
+	stp	x8, x1, [x19]
 	b	LBB2_8
 LBB2_7:
-	mov	w8, #3
-	strb	w8, [x19]
+	mov	w8, #5
+	str	x8, [x19]
 LBB2_8:
 	ldp	x29, x30, [sp, #16]
 	ldp	x20, x19, [sp], #32
@@ -74,60 +72,62 @@ _<optional_trait_methods::using_is_supported::controller::TargetController<optio
 	sub	sp, sp, #32
 	stp	x29, x30, [sp, #16]
 	add	x29, sp, #16
-	ldrb	w8, [x1]
-	cbz	w8, LBB3_3
-	cmp	w8, #1
-	b.ne	LBB3_5
-Lloh0:
-	adrp	x8, l_anon.dc69959ff14cd86cdd5c323be29f51e1.2@PAGE
-Lloh1:
-	add	x8, x8, l_anon.dc69959ff14cd86cdd5c323be29f51e1.2@PAGEOFF
-	mov	w9, #16
-	stp	x8, x9, [sp]
-	mov	x8, sp
-	; InlineAsm Start
-	; InlineAsm End
-	b	LBB3_9
-LBB3_3:
-	ldr	w8, [x1, #8]
-	tbz	w8, #0, LBB3_7
-	ldr	x1, [x1, #16]
+	ldr	x8, [x1]
+	cmp	x8, #0
+	cset	w9, ne
+	sub	x9, x8, x9
+	cmp	x9, #1
+	b.gt	LBB3_4
+	cbnz	x9, LBB3_6
+	tbz	w8, #0, LBB3_9
+	ldr	x1, [x1, #8]
 	ldp	x29, x30, [sp, #16]
 	add	sp, sp, #32
 	b	_<optional_trait_methods::using_is_supported::targets::basic::BasicTarget as optional_trait_methods::using_is_supported::target::Target>::set_state
-LBB3_5:
-	ldr	w8, [x1, #8]
-	tbz	w8, #0, LBB3_8
-Lloh2:
-	adrp	x8, l_anon.dc69959ff14cd86cdd5c323be29f51e1.4@PAGE
-Lloh3:
-	add	x8, x8, l_anon.dc69959ff14cd86cdd5c323be29f51e1.4@PAGEOFF
-	mov	w9, #21
-	stp	x8, x9, [sp]
-	mov	x8, sp
-	; InlineAsm Start
-	; InlineAsm End
-	b	LBB3_9
-LBB3_7:
-	bl	_<optional_trait_methods::using_is_supported::targets::basic::BasicTarget as optional_trait_methods::using_is_supported::target::Target>::get_state
-	ldp	x29, x30, [sp, #16]
-	add	sp, sp, #32
-	b	_optional_trait_methods::print_macros::write_isize_line
-LBB3_8:
-Lloh4:
+LBB3_4:
+	cmp	x9, #2
+	b.ne	LBB3_7
+Lloh0:
 	adrp	x8, l_anon.dc69959ff14cd86cdd5c323be29f51e1.3@PAGE
-Lloh5:
+Lloh1:
 	add	x8, x8, l_anon.dc69959ff14cd86cdd5c323be29f51e1.3@PAGEOFF
 	mov	w9, #13
 	stp	x8, x9, [sp]
 	mov	x8, sp
 	; InlineAsm Start
 	; InlineAsm End
-LBB3_9:
+	b	LBB3_8
+LBB3_6:
+Lloh2:
+	adrp	x8, l_anon.dc69959ff14cd86cdd5c323be29f51e1.2@PAGE
+Lloh3:
+	add	x8, x8, l_anon.dc69959ff14cd86cdd5c323be29f51e1.2@PAGEOFF
+	mov	w9, #16
+	stp	x8, x9, [sp]
+	mov	x8, sp
+	; InlineAsm Start
+	; InlineAsm End
+	b	LBB3_8
+LBB3_7:
+Lloh4:
+	adrp	x8, l_anon.dc69959ff14cd86cdd5c323be29f51e1.4@PAGE
+Lloh5:
+	add	x8, x8, l_anon.dc69959ff14cd86cdd5c323be29f51e1.4@PAGEOFF
+	mov	w9, #21
+	stp	x8, x9, [sp]
+	mov	x8, sp
+	; InlineAsm Start
+	; InlineAsm End
+LBB3_8:
 	bl	_optional_trait_methods::print_macros::write_line
 	ldp	x29, x30, [sp, #16]
 	add	sp, sp, #32
 	ret
+LBB3_9:
+	bl	_<optional_trait_methods::using_is_supported::targets::basic::BasicTarget as optional_trait_methods::using_is_supported::target::Target>::get_state
+	ldp	x29, x30, [sp, #16]
+	add	sp, sp, #32
+	b	_optional_trait_methods::print_macros::write_isize_line
 	.loh AdrpAdd	Lloh0, Lloh1
 	.loh AdrpAdd	Lloh2, Lloh3
 	.loh AdrpAdd	Lloh4, Lloh5
@@ -467,9 +467,9 @@ _run_optional_trait_methods:
 	stp	x20, x19, [sp, #-32]!
 	stp	x29, x30, [sp, #16]
 	add	x29, sp, #16
-	sub	sp, sp, #1216
+	sub	sp, sp, #1200
 	str	xzr, [sp]
-	sub	x19, x29, #176
+	sub	x19, x29, #160
 	str	xzr, [sp, #8]
 	add	x0, sp, #16
 	mov	w1, #1040
@@ -481,26 +481,26 @@ _run_optional_trait_methods:
 	stp	q0, q0, [x19]
 LBB16_1:
 	add	x0, sp, #16
-	sub	x1, x29, #176
+	sub	x1, x29, #160
 	mov	w2, #128
 	bl	_<optional_trait_methods::line_reader::LineReader>::read_line
 	cbz	x0, LBB16_6
 	cbz	x1, LBB16_1
-	sub	x8, x29, #40
+	sub	x8, x29, #32
 	bl	_<optional_trait_methods::using_is_supported::controller::TargetController<optional_trait_methods::using_is_supported::targets::basic::BasicTarget>>::parse_command
-	ldurb	w8, [x29, #-40]
-	cmp	w8, #3
+	ldur	x8, [x29, #-32]
+	cmp	x8, #5
 	b.ne	LBB16_5
 	bl	_optional_trait_methods::print_macros::write_line
 	b	LBB16_1
 LBB16_5:
 	add	x0, sp, #8
-	sub	x1, x29, #40
+	sub	x1, x29, #32
 	bl	_<optional_trait_methods::using_is_supported::controller::TargetController<optional_trait_methods::using_is_supported::targets::basic::BasicTarget>>::handle
 	b	LBB16_1
 LBB16_6:
 	mov	w0, #0
-	add	sp, sp, #1216
+	add	sp, sp, #1200
 	ldp	x29, x30, [sp, #16]
 	ldp	x20, x19, [sp], #32
 	ret

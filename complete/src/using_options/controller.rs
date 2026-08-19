@@ -60,7 +60,9 @@ impl<T: Target> TargetController<T> {
         /* ScaleFactor extension parsing - cannot be gated on target support! */
         crate::__dead_code_marker!("Parse ScaleFactor extension");
         if let Some(n) = buf.strip_prefix(b"*~ ").and_then(parse_isize) {
-            return Some(Command::Mul(ext::MulCommand::ScaleFactor(n)));
+            return Some(Command::MulScaleFactor(
+                ext::MulScaleFactorCommand::ScaleFactor(n),
+            ));
         }
 
         /* Base protocol parsing */
@@ -127,7 +129,11 @@ impl<T: Target> TargetController<T> {
                         None => self.unsupported_cmd()?,
                     };
                 }
-                ext::MulCommand::ScaleFactor(n) => {
+            },
+
+            /* ScaleFactor nested extension */
+            Command::MulScaleFactor(scale_factor_cmd) => match scale_factor_cmd {
+                ext::MulScaleFactorCommand::ScaleFactor(n) => {
                     crate::__dead_code_marker!("ScaleFactor extension");
 
                     match self

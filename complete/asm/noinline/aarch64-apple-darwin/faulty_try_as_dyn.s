@@ -58,20 +58,24 @@ Lloh1:
 	b.ne	LBB2_9
 	ldrb	w8, [x0]
 	cmp	w8, #112
-	b.eq	LBB2_16
+	b.eq	LBB2_15
 	cmp	w8, #45
-	b.eq	LBB2_13
+	b.eq	LBB2_14
 	cmp	w8, #43
 	b.ne	LBB2_12
-	mov	w8, #1
-	b	LBB2_14
+	mov	w8, #2
+	str	x8, [x19]
+	strb	wzr, [x19, #8]
+	b	LBB2_13
 LBB2_7:
 	ldrh	w8, [x0]
 	mov	w9, #11563
 	cmp	w8, w9
 	b.ne	LBB2_9
-	mov	w8, #513
-	b	LBB2_14
+	mov	w8, #2
+	str	x8, [x19]
+	strb	w8, [x19, #8]
+	b	LBB2_13
 LBB2_9:
 	ldrh	w8, [x0], #2
 	mov	w9, #8307
@@ -79,27 +83,26 @@ LBB2_9:
 	b.ne	LBB2_12
 	bl	_optional_trait_methods::commands::parse_isize
 	tbz	w0, #0, LBB2_12
-	strb	wzr, [x19]
 	mov	w8, #1
-	stp	x8, x1, [x19, #8]
-	b	LBB2_15
+	stp	x8, x1, [x19]
+	b	LBB2_13
 LBB2_12:
-	mov	w8, #3
-	strb	w8, [x19]
-	b	LBB2_15
+	mov	w8, #5
+	str	x8, [x19]
 LBB2_13:
-	mov	w8, #257
-LBB2_14:
-	strh	w8, [x19]
-LBB2_15:
 	ldp	x29, x30, [sp, #32]
 	ldp	x20, x19, [sp, #16]
 	add	sp, sp, #48
 	ret
-LBB2_16:
-	strb	wzr, [x19]
-	str	xzr, [x19, #8]
-	b	LBB2_15
+LBB2_14:
+	mov	w8, #2
+	str	x8, [x19]
+	mov	w8, #1
+	strb	w8, [x19, #8]
+	b	LBB2_13
+LBB2_15:
+	str	xzr, [x19]
+	b	LBB2_13
 	.loh AdrpAdd	Lloh0, Lloh1
 
 	.p2align	2
@@ -107,58 +110,61 @@ _<optional_trait_methods::using_try_as_dyn::controller::TargetController<optiona
 	sub	sp, sp, #32
 	stp	x29, x30, [sp, #16]
 	add	x29, sp, #16
-	ldrb	w8, [x1]
-	cbz	w8, LBB3_5
-	cmp	w8, #1
-	b.ne	LBB3_7
+	ldr	x8, [x1]
+	cmp	x8, #0
+	cset	w9, ne
+	sub	x9, x8, x9
+	cmp	x9, #1
+	b.gt	LBB3_4
+	cbnz	x9, LBB3_8
+	tbz	w8, #0, LBB3_11
+	ldr	x1, [x1, #8]
+	bl	_<optional_trait_methods::using_try_as_dyn::targets::faulty::FaultyTarget as optional_trait_methods::using_try_as_dyn::target::TargetBase>::set_state
+	b	LBB3_7
+LBB3_4:
+	cmp	x9, #2
 Lloh2:
-	adrp	x8, l_anon.4fde9fda7145252fc01ceac1efae7d2c.3@PAGE
+	adrp	x0, l_anon.4fde9fda7145252fc01ceac1efae7d2c.2@PAGE
 Lloh3:
+	add	x0, x0, l_anon.4fde9fda7145252fc01ceac1efae7d2c.2@PAGEOFF
+	mov	w1, #16
+	bl	_optional_trait_methods::print_macros::write_line
+LBB3_5:
+	mov	x0, #0
+LBB3_6:
+LBB3_7:
+	ldp	x29, x30, [sp, #16]
+	add	sp, sp, #32
+	ret
+LBB3_8:
+Lloh4:
+	adrp	x8, l_anon.4fde9fda7145252fc01ceac1efae7d2c.3@PAGE
+Lloh5:
 	add	x8, x8, l_anon.4fde9fda7145252fc01ceac1efae7d2c.3@PAGEOFF
 	mov	w9, #16
 	stp	x8, x9, [sp]
 	mov	x8, sp
 	; InlineAsm Start
 	; InlineAsm End
-	ldrb	w8, [x1, #1]
+	ldrb	w8, [x1, #8]
 	cmp	w8, #2
 	b.eq	LBB3_12
 	cmp	w8, #1
 	b.eq	LBB3_13
 	bl	_<optional_trait_methods::using_try_as_dyn::targets::faulty::FaultyTarget as optional_trait_methods::using_try_as_dyn::target::TargetExtIncDec>::inc
-	cbz	x0, LBB3_10
-	b	LBB3_11
-LBB3_5:
-	ldr	w8, [x1, #8]
-	tbz	w8, #0, LBB3_8
-	ldr	x1, [x1, #16]
-	bl	_<optional_trait_methods::using_try_as_dyn::targets::faulty::FaultyTarget as optional_trait_methods::using_try_as_dyn::target::TargetBase>::set_state
-	b	LBB3_11
-LBB3_7:
-Lloh4:
-	adrp	x0, l_anon.4fde9fda7145252fc01ceac1efae7d2c.2@PAGE
-Lloh5:
-	add	x0, x0, l_anon.4fde9fda7145252fc01ceac1efae7d2c.2@PAGEOFF
-	mov	w1, #16
-	bl	_optional_trait_methods::print_macros::write_line
-	b	LBB3_9
-LBB3_8:
+	cbz	x0, LBB3_6
+	b	LBB3_7
+LBB3_11:
 	bl	_<optional_trait_methods::using_try_as_dyn::targets::faulty::FaultyTarget as optional_trait_methods::using_try_as_dyn::target::TargetBase>::get_state
 	bl	_optional_trait_methods::print_macros::write_isize_line
-LBB3_9:
-	mov	x0, #0
-LBB3_10:
-LBB3_11:
-	ldp	x29, x30, [sp, #16]
-	add	sp, sp, #32
-	ret
+	b	LBB3_5
 LBB3_12:
 	bl	_<optional_trait_methods::using_try_as_dyn::targets::faulty::FaultyTarget as optional_trait_methods::using_try_as_dyn::target::TargetExtIncDec>::inc
-	cbnz	x0, LBB3_11
+	cbnz	x0, LBB3_7
 LBB3_13:
 	bl	_<optional_trait_methods::using_try_as_dyn::targets::faulty::FaultyTarget as optional_trait_methods::using_try_as_dyn::target::TargetExtIncDec>::dec
-	cbz	x0, LBB3_10
-	b	LBB3_11
+	cbz	x0, LBB3_6
+	b	LBB3_7
 	.loh AdrpAdd	Lloh2, Lloh3
 	.loh AdrpAdd	Lloh4, Lloh5
 
@@ -439,9 +445,9 @@ _run_optional_trait_methods:
 	stp	x20, x19, [sp, #-32]!
 	stp	x29, x30, [sp, #16]
 	add	x29, sp, #16
-	sub	sp, sp, #1216
+	sub	sp, sp, #1200
 	str	xzr, [sp]
-	sub	x19, x29, #176
+	sub	x19, x29, #160
 	str	xzr, [sp, #8]
 	add	x0, sp, #16
 	mov	w1, #1040
@@ -452,7 +458,7 @@ _run_optional_trait_methods:
 	stp	q0, q0, [x19, #32]
 	stp	q0, q0, [x19]
 	add	x0, sp, #16
-	sub	x1, x29, #176
+	sub	x1, x29, #160
 	mov	w2, #128
 	bl	_<optional_trait_methods::line_reader::LineReader>::read_line
 	cbz	x0, LBB14_8
@@ -462,10 +468,10 @@ Lloh17:
 	add	x19, x19, l_anon.4fde9fda7145252fc01ceac1efae7d2c.2@PAGEOFF
 LBB14_2:
 	cbz	x1, LBB14_6
-	sub	x8, x29, #40
+	sub	x8, x29, #32
 	bl	_<optional_trait_methods::using_try_as_dyn::controller::TargetController<optional_trait_methods::using_try_as_dyn::targets::faulty::FaultyTarget>>::parse_command
-	ldurb	w8, [x29, #-40]
-	cmp	w8, #3
+	ldur	x8, [x29, #-32]
+	cmp	x8, #5
 	b.ne	LBB14_5
 	mov	x0, x19
 	mov	w1, #16
@@ -473,12 +479,12 @@ LBB14_2:
 	b	LBB14_6
 LBB14_5:
 	add	x0, sp, #8
-	sub	x1, x29, #40
+	sub	x1, x29, #32
 	bl	_<optional_trait_methods::using_try_as_dyn::controller::TargetController<optional_trait_methods::using_try_as_dyn::targets::faulty::FaultyTarget>>::handle
 	cbnz	x0, LBB14_7
 LBB14_6:
 	add	x0, sp, #16
-	sub	x1, x29, #176
+	sub	x1, x29, #160
 	mov	w2, #128
 	bl	_<optional_trait_methods::line_reader::LineReader>::read_line
 	cbnz	x0, LBB14_2
@@ -487,7 +493,7 @@ LBB14_7:
 	bl	_optional_trait_methods::print_macros::write_line
 	mov	w0, #1
 LBB14_8:
-	add	sp, sp, #1216
+	add	sp, sp, #1200
 	ldp	x29, x30, [sp, #16]
 	ldp	x20, x19, [sp], #32
 	ret

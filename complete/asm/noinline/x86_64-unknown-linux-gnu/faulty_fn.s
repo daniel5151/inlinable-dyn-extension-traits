@@ -78,12 +78,14 @@
 	je	.LBB2_7
 	cmpl	$43, %eax
 	jne	.LBB2_14
-	movw	$1, (%rbx)
+	movq	$2, (%rbx)
+	movb	$0, 8(%rbx)
 	jmp	.LBB2_9
 .LBB2_10:
 	cmpw	$11563, (%rsi)
 	jne	.LBB2_11
-	movw	$513, (%rbx)
+	movq	$2, (%rbx)
+	movb	$2, 8(%rbx)
 	jmp	.LBB2_9
 .LBB2_11:
 	cmpw	$8307, (%rsi)
@@ -95,12 +97,11 @@
 	callq	optional_trait_methods::commands::parse_isize
 	testb	$1, %al
 	je	.LBB2_14
-	movb	$0, (%rbx)
-	movq	$1, 8(%rbx)
-	movq	%rdx, 16(%rbx)
+	movq	$1, (%rbx)
+	movq	%rdx, 8(%rbx)
 	jmp	.LBB2_9
 .LBB2_14:
-	movb	$3, (%rbx)
+	movq	$5, (%rbx)
 .LBB2_9:
 	movq	%rbx, %rax
 	addq	$16, %rsp
@@ -110,11 +111,11 @@
 	retq
 .LBB2_7:
 	.cfi_def_cfa_offset 32
-	movw	$257, (%rbx)
+	movq	$2, (%rbx)
+	movb	$1, 8(%rbx)
 	jmp	.LBB2_9
 .LBB2_15:
-	movb	$0, (%rbx)
-	movq	$0, 8(%rbx)
+	movq	$0, (%rbx)
 	jmp	.LBB2_9
 .Lfunc_end2:
 	.size	<optional_trait_methods::using_fn::controller::TargetController<optional_trait_methods::using_fn::targets::faulty::FaultyTarget>>::parse_command, .Lfunc_end2-<optional_trait_methods::using_fn::controller::TargetController<optional_trait_methods::using_fn::targets::faulty::FaultyTarget>>::parse_command
@@ -126,58 +127,70 @@
 	.cfi_startproc
 	subq	$24, %rsp
 	.cfi_def_cfa_offset 32
-	movzbl	(%rsi), %eax
-	testl	%eax, %eax
+	movq	(%rsi), %rax
+	cmpq	$1, %rax
+	movq	%rax, %rcx
+	adcq	$-1, %rcx
+	leaq	.LJTI3_0(%rip), %rdx
+	movslq	(%rdx,%rcx,4), %rcx
+	addq	%rdx, %rcx
+	jmpq	*%rcx
+.LBB3_4:
+	leaq	.Lanon.0dc6b5be93eeee5d689213b0b5180da0.2(%rip), %rdi
+	movl	$16, %esi
+	callq	optional_trait_methods::print_macros::write_line
+.LBB3_8:
+	xorl	%eax, %eax
+.LBB3_9:
+	addq	$24, %rsp
+	.cfi_def_cfa_offset 8
+	retq
+.LBB3_6:
+	.cfi_def_cfa_offset 32
+	testb	$1, %al
 	je	.LBB3_7
-	cmpl	$1, %eax
-	jne	.LBB3_5
+	movq	8(%rsi), %rsi
+	callq	*optional_trait_methods::using_fn::targets::faulty::set_state@GOTPCREL(%rip)
+	jmp	.LBB3_9
+.LBB3_1:
 	leaq	.Lanon.0dc6b5be93eeee5d689213b0b5180da0.3(%rip), %rax
 	leaq	8(%rsp), %rcx
 	movq	%rax, (%rcx)
 	movq	$16, 8(%rcx)
 	#APP
 	#NO_APP
-	movzbl	1(%rsi), %eax
+	movzbl	8(%rsi), %eax
 	testl	%eax, %eax
-	je	.LBB3_11
+	je	.LBB3_10
 	cmpl	$1, %eax
-	je	.LBB3_4
+	je	.LBB3_3
 	callq	*optional_trait_methods::using_fn::targets::faulty::inc@GOTPCREL(%rip)
 	testq	%rax, %rax
-	jne	.LBB3_10
-.LBB3_4:
+	jne	.LBB3_9
+.LBB3_3:
 	callq	*optional_trait_methods::using_fn::targets::faulty::dec@GOTPCREL(%rip)
-	jmp	.LBB3_12
+	jmp	.LBB3_11
 .LBB3_7:
-	cmpb	$0, 8(%rsi)
-	je	.LBB3_8
-	movq	16(%rsi), %rsi
-	callq	*optional_trait_methods::using_fn::targets::faulty::set_state@GOTPCREL(%rip)
-	jmp	.LBB3_10
-.LBB3_5:
-	leaq	.Lanon.0dc6b5be93eeee5d689213b0b5180da0.2(%rip), %rdi
-	movl	$16, %esi
-	callq	optional_trait_methods::print_macros::write_line
-	jmp	.LBB3_9
-.LBB3_8:
 	callq	*optional_trait_methods::using_fn::targets::faulty::get_state@GOTPCREL(%rip)
 	movq	%rax, %rdi
 	callq	optional_trait_methods::print_macros::write_isize_line
-	jmp	.LBB3_9
-.LBB3_11:
-	callq	*optional_trait_methods::using_fn::targets::faulty::inc@GOTPCREL(%rip)
-.LBB3_12:
-	testq	%rax, %rax
-	jne	.LBB3_10
-.LBB3_9:
-	xorl	%eax, %eax
+	jmp	.LBB3_8
 .LBB3_10:
-	addq	$24, %rsp
-	.cfi_def_cfa_offset 8
-	retq
+	callq	*optional_trait_methods::using_fn::targets::faulty::inc@GOTPCREL(%rip)
+.LBB3_11:
+	testq	%rax, %rax
+	je	.LBB3_8
+	jmp	.LBB3_9
 .Lfunc_end3:
 	.size	<optional_trait_methods::using_fn::controller::TargetController<optional_trait_methods::using_fn::targets::faulty::FaultyTarget>>::handle, .Lfunc_end3-<optional_trait_methods::using_fn::controller::TargetController<optional_trait_methods::using_fn::targets::faulty::FaultyTarget>>::handle
 	.cfi_endproc
+	.section	.rodata.<optional_trait_methods::using_fn::controller::TargetController<optional_trait_methods::using_fn::targets::faulty::FaultyTarget>>::handle,"a",@progbits
+	.p2align	2, 0x0
+.LJTI3_0:
+	.long	.LBB3_6-.LJTI3_0
+	.long	.LBB3_1-.LJTI3_0
+	.long	.LBB3_4-.LJTI3_0
+	.long	.LBB3_4-.LJTI3_0
 
 	.section	.text.<optional_trait_methods::line_reader::LineReader>::read_line,"ax",@progbits
 	.globl	<optional_trait_methods::line_reader::LineReader>::read_line
@@ -550,7 +563,7 @@ run_optional_trait_methods:
 	.cfi_offset %r14, -32
 	.cfi_offset %r15, -24
 	.cfi_offset %rbp, -16
-	movq	$0, (%rsp)
+	movq	$0, 8(%rsp)
 	leaq	168(%rsp), %r14
 	xorl	%ebx, %ebx
 	movl	$1040, %edx
@@ -575,16 +588,16 @@ run_optional_trait_methods:
 	leaq	168(%rsp), %r14
 	leaq	32(%rsp), %r15
 	movq	<optional_trait_methods::line_reader::LineReader>::read_line@GOTPCREL(%rip), %rbx
-	leaq	8(%rsp), %r12
+	leaq	16(%rsp), %r12
 	leaq	.Lanon.0dc6b5be93eeee5d689213b0b5180da0.2(%rip), %r13
-	movq	%rsp, %rbp
+	leaq	8(%rsp), %rbp
 .LBB14_2:
 	testq	%rdx, %rdx
 	je	.LBB14_3
 	movq	%r12, %rdi
 	movq	%rax, %rsi
 	callq	<optional_trait_methods::using_fn::controller::TargetController<optional_trait_methods::using_fn::targets::faulty::FaultyTarget>>::parse_command
-	cmpb	$3, 8(%rsp)
+	cmpl	$5, 16(%rsp)
 	jne	.LBB14_7
 	movl	$16, %esi
 	movq	%r13, %rdi

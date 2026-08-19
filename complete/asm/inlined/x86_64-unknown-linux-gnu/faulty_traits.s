@@ -367,140 +367,149 @@ run_optional_trait_methods:
 	.cfi_offset %r14, -32
 	.cfi_offset %r15, -24
 	.cfi_offset %rbp, -16
-	movq	$0, 8(%rsp)
+	leaq	8(%rsp), %rbx
+	movq	$0, (%rbx)
 	leaq	152(%rsp), %r14
-	xorl	%ebx, %ebx
 	movl	$1040, %edx
 	movq	%r14, %rdi
 	xorl	%esi, %esi
 	callq	*memset@GOTPCREL(%rip)
 	xorps	%xmm0, %xmm0
-	leaq	16(%rsp), %rsi
-	movaps	%xmm0, 112(%rsi)
-	movaps	%xmm0, 96(%rsi)
-	movaps	%xmm0, 80(%rsi)
-	movaps	%xmm0, 64(%rsi)
-	movaps	%xmm0, 48(%rsi)
-	movaps	%xmm0, 32(%rsi)
-	movaps	%xmm0, 16(%rsi)
-	movaps	%xmm0, (%rsi)
+	leaq	16(%rsp), %r15
+	movaps	%xmm0, 112(%r15)
+	movaps	%xmm0, 96(%r15)
+	movaps	%xmm0, 80(%r15)
+	movaps	%xmm0, 64(%r15)
+	movaps	%xmm0, 48(%r15)
+	movaps	%xmm0, 32(%r15)
+	movaps	%xmm0, 16(%r15)
+	movaps	%xmm0, (%r15)
+	movq	<optional_trait_methods::line_reader::LineReader>::read_line@GOTPCREL(%rip), %rbp
+.LBB11_1:
 	movl	$128, %edx
 	movq	%r14, %rdi
-	callq	*<optional_trait_methods::line_reader::LineReader>::read_line@GOTPCREL(%rip)
+	movq	%r15, %rsi
+	callq	*%rbp
 	testq	%rax, %rax
-	je	.LBB11_33
-	leaq	152(%rsp), %rbx
-	leaq	16(%rsp), %r14
-	movq	<optional_trait_methods::line_reader::LineReader>::read_line@GOTPCREL(%rip), %r13
-	leaq	8(%rsp), %r15
-	movq	<optional_trait_methods::using_traits::targets::faulty::FaultyTarget as optional_trait_methods::using_traits::target::TargetExtIncDec>::inc@GOTPCREL(%rip), %rbp
-	leaq	.Lanon.7bda9396e0abb153671ec4842e7fba37.1(%rip), %r12
-.LBB11_2:
+	je	.LBB11_2
 	testq	%rdx, %rdx
-	je	.LBB11_9
+	je	.LBB11_1
 	cmpq	$2, %rdx
 	je	.LBB11_11
 	cmpq	$1, %rdx
 	jne	.LBB11_12
 	movzbl	(%rax), %eax
-	cmpl	$43, %eax
-	je	.LBB11_30
-	cmpl	$45, %eax
-	je	.LBB11_35
 	cmpl	$112, %eax
-	jne	.LBB11_26
-	movq	%r15, %rdi
-	callq	*<optional_trait_methods::using_traits::targets::faulty::FaultyTarget as optional_trait_methods::using_traits::target::TargetBase>::get_state@GOTPCREL(%rip)
-	movq	%rax, %rdi
-	callq	optional_trait_methods::print_macros::write_isize_line
-	jmp	.LBB11_9
+	je	.LBB11_29
+	cmpl	$45, %eax
+	je	.LBB11_30
+	cmpl	$43, %eax
+	jne	.LBB11_25
+	andq	$-256, %r12
+	jmp	.LBB11_31
 .LBB11_11:
 	cmpw	$11563, (%rax)
 	jne	.LBB11_12
-	movq	%r15, %rdi
-	callq	*%rbp
-	testq	%rax, %rax
-	jne	.LBB11_32
-.LBB11_35:
-	callq	*<optional_trait_methods::using_traits::targets::faulty::FaultyTarget as optional_trait_methods::using_traits::target::TargetExtIncDec>::dec@GOTPCREL(%rip)
+	andq	$-256, %r12
+	orq	$2, %r12
 	jmp	.LBB11_31
 .LBB11_12:
 	cmpw	$8307, (%rax)
-	jne	.LBB11_26
-	movq	%rdx, %rdi
-	addq	$-2, %rdi
-	je	.LBB11_26
-	movzbl	2(%rax), %ecx
-	cmpl	$45, %ecx
-	je	.LBB11_15
-	cmpl	$43, %ecx
-	jne	.LBB11_17
-	xorl	%ecx, %ecx
-	jmp	.LBB11_19
-.LBB11_15:
-	movb	$1, %cl
-.LBB11_19:
-	addq	$-3, %rdx
-	je	.LBB11_26
-	addq	$3, %rax
-	movq	%rdx, %rdi
-	jmp	.LBB11_21
-.LBB11_30:
-	movq	%r15, %rdi
-	callq	*%rbp
-	jmp	.LBB11_31
-.LBB11_17:
-	addq	$2, %rax
-	xorl	%ecx, %ecx
-.LBB11_21:
-	xorl	%edx, %edx
-	xorl	%esi, %esi
-.LBB11_22:
-	movb	(%rax,%rdx), %r8b
-	addb	$-48, %r8b
-	cmpb	$9, %r8b
-	ja	.LBB11_26
-	imulq	$10, %rsi, %rsi
-	jo	.LBB11_26
-	movzbl	%r8b, %r8d
-	testb	%cl, %cl
-	je	.LBB11_25
-	subq	%r8, %rsi
-	jo	.LBB11_26
-	jmp	.LBB11_28
+	setne	%sil
+	movq	%rdx, %rcx
+	addq	$-2, %rcx
+	sete	%dil
+	orb	%sil, %dil
+	je	.LBB11_13
 .LBB11_25:
-	addq	%r8, %rsi
-	jo	.LBB11_26
-.LBB11_28:
-	incq	%rdx
-	cmpq	%rdx, %rdi
-	jne	.LBB11_22
-	movq	%r15, %rdi
-	callq	*<optional_trait_methods::using_traits::targets::faulty::FaultyTarget as optional_trait_methods::using_traits::target::TargetBase>::set_state@GOTPCREL(%rip)
-.LBB11_31:
-	testq	%rax, %rax
-	jne	.LBB11_32
-	jmp	.LBB11_9
-.LBB11_26:
 	movl	$16, %esi
-	movq	%r12, %rdi
+	leaq	.Lanon.7bda9396e0abb153671ec4842e7fba37.1(%rip), %rdi
 	callq	optional_trait_methods::print_macros::write_line
-.LBB11_9:
-	movl	$128, %edx
+	jmp	.LBB11_37
+.LBB11_13:
+	movzbl	2(%rax), %esi
+	cmpl	$45, %esi
+	je	.LBB11_14
+	cmpl	$43, %esi
+	jne	.LBB11_16
+	xorl	%esi, %esi
+	jmp	.LBB11_18
+.LBB11_30:
+	andq	$-256, %r12
+	incq	%r12
+.LBB11_31:
+	cmpb	$2, %r12b
+	je	.LBB11_34
+	movzbl	%r12b, %eax
+	cmpl	$1, %eax
+	je	.LBB11_35
 	movq	%rbx, %rdi
-	movq	%r14, %rsi
-	callq	*%r13
+	callq	*<optional_trait_methods::using_traits::targets::faulty::FaultyTarget as optional_trait_methods::using_traits::target::TargetExtIncDec>::inc@GOTPCREL(%rip)
+	jmp	.LBB11_36
+.LBB11_34:
+	movq	%rbx, %rdi
+	callq	*<optional_trait_methods::using_traits::targets::faulty::FaultyTarget as optional_trait_methods::using_traits::target::TargetExtIncDec>::inc@GOTPCREL(%rip)
 	testq	%rax, %rax
-	jne	.LBB11_2
-	xorl	%ebx, %ebx
-	jmp	.LBB11_33
-.LBB11_32:
+	jne	.LBB11_39
+.LBB11_35:
+	callq	*<optional_trait_methods::using_traits::targets::faulty::FaultyTarget as optional_trait_methods::using_traits::target::TargetExtIncDec>::dec@GOTPCREL(%rip)
+.LBB11_36:
+	testq	%rax, %rax
+	jne	.LBB11_39
+	jmp	.LBB11_37
+.LBB11_29:
+	movq	%rbx, %rdi
+	callq	*<optional_trait_methods::using_traits::targets::faulty::FaultyTarget as optional_trait_methods::using_traits::target::TargetBase>::get_state@GOTPCREL(%rip)
 	movq	%rax, %rdi
-	movq	%rdx, %rsi
-	callq	optional_trait_methods::print_macros::write_line
-	movl	$1, %ebx
-.LBB11_33:
-	movl	%ebx, %eax
+	callq	optional_trait_methods::print_macros::write_isize_line
+.LBB11_37:
+	xorl	%eax, %eax
+.LBB11_38:
+	testq	%rax, %rax
+	je	.LBB11_1
+	jmp	.LBB11_39
+.LBB11_14:
+	movb	$1, %sil
+.LBB11_18:
+	addq	$-3, %rdx
+	je	.LBB11_25
+	addq	$3, %rax
+	movq	%rdx, %rcx
+	jmp	.LBB11_20
+.LBB11_16:
+	addq	$2, %rax
+	xorl	%esi, %esi
+.LBB11_20:
+	xorl	%edx, %edx
+	xorl	%r13d, %r13d
+.LBB11_21:
+	movb	(%rax,%rdx), %dil
+	addb	$-48, %dil
+	cmpb	$9, %dil
+	ja	.LBB11_25
+	imulq	$10, %r13, %r13
+	jo	.LBB11_25
+	movzbl	%dil, %edi
+	testb	%sil, %sil
+	je	.LBB11_24
+	subq	%rdi, %r13
+	jo	.LBB11_25
+	jmp	.LBB11_27
+.LBB11_24:
+	addq	%rdi, %r13
+	jo	.LBB11_25
+.LBB11_27:
+	incq	%rdx
+	cmpq	%rdx, %rcx
+	jne	.LBB11_21
+	movq	%rbx, %rdi
+	movq	%r13, %rsi
+	callq	*<optional_trait_methods::using_traits::targets::faulty::FaultyTarget as optional_trait_methods::using_traits::target::TargetBase>::set_state@GOTPCREL(%rip)
+	movq	%r13, %r12
+	jmp	.LBB11_38
+.LBB11_2:
+	xorl	%eax, %eax
+.LBB11_40:
 	addq	$1192, %rsp
 	.cfi_def_cfa_offset 56
 	popq	%rbx
@@ -516,6 +525,13 @@ run_optional_trait_methods:
 	popq	%rbp
 	.cfi_def_cfa_offset 8
 	retq
+.LBB11_39:
+	.cfi_def_cfa_offset 1248
+	movq	%rax, %rdi
+	movq	%rdx, %rsi
+	callq	optional_trait_methods::print_macros::write_line
+	movl	$1, %eax
+	jmp	.LBB11_40
 .Lfunc_end11:
 	.size	run_optional_trait_methods, .Lfunc_end11-run_optional_trait_methods
 	.cfi_endproc
