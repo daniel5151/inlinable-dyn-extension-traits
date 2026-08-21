@@ -129,25 +129,6 @@ impl<T: Target> TargetController<T> {
 }
 ```
 
-#### Dead Code Elimination (DCE) in Packet Parsing
-
-In a real-world protocol parser, incoming raw byte packets (e.g. `"p"`, `"s <n>"`, `"+"`, `"-"`, `"+-"`, `"* <n>"`, `"*~ <n>"`) must be parsed into protocol commands before being handled.
-
-A major performance advantage of IDETs and Fn-Pointer tables is that capability checks (`ext_incdec().is_some()`, `ext_mul().is_some()`) can **guard the parsing logic itself**:
-
-```rust
-/* IncDec extension parsing */
-if self.target.ext_incdec().is_some() {
-    if buf == b"+" { return Some(Command::IncDec(ext::IncDecCommand::Inc)); }
-    if buf == b"-" { return Some(Command::IncDec(ext::IncDecCommand::Dec)); }
-    if buf == b"+-" { return Some(Command::IncDec(ext::IncDecCommand::IncDec)); }
-}
-```
-
-When a concrete target does *not* implement `ext_incdec()`, monomorphization and devirtualization turn `ext_incdec().is_some()` into a compile-time constant `false`. LLVM can then completely eliminate the packet parsing code paths for those unsupported commands from the final compiled binary.
-
-Conversely, approaches like bare `Options` cannot query target capabilities *before* invoking methods. As a result, the parser must **speculatively parse** all incoming byte packets into `Command` variants regardless of target support, preventing compile-time DCE of unused packet parsing logic.
-
 The question is: what's the best way to implement the `Target` trait?
 
 ```rust
@@ -749,12 +730,12 @@ I added two small test cases:
 
 Here's what the resulting `-Os` AArch64 assembly looks like:
 
-| Target shape | Instructions | Direct calls | Indirect calls |
-| :----------- | -----------: | -----------: | -------------: |
-| Static Basic | 61 | 3 | 0 |
-| Static IncDec | 78 | 6 | 0 |
-| Runtime-varying concrete | 88 | 6 | 0 |
-| Erased `dyn Target` | 249 | 2 | 13 |
+| Target shape             | Instructions | Direct calls | Indirect calls |
+| :----------------------- | -----------: | -----------: | -------------: |
+| Static Basic             |           61 |            3 |              0 |
+| Static IncDec            |           78 |            6 |              0 |
+| Runtime-varying concrete |           88 |            6 |              0 |
+| Erased `dyn Target`      |          249 |            2 |             13 |
 
 The runtime-varying case behaves about how you'd hope: LLVM has to retain the
 capability check, but it still knows the concrete target type, so the actual
@@ -773,14 +754,14 @@ bytes, since it still has to carry those entry points until link time.
 What does that mean at runtime? I added a tiny microbenchmark which cycles
 through `+`, `-`, and `+-` for 100,000,000 calls:
 
-| Target shape | Forward | Reverse |
-| :----------- | ------: | ------: |
-| Static Basic | 127.6 ms | 118.8 ms |
+| Target shape     |  Forward |  Reverse |
+| :--------------- | -------: | -------: |
+| Static Basic     | 127.6 ms | 118.8 ms |
 | Runtime disabled | 148.1 ms | 152.1 ms |
-| Erased Basic | 589.4 ms | 590.1 ms |
-| Static IncDec | 223.3 ms | 229.7 ms |
-| Runtime enabled | 215.2 ms | 216.3 ms |
-| Erased IncDec | 642.5 ms | 663.9 ms |
+| Erased Basic     | 589.4 ms | 590.1 ms |
+| Static IncDec    | 223.3 ms | 229.7 ms |
+| Runtime enabled  | 215.2 ms | 216.3 ms |
+| Erased IncDec    | 642.5 ms | 663.9 ms |
 
 The concrete runtime check is fairly cheap. With support disabled it added
 about 16–28% over the tiny static Basic case; with support enabled, both concrete
@@ -813,6 +794,40 @@ unchanged.
 
 That's reassuring, but not a language guarantee. Different compiler versions,
 crate boundaries, or deeper extension hierarchies may still need the hint.
+
+#### Dead Code Elimination (DCE) in Packet Parsing
+
+There's one more place where capability checks matter: the packet parser
+itself.
+
+In a real-world protocol, incoming raw bytes have to be parsed into a `Command`
+before the controller can handle them. If we can check extension support ahead
+of time, that check can **guard the parsing logic itself**:
+
+```rust
+if self.target.ext_incdec().is_some() {
+    if buf == b"+" {
+        return Some(Command::IncDec(ext::IncDecCommand::Inc));
+    }
+    if buf == b"-" {
+        return Some(Command::IncDec(ext::IncDecCommand::Dec));
+    }
+    if buf == b"+-" {
+        return Some(Command::IncDec(ext::IncDecCommand::IncDec));
+    }
+}
+```
+
+For a concrete target that doesn't implement `ext_incdec()`, inlining and
+devirtualization turn that `is_some()` check into a constant `false`. At that
+point, LLVM can throw away the `+`, `-`, and `+-` parsing paths, along with the
+handlers they lead to.
+
+Bare `Option`s aren't so lucky. Since they can't report that a method is
+missing until after it's invoked, the parser has to **speculatively parse**
+every command and discover the missing capability during dispatch. That means
+the unused parser paths stick around even when target support is statically
+known.
 
 #### Target-Level Assembly DCE Inspection (`BasicTarget` vs `FaultyTarget` vs `AdvancedTarget`)
 
@@ -885,11 +900,11 @@ The following results were measured on the current AArch64 macOS host using 1,00
 
 ##### Debug Mode (`-O0`)
 
-| Implementation | Forward mean ± std dev (min … max)       | Reverse mean ± std dev (min … max)       |
-| :------------- | :--------------------------------------- | :--------------------------------------- |
-| `cfg_gates`    | 127.54 ms ± 4.77 ms (120.90 … 144.01 ms) | 128.32 ms ± 5.26 ms (121.51 … 151.59 ms) |
-| `is_supported` | 132.00 ms ± 4.99 ms (120.28 … 141.89 ms) | 129.62 ms ± 3.40 ms (123.19 … 135.81 ms) |
-| `options`      | 132.09 ms ± 3.34 ms (126.07 … 136.41 ms) | 135.74 ms ± 7.77 ms (125.98 … 162.52 ms) |
+| Implementation | Forward mean ± std dev (min … max)       | Reverse mean ± std dev (min … max)        |
+| :------------- | :--------------------------------------- | :---------------------------------------- |
+| `cfg_gates`    | 127.54 ms ± 4.77 ms (120.90 … 144.01 ms) | 128.32 ms ± 5.26 ms (121.51 … 151.59 ms)  |
+| `is_supported` | 132.00 ms ± 4.99 ms (120.28 … 141.89 ms) | 129.62 ms ± 3.40 ms (123.19 … 135.81 ms)  |
+| `options`      | 132.09 ms ± 3.34 ms (126.07 … 136.41 ms) | 135.74 ms ± 7.77 ms (125.98 … 162.52 ms)  |
 | `fn`           | 131.31 ms ± 3.44 ms (121.36 … 137.62 ms) | 148.04 ms ± 20.49 ms (123.29 … 209.06 ms) |
 | `traits`       | 132.58 ms ± 3.33 ms (126.52 … 137.73 ms) | 163.34 ms ± 24.75 ms (130.64 … 227.52 ms) |
 | `try_as_dyn`   | 139.52 ms ± 7.45 ms (126.62 … 164.04 ms) | 145.25 ms ± 13.42 ms (130.21 … 176.07 ms) |
