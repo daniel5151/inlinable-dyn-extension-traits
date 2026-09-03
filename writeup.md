@@ -41,15 +41,15 @@ Instead of working with the real-world inspiration for this project - the GDB re
 
 The protocol uses a simple line-oriented ASCII text wire format:
 
-| Command          | Wire Format | Category / Requirement   | Description                   |
-| :--------------- | :---------- | :----------------------- | :---------------------------- |
-| `PrintState`     | `p`         | Base Protocol            | Print current state           |
-| `SetState(n)`    | `s <n>`     | Base Protocol            | Set state to `<n>`            |
-| `Inc`            | `+`         | IncDec Extension         | Increment state               |
-| `Dec`            | `-`         | IncDec Extension         | Decrement state               |
-| `IncDec`         | `+-`        | IncDec Extension         | Increment and decrement state |
-| `Mul(n)`         | `* <n>`     | Mul Extension            | Multiply state by `<n>`       |
-| `ScaleFactor(n)` | `*~ <n>`    | Nested Extension (`Mul`) | Scale state by factor `<n>`   |
+| Command          | Wire Format | Category / Requirement                         | Description                   |
+| :--------------- | :---------- | :--------------------------------------------- | :---------------------------- |
+| `PrintState`     | `p`         | Base Protocol                                  | Print current state           |
+| `SetState(n)`    | `s <n>`     | Base Protocol                                  | Set state to `<n>`            |
+| `Inc`            | `+`         | IncDec Extension                               | Increment state               |
+| `Dec`            | `-`         | IncDec Extension                               | Decrement state               |
+| `IncDec`         | `+-`        | IncDec Extension                               | Increment and decrement state |
+| `Mul(n)`         | `* <n>`     | Mul Extension                                  | Multiply state by `<n>`       |
+| `ScaleFactor(n)` | `*~ <n>`    | MulScaleFactor Extension (nested within `Mul`) | Scale state by factor `<n>`   |
 
 Or, modeled in Rust:
 
@@ -81,7 +81,7 @@ pub mod ext {
 
     #[derive(Clone, Copy, Debug)]
     pub enum MulScaleFactorCommand {
-        /// Scale factor extension (nested within Mul) (`*~ <n>`)
+        /// ScaleFactor command in the MulScaleFactor extension (`*~ <n>`)
         ScaleFactor(isize),
     }
 }
@@ -96,18 +96,21 @@ pub enum Command {
 ```
 
 Each extension gets its own command namespace, even when its capability is
-discovered through another extension. In particular, `MulScaleFactorCommand`
-has its own `cmd_mul_scale_factor` compile-time gate, while IDET-based code
-still discovers it through `ext_mul().and_then(|ops| ops.ext_scale_factor())`.
-This keeps the command representation independent from the capability
-hierarchy: nesting the capability does not force `ScaleFactor` to become a
-variant of `MulCommand`.
+discovered through another extension. The nested extension is named
+`MulScaleFactor`, and its sole command is `ScaleFactor`. Accordingly,
+`MulScaleFactorCommand` has its own `cmd_mul_scale_factor` compile-time gate,
+while IDET-based code still discovers the extension through
+`ext_mul().and_then(|ops| ops.ext_scale_factor())`. This keeps the command
+representation independent from the capability hierarchy: nesting the
+capability does not force `ScaleFactor` to become a variant of `MulCommand`.
+Throughout this writeup, `MulScaleFactor` names the extension, while
+`ScaleFactor` and `scale_factor` name its command and handler.
 
 It's got a lot of things we care about:
 
 -   common "base" protocol (`PrintState`, `SetState`)
 -   several protocol extensions (`IncDec`, `Mul`)
--   nested protocol extensions (`ScaleFactor` nested within `Mul`)
+-   nested protocol extensions (`MulScaleFactor` nested within `Mul`)
 -   commands which are mutually-dependent on one another (`inc`/`dec` + `incdec`)
 
 For simplicity, I didn't include mutually-exclusive commands in this example protocol, but I will touch upon this use-case when discussing the various approaches.
@@ -148,6 +151,9 @@ pub trait Target {
 
     // Optional method part of the "Mul" extension
     fn mul(&mut self, n: isize) -> Result<(), Self::Error>;
+
+    // Optional method in the "MulScaleFactor" extension, nested within "Mul"
+    fn scale_factor(&mut self, factor: isize) -> Result<(), Self::Error>;
 }
 ```
 
@@ -169,6 +175,9 @@ pub trait Target {
 
     #[cfg(feature = "ext_mul")]
     fn mul(&mut self, n: isize) -> Result<(), Self::Error>;
+
+    #[cfg(feature = "ext_mul_scale_factor")]
+    fn scale_factor(&mut self, factor: isize) -> Result<(), Self::Error>;
 }
 ```
 
@@ -204,6 +213,10 @@ pub trait Target {
 
     fn ext_mul_supported(&self) -> bool { false }
     fn mul(&mut self, n: isize) -> Result<(), Self::Error> { unimplemented!() }
+
+    // The MulScaleFactor extension is nested within Mul.
+    fn ext_scale_factor_supported(&self) -> bool { false }
+    fn scale_factor(&mut self, factor: isize) -> Result<(), Self::Error> { unimplemented!() }
 }
 ```
 
@@ -227,6 +240,7 @@ pub struct MulArgs {
     pub n: isize,
 }
 
+// Arguments to the MulScaleFactor extension's ScaleFactor handler.
 pub struct ScaleFactorArgs {
     pub factor: isize,
 }
@@ -240,6 +254,7 @@ pub trait Target {
     fn inc(&mut self, args: Option<()>) -> Option<Result<(), Self::Error>> { None }
     fn dec(&mut self, args: Option<()>) -> Option<Result<(), Self::Error>> { None }
     fn mul(&mut self, args: Option<MulArgs>) -> Option<Result<(), Self::Error>> { None }
+    // MulScaleFactor extension, nested within Mul.
     fn scale_factor(&mut self, args: Option<ScaleFactorArgs>) -> Option<Result<(), Self::Error>> { None }
 }
 ```
@@ -269,10 +284,10 @@ parser on the result, and check extension relationships at runtime:
 let inc = target.inc(None).is_some();
 let dec = target.dec(None).is_some();
 let mul = target.mul(None).is_some();
-let scale_factor = target.scale_factor(None).is_some();
+let mul_scale_factor = target.scale_factor(None).is_some();
 
 assert!(inc == dec, "must implement `inc` and `dec` together");
-assert!(!scale_factor || mul, "`scale_factor` requires `mul`");
+assert!(!mul_scale_factor || mul, "`MulScaleFactor` requires `Mul`");
 
 if inc {
     // Parse IncDec packets...
@@ -308,6 +323,7 @@ pub trait Target {
     fn dec(&mut self) -> Option<Result<(), Self::Error>> { None }
 
     fn mul(&mut self, n: isize) -> Option<Result<(), Self::Error>> { None }
+    fn scale_factor(&mut self, factor: isize) -> Option<Result<(), Self::Error>> { None }
 }
 ```
 
@@ -386,6 +402,7 @@ pub trait Target {
     fn dec(&mut self) -> OptResult<(), Self::Error> { Err(MaybeUnimpl::unimplemented()) }
 
     fn mul(&mut self, n: isize) -> OptResult<(), Self::Error> { Err(MaybeUnimpl::unimplemented()) }
+    fn scale_factor(&mut self, factor: isize) -> OptResult<(), Self::Error> { Err(MaybeUnimpl::unimplemented()) }
 }
 ```
 
@@ -411,8 +428,14 @@ pub struct TargetExtIncDecOps<This: Target + ?Sized> {
     pub dec: fn(&mut This) -> Result<(), This::Error>,
 }
 
-pub struct TargetExtMulOps<This: Target + ?Sized> {
+pub struct TargetExtMulOps<This: Target + ?Sized + 'static> {
     pub mul: fn(&mut This, n: isize) -> Result<(), This::Error>,
+    pub ext_scale_factor: fn(&This) -> Option<&'static TargetExtScaleFactorOps<This>>,
+}
+
+// Operations for the MulScaleFactor extension, nested within Mul.
+pub struct TargetExtScaleFactorOps<This: Target + ?Sized + 'static> {
+    pub scale_factor: fn(&mut This, factor: isize) -> Result<(), This::Error>,
 }
 ```
 
@@ -490,12 +513,14 @@ pub trait TargetExtIncDec: Target {
 pub trait TargetExtMul: Target {
     fn mul(&mut self, n: isize) -> Result<(), Self::Error>;
 
+    // Discover the nested MulScaleFactor extension.
     #[inline(always)]
     fn ext_scale_factor(&mut self) -> Option<TargetExtScaleFactorOps<Self>> {
         None
     }
 }
 
+// The MulScaleFactor extension trait.
 pub trait TargetExtScaleFactor: Target {
     fn scale_factor(&mut self, factor: isize) -> Result<(), Self::Error>;
 }
@@ -656,7 +681,7 @@ if let Some(ops) = core::any::try_as_dyn_mut::<T, dyn TargetExtIncDec<Error = T:
 
 -   **Nightly Only:** Currently an unstable feature gated behind `#![feature(try_as_dyn)]`.
 -   **`'static` Lifetime Requirement:** Currently requires `'static` bounds (`T: 'static` and `<T as Target>::Error: 'static`).
--   **Nested Extension Hierarchy Ergonomics:** With IDETs, nested extensions can be hierarchically chained (`target.ext_mul().and_then(|ops| ops.ext_scale_factor())`). With `try_as_dyn_mut`, nested extension checks probe `try_as_dyn_mut::<T, dyn TargetExtScaleFactor<...>>(&mut target)` directly or enforce trait inheritance (`TargetExtScaleFactor: TargetExtMul`).
+-   **Nested Extension Hierarchy Ergonomics:** With IDETs, the nested `MulScaleFactor` extension can be hierarchically chained (`target.ext_mul().and_then(|ops| ops.ext_scale_factor())`). With `try_as_dyn_mut`, the same extension is probed directly with `try_as_dyn_mut::<T, dyn TargetExtScaleFactor<...>>(&mut target)`, or represented through trait inheritance (`TargetExtScaleFactor: TargetExtMul`).
 -   **Incompatibility with Trait Objects (`dyn Target` / `Box<dyn Target>`):**
     `try_as_dyn` operates strictly on the static type `T` known at the call site. If the target type is erased to a trait object reference (e.g. `target: &mut dyn Target` or `Box<dyn Target>`), calling `try_as_dyn_mut::<dyn Target, dyn TargetExtIncDec>(target)` checks if the trait object type `dyn Target` itself implements `TargetExtIncDec` - it **does NOT** perform dynamic vtable cross-casting or downcasting of the underlying concrete type (`MyTarget`). It returns `None`!
 
@@ -876,7 +901,8 @@ small `ext_*` helpers to inline.
 At least on the pinned AArch64 toolchain: apparently none of it! Removing
 `always_inline` produced identical normalized assembly for `BasicTarget` and
 `AdvancedTarget`, both with isolated controller functions and with the full run
-loop inlined. Even the nested `ext_mul() -> ext_scale_factor()` path was
+loop inlined. Even the nested `MulScaleFactor` path
+(`ext_mul() -> ext_scale_factor()`) was
 unchanged.
 
 That's reassuring, but not a language guarantee. Different compiler versions,
@@ -926,18 +952,18 @@ known.
 Looking at `parse_command` and `handle` separately makes it easy to see exactly
 what LLVM throws away for each target:
 
-| Implementation / Metric                                     | `BasicTarget`<br>*(Base Protocol ONLY)*                           | `FaultyTarget`<br>*(Base + `IncDec`)*                       | `AdvancedTarget`<br>*(All Extensions)* |
-| :---------------------------------------------------------- | :---------------------------------------------------------------- | :---------------------------------------------------------- | :------------------------------------- |
-| **`parse_command`**                                         |                                                                   |                                                             |                                        |
-| • `cfg_gates`                                               | **22 instrs**<br>• **100% DCE** of enum variants & parser         | **50 instrs**<br>• Selective DCE of `Mul` and `ScaleFactor` | **90 instrs**<br>• Full parser         |
-| • `is_supported` / `no_op` / `traits` / `fn` / `try_as_dyn` | **26 instrs**<br>• **100% DCE** of `IncDec`, `Mul`, `ScaleFactor` | **50 instrs**<br>• Selective DCE of `Mul` and `ScaleFactor` | **90–91 instrs**<br>• Full parser      |
-| • `opt_result`                                              | **90 instrs**<br>• Zero DCE (speculative parse)                   | **90 instrs**<br>• Zero DCE (speculative parse)             | **90 instrs**<br>• Full parser         |
-| **`handle`**                                                |                                                                   |                                                             |                                        |
-| • `cfg_gates`                                               | **9 instrs**<br>• Omits unneeded match arms                       | **32 instrs**<br>• Selective DCE of handlers                | **58 instrs**<br>• Full handler        |
-| • `traits` / `fn` / `try_as_dyn`                            | **24 instrs**<br>• DCE of extension handlers                      | **42 instrs**<br>• Selective DCE of handlers                | **62 instrs**<br>• Full handler        |
-| • `no_op`                                                   | **24 instrs**<br>• DCE of extension handlers                      | **39 instrs**<br>• Selective DCE of handlers                | **54 instrs**<br>• Full handler        |
-| • `is_supported`                                            | **35 instrs**<br>• Retains more fallback handling                 | **50 instrs**<br>• Selective DCE of handlers                | **58 instrs**<br>• Full handler        |
-| • `opt_result`                                              | **45 instrs**<br>• Retains extension branches                     | **73 instrs**<br>• Retains extension branches               | **107 instrs**<br>• Full handler       |
+| Implementation / Metric                                     | `BasicTarget`<br>*(Base Protocol ONLY)*                              | `FaultyTarget`<br>*(Base + `IncDec`)*                          | `AdvancedTarget`<br>*(All Extensions)* |
+| :---------------------------------------------------------- | :------------------------------------------------------------------- | :------------------------------------------------------------- | :------------------------------------- |
+| **`parse_command`**                                         |                                                                      |                                                                |                                        |
+| • `cfg_gates`                                               | **22 instrs**<br>• **100% DCE** of enum variants & parser            | **50 instrs**<br>• Selective DCE of `Mul` and `MulScaleFactor` | **90 instrs**<br>• Full parser         |
+| • `is_supported` / `no_op` / `traits` / `fn` / `try_as_dyn` | **26 instrs**<br>• **100% DCE** of `IncDec`, `Mul`, `MulScaleFactor` | **50 instrs**<br>• Selective DCE of `Mul` and `MulScaleFactor` | **90–91 instrs**<br>• Full parser      |
+| • `opt_result`                                              | **90 instrs**<br>• Zero DCE (speculative parse)                      | **90 instrs**<br>• Zero DCE (speculative parse)                | **90 instrs**<br>• Full parser         |
+| **`handle`**                                                |                                                                      |                                                                |                                        |
+| • `cfg_gates`                                               | **9 instrs**<br>• Omits unneeded match arms                          | **32 instrs**<br>• Selective DCE of handlers                   | **58 instrs**<br>• Full handler        |
+| • `traits` / `fn` / `try_as_dyn`                            | **24 instrs**<br>• DCE of extension handlers                         | **42 instrs**<br>• Selective DCE of handlers                   | **62 instrs**<br>• Full handler        |
+| • `no_op`                                                   | **24 instrs**<br>• DCE of extension handlers                         | **39 instrs**<br>• Selective DCE of handlers                   | **54 instrs**<br>• Full handler        |
+| • `is_supported`                                            | **35 instrs**<br>• Retains more fallback handling                    | **50 instrs**<br>• Selective DCE of handlers                   | **58 instrs**<br>• Full handler        |
+| • `opt_result`                                              | **45 instrs**<br>• Retains extension branches                        | **73 instrs**<br>• Retains extension branches                  | **107 instrs**<br>• Full handler       |
 
 The important bit: when support is known for a concrete target, every
 capability-gated approach lets LLVM remove both the unused parser and its
