@@ -15,6 +15,7 @@ traits_codegen_cases = []
 
 using_cfg_gates = []
 using_is_supported = []
+using_no_op = []
 using_opt_result = []
 using_fn = []
 using_traits = []

@@ -17,10 +17,12 @@ asm/
   features so those two functions remain independently inspectable and
   retained extension paths contain searchable marker strings.
 
-Both modes retain `#[inline(never)]` on the example target's leaf operations.
-The `always_inline` feature is enabled for small capability-conversion helpers.
-Only `inlined` disables `dce_markers`; its instruction counts therefore omit
-the diagnostic `black_box` operations.
+Both modes normally retain `#[inline(never)]` on the example target's leaf
+operations. The no-op-handler approach is the exception: its optional handlers
+also serve as capability probes and therefore use `always_inline`. Other
+approaches use that feature only for small capability-conversion helpers. Only
+`inlined` disables `dce_markers`; its instruction counts therefore omit the
+diagnostic `black_box` operations.
 
 These listings retain the program's normal printing paths. Timed binaries use
 the `bench` feature to replace printing with `black_box`, avoiding high-variance

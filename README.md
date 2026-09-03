@@ -1,9 +1,10 @@
 # Optional Trait Methods in Rust
 
-This repository compares six ways to model optional groups of trait methods:
+This repository compares seven ways to model optional groups of trait methods:
 
 - Cargo feature gates
 - Boolean `is_supported` methods
+- No-op handler probes
 - `OptResult`-encoded optional methods
 - Function-pointer operation tables
 - Inlineable dyn extension traits (IDETs)
@@ -20,7 +21,7 @@ order to experiment with `try_as_dyn`, which, at the time of writing (July 28,
 2026) is not stable.
 
 `sanity_check.sh` tests, lints, release-builds, and runs end-to-end checks for
-all 18 combinations of three target types and six optional-method
+all 21 combinations of three target types and seven optional-method
 implementations.
 
 ```sh

@@ -212,7 +212,86 @@ It's biggest cons are that it lacks a lot of compile-time safety...
     -   if the `_supported` method is implemented, but the corresponding method isn't overwritten, there will be a error at runtime
         -   panic machinery is expensive on embedded systems, and is yucky
 
-## 2. Using `OptResult`
+## 2. Using "No-op" Handlers
+
+This approach makes the handler's argument optional as well as its result.
+Passing `None` is a side-effect-free capability probe; passing `Some(args)`
+performs the operation:
+
+```rust
+pub struct MulArgs {
+    pub n: isize,
+}
+
+pub struct ScaleFactorArgs {
+    pub factor: isize,
+}
+
+pub trait Target {
+    type Error;
+
+    fn get_state(&self) -> isize;
+    fn set_state(&mut self, n: isize) -> Result<(), Self::Error>;
+
+    fn inc(&mut self, args: Option<()>) -> Option<Result<(), Self::Error>> { None }
+    fn dec(&mut self, args: Option<()>) -> Option<Result<(), Self::Error>> { None }
+    fn mul(&mut self, args: Option<MulArgs>) -> Option<Result<(), Self::Error>> { None }
+    fn scale_factor(&mut self, args: Option<ScaleFactorArgs>) -> Option<Result<(), Self::Error>> { None }
+}
+```
+
+An implemented handler returns a dummy success for the probe and handles real
+arguments normally:
+
+```rust
+impl Target for MyTarget {
+    // ...
+
+    fn mul(&mut self, args: Option<MulArgs>) -> Option<Result<(), Self::Error>> {
+        let Some(MulArgs { n }) = args else {
+            return Some(Ok(()));
+        };
+
+        self.state *= n;
+        Some(Ok(()))
+    }
+}
+```
+
+The controller can now query support without executing the operation, gate its
+parser on the result, and check extension relationships at runtime:
+
+```rust
+let inc = target.inc(None).is_some();
+let dec = target.dec(None).is_some();
+let mul = target.mul(None).is_some();
+let scale_factor = target.scale_factor(None).is_some();
+
+assert!(inc == dec, "must implement `inc` and `dec` together");
+assert!(!scale_factor || mul, "`scale_factor` requires `mul`");
+
+if inc {
+    // Parse IncDec packets...
+}
+```
+
+This restores capability-gated parsing and lets LLVM eliminate unsupported
+parser branches. It also gives the library enough information to catch both
+intra-extension and inter-extension dependency violations, although only at
+runtime.
+
+The tradeoff is ergonomics. Every implementer must unpack an artificial
+`Option` argument and return a dummy result for probes. The outer `Option` also
+prevents using `?` directly with ordinary `Result`-returning helpers. Finally,
+the API relies on a convention the type system cannot enforce: `None` must be
+side-effect-free and must report support consistently with real invocations.
+
+The runnable implementation is under [`complete/src/using_no_op`](complete/src/using_no_op).
+
+## 3. Using `OptResult`
+
+If the no-op sentinel argument is too invasive, the handler can keep its
+ordinary arguments and report support only through its return value:
 
 ```rust
 pub trait Target {
@@ -308,7 +387,7 @@ pub trait Target {
 
 Unfortunately, this is just a bandaid, and doesn't address the underlying issues...
 
-## 3. Using Function Pointers
+## 4. Using Function Pointers
 
 Ahh, the good 'ol C-style approach. Use a table of function pointers.
 
@@ -359,7 +438,7 @@ Unfortunately, this is an _extremely_ un-Rust-like API. It uses `this` instead o
 
 ... but wait a second, isn't this just us rolling our own vtables? why not let the compiler do it for us!
 
-## 4. Using Inlineable Dyn Extension Traits (IDETs)
+## 5. Using Inlineable Dyn Extension Traits (IDETs)
 
 Poking around, it looks like it's not a particularly well known technique.
 
@@ -546,7 +625,7 @@ impl Target for AdvancedTarget {
 }
 ```
 
-## 5. Using Nightly `try_as_dyn` (`core::any::try_as_dyn_mut`)
+## 6. Using Nightly `try_as_dyn` (`core::any::try_as_dyn_mut`)
 
 Nightly Rust introduces the experimental `#![feature(try_as_dyn)]` API (`core::any::try_as_dyn` / `try_as_dyn_mut`), tracked in [issue #144361](https://github.com/rust-lang/rust/issues/144361).
 
@@ -656,11 +735,11 @@ Every technique except for `cargo` features, specialization, and pure `try_as_dy
 
 #### Easy for API consumers to understand + implement
 
-|                                                    | `cargo` Features | `is_supported` | `OptResult` | Fn Pointers | IDETs | `try_as_dyn` | Specialization |
-| -------------------------------------------------- | ---------------- | -------------- | ----------- | ----------- | ----- | ------------ | -------------- |
-| Looks like a "typical" Rust API                    | ✔️                | ✔️              | ✔️\*         | ❌           | ➖     | ✔️            | ✔️              |
-| Uses "standard" method signatures                  | ✔️                | ✔️              | ❌           | ✔️           | ✔️     | ✔️            | ✔️              |
-| Single "source of truth" for method implementation | ✔️                | ❌              | ✔️           | ❌\*\*       | ❌\*\* | ✔️            | ✔️              |
+|                                                    | `cargo` Features | `is_supported` | No-op Handlers | `OptResult` | Fn Pointers | IDETs | `try_as_dyn` | Specialization |
+| -------------------------------------------------- | ---------------- | -------------- | -------------- | ----------- | ----------- | ----- | ------------ | -------------- |
+| Looks like a "typical" Rust API                    | ✔️                | ✔️              | ❌              | ✔️\*         | ❌           | ➖     | ✔️            | ✔️              |
+| Uses "standard" method signatures                  | ✔️                | ✔️              | ❌              | ❌           | ✔️           | ✔️     | ✔️            | ✔️              |
+| Single "source of truth" for method implementation | ✔️                | ❌              | ✔️              | ✔️           | ❌\*\*       | ❌\*\* | ✔️            | ✔️              |
 
 \* The `OptResult` type could be a source of confusion
 
@@ -668,21 +747,21 @@ Every technique except for `cargo` features, specialization, and pure `try_as_dy
 
 #### Easy for API authors to work with + maintain
 
-|                                             | `cargo` Features | `is_supported` | `OptResult` | Fn Pointers | IDETs | `try_as_dyn` | Specialization |
-| ------------------------------------------- | ---------------- | -------------- | ----------- | ----------- | ----- | ------------ | -------------- |
-| Minimal boilerplate to invoke a method      | ✔️                | ➖              | ❌           | ➖           | ➖     | ✔️            | ✔️              |
-| Check if method exists _before_ invoking it | N/A              | ✔️              | ❌           | ✔️           | ✔️     | ✔️            | N/A            |
-| Easy to handle the "missing method" case    | ✔️                | ✔️              | ❌           | ✔️           | ✔️     | ✔️            | ✔️              |
+|                                             | `cargo` Features | `is_supported` | No-op Handlers | `OptResult` | Fn Pointers | IDETs | `try_as_dyn` | Specialization |
+| ------------------------------------------- | ---------------- | -------------- | -------------- | ----------- | ----------- | ----- | ------------ | -------------- |
+| Minimal boilerplate to invoke a method      | ✔️                | ➖              | ❌              | ❌           | ➖           | ➖     | ✔️            | ✔️              |
+| Check if method exists _before_ invoking it | N/A              | ✔️              | ✔️              | ❌           | ✔️           | ✔️     | ✔️            | N/A            |
+| Easy to handle the "missing method" case    | ✔️                | ✔️              | ✔️              | ❌           | ✔️           | ✔️     | ✔️            | ✔️              |
 
 #### Compile-time safety + performance
 
 "If it compiles, it's a valid implementation"
 
-|                                         | `cargo` Features | `is_supported` | `OptResult` | Fn Pointers | IDETs | `try_as_dyn` | Specialization |
-| --------------------------------------- | ---------------- | -------------- | ----------- | ----------- | ----- | ------------ | -------------- |
-| Compile-time Mutually-Dependent methods | ✔️                | ❌              | ❌           | ✔️           | ✔️     | ✔️            | ✔️              |
-| Compile-time Mutually-Exclusive methods | ✔️                | ❌              | ❌           | ✔️           | ✔️\*   | ✔️\*          | ❔              |
-| Ensures effective dead-code-elimination | ✔️++              | ✔️\*\*          | ❌           | ✔️\*\*       | ✔️\*\* | ✔️\*\*        | ✔️              |
+|                                         | `cargo` Features | `is_supported` | No-op Handlers | `OptResult` | Fn Pointers | IDETs | `try_as_dyn` | Specialization |
+| --------------------------------------- | ---------------- | -------------- | -------------- | ----------- | ----------- | ----- | ------------ | -------------- |
+| Compile-time Mutually-Dependent methods | ✔️                | ❌              | ❌              | ❌           | ✔️           | ✔️     | ✔️            | ✔️              |
+| Compile-time Mutually-Exclusive methods | ✔️                | ❌              | ❌              | ❌           | ✔️           | ✔️\*   | ✔️\*          | ❔              |
+| Ensures effective dead-code-elimination | ✔️++              | ✔️\*\*          | ✔️\*\*          | ❌           | ✔️\*\*       | ✔️\*\* | ✔️\*\*        | ✔️              |
 
 \* Assuming the implementation adheres to conventions and is not "adversarial"
 
@@ -702,12 +781,18 @@ loop is one instruction smaller for `FaultyTarget` and four instructions
 smaller for `AdvancedTarget`; the DCE behavior is the same, but the final code
 layout is not identical.
 
+No-op handlers also eliminate unsupported extension families. Their final run
+loops are not instruction-for-instruction identical to IDETs because the
+capability probe and operation share one method, so that whole method is
+inlined. This removes the standalone optional-handler calls as well as the
+probe branches.
+
 There are a couple details worth keeping in mind while looking at the numbers:
 
 -   The small capability-conversion helpers use `always_inline`.
 -   `parse_command` and `handle` can be marked `#[inline(never)]` to keep them
     visible as standalone assembly functions for inspection.
--   **Target Leaf Function Inlining:** Target methods (`get_state`, `set_state`, `inc`, `dec`, etc.) retain unconditional `#[inline(never)]` annotations. In our simplified benchmark targets, these methods perform trivial state mutations; marking them `#[inline(never)]` models real-world protocol implementations (such as `gdbstub` targets) where leaf handlers perform non-trivial I/O, hardware register access, or memory manipulation that an optimizing compiler would not inline into the main packet loop.
+-   **Target Leaf Function Inlining:** Target methods (`get_state`, `set_state`, `inc`, `dec`, etc.) normally retain unconditional `#[inline(never)]` annotations. In our simplified benchmark targets, these methods perform trivial state mutations; marking them `#[inline(never)]` models real-world protocol implementations (such as `gdbstub` targets) where leaf handlers perform non-trivial I/O, hardware register access, or memory manipulation that an optimizing compiler would not inline into the main packet loop. No-op handlers are the exception: their support probe and operation are the same function, so the optional handlers use `always_inline` to make the probe fold away. This difference matters when comparing raw instruction counts.
 
 There is also one important limitation: these assembly examples use concrete
 targets whose capability answers are constant. That's exactly what lets LLVM
@@ -823,6 +908,11 @@ devirtualization turn that `is_some()` check into a constant `false`. At that
 point, LLVM can throw away the `+`, `-`, and `+-` parsing paths, along with the
 handlers they lead to.
 
+No-op handlers get the same capability gate by evaluating
+`target.inc(None).is_some()`. For a well-behaved implementation that probe has
+no side effects, and inlining reduces it to a constant just like an
+`ext_incdec()` or `is_supported()` helper.
+
 `OptResult` handlers aren't so lucky. Since they can't report that a method is
 missing until after it's invoked, the parser has to **speculatively parse**
 every command and discover the missing capability during dispatch. That means
@@ -834,17 +924,18 @@ known.
 Looking at `parse_command` and `handle` separately makes it easy to see exactly
 what LLVM throws away for each target:
 
-| Implementation / Metric                        | `BasicTarget`<br>*(Base Protocol ONLY)*                           | `FaultyTarget`<br>*(Base + `IncDec`)*                       | `AdvancedTarget`<br>*(All Extensions)* |
-| :--------------------------------------------- | :---------------------------------------------------------------- | :---------------------------------------------------------- | :------------------------------------- |
-| **`parse_command`**                            |                                                                   |                                                             |                                        |
-| • `cfg_gates`                                  | **22 instrs**<br>• **100% DCE** of enum variants & parser         | **50 instrs**<br>• Selective DCE of `Mul` and `ScaleFactor` | **90 instrs**<br>• Full parser         |
-| • `is_supported` / `traits` / `fn` / `try_dyn` | **26 instrs**<br>• **100% DCE** of `IncDec`, `Mul`, `ScaleFactor` | **50 instrs**<br>• Selective DCE of `Mul` and `ScaleFactor` | **90–91 instrs**<br>• Full parser      |
-| • `opt_result`                                 | **90 instrs**<br>• Zero DCE (speculative parse)                   | **90 instrs**<br>• Zero DCE (speculative parse)             | **90 instrs**<br>• Full parser         |
-| **`handle`**                                   |                                                                   |                                                             |                                        |
-| • `cfg_gates`                                  | **9 instrs**<br>• Omits unneeded match arms                       | **32 instrs**<br>• Selective DCE of handlers                | **58 instrs**<br>• Full handler        |
-| • `traits` / `fn` / `try_dyn`                  | **24 instrs**<br>• DCE of extension handlers                      | **42 instrs**<br>• Selective DCE of handlers                | **62 instrs**<br>• Full handler        |
-| • `is_supported`                               | **35 instrs**<br>• Retains more fallback handling                 | **50 instrs**<br>• Selective DCE of handlers                | **58 instrs**<br>• Full handler        |
-| • `opt_result`                                 | **45 instrs**<br>• Retains extension branches                     | **73 instrs**<br>• Retains extension branches               | **107 instrs**<br>• Full handler       |
+| Implementation / Metric                                     | `BasicTarget`<br>*(Base Protocol ONLY)*                           | `FaultyTarget`<br>*(Base + `IncDec`)*                       | `AdvancedTarget`<br>*(All Extensions)* |
+| :---------------------------------------------------------- | :---------------------------------------------------------------- | :---------------------------------------------------------- | :------------------------------------- |
+| **`parse_command`**                                         |                                                                   |                                                             |                                        |
+| • `cfg_gates`                                               | **22 instrs**<br>• **100% DCE** of enum variants & parser         | **50 instrs**<br>• Selective DCE of `Mul` and `ScaleFactor` | **90 instrs**<br>• Full parser         |
+| • `is_supported` / `no_op` / `traits` / `fn` / `try_as_dyn` | **26 instrs**<br>• **100% DCE** of `IncDec`, `Mul`, `ScaleFactor` | **50 instrs**<br>• Selective DCE of `Mul` and `ScaleFactor` | **90–91 instrs**<br>• Full parser      |
+| • `opt_result`                                              | **90 instrs**<br>• Zero DCE (speculative parse)                   | **90 instrs**<br>• Zero DCE (speculative parse)             | **90 instrs**<br>• Full parser         |
+| **`handle`**                                                |                                                                   |                                                             |                                        |
+| • `cfg_gates`                                               | **9 instrs**<br>• Omits unneeded match arms                       | **32 instrs**<br>• Selective DCE of handlers                | **58 instrs**<br>• Full handler        |
+| • `traits` / `fn` / `try_as_dyn`                            | **24 instrs**<br>• DCE of extension handlers                      | **42 instrs**<br>• Selective DCE of handlers                | **62 instrs**<br>• Full handler        |
+| • `no_op`                                                   | **24 instrs**<br>• DCE of extension handlers                      | **39 instrs**<br>• Selective DCE of handlers                | **54 instrs**<br>• Full handler        |
+| • `is_supported`                                            | **35 instrs**<br>• Retains more fallback handling                 | **50 instrs**<br>• Selective DCE of handlers                | **58 instrs**<br>• Full handler        |
+| • `opt_result`                                              | **45 instrs**<br>• Retains extension branches                     | **73 instrs**<br>• Retains extension branches               | **107 instrs**<br>• Full handler       |
 
 The important bit: when support is known for a concrete target, every
 capability-gated approach lets LLVM remove both the unused parser and its
@@ -856,6 +947,12 @@ return values still need to be unpacked and checked at runtime, including the
 `InvalidImpl` case for the `(inc, dec)` pair. That leaves it with 107 x86
 instructions on `AdvancedTarget`, versus 58–62 for the capability-gated
 approaches.
+
+The no-op handler is 24, 39, and 54 instructions for the three targets. Those
+small numbers include successful capability DCE, but they are not a pure
+head-to-head win: inlining the combined probe/operation methods also moves the
+target operations into `handle`, while the other approaches deliberately keep
+their target leaf methods out of line.
 
 ##### Why Are There Two Sets of Assembly Listings?
 
@@ -869,7 +966,14 @@ are disabled. This lets us check that the inspection helpers aren't somehow
 "faking" the DCE result:
 
 - **`basic_traits.s` / `basic_fn.s` (Inlined)**: LLVM completely deletes all parsing byte checks for `+`, `-`, `+-`, `*`, `*~`, and their associated parser paths. The selected x86 run loop is **114 instructions**.
+- **`basic_no_op.s` (Inlined)**: The same unsupported parser paths disappear. The selected x86 run loop is **105 instructions** (**90** on AArch64).
 - **`basic_opt_result.s` (Inlined)**: Lacking capability pre-checks, LLVM retains speculative parsing branches. The selected x86 run loop is **246 instructions**.
+
+Across `BasicTarget`, `FaultyTarget`, and `AdvancedTarget`, the fully-inlined
+no-op run loops are **105 / 131 / 271 x86 instructions** and **90 / 117 / 243
+AArch64 instructions**. This confirms the intended DCE behavior on both
+checked-in architectures; the inlining-policy caveat above still applies to
+direct size comparisons.
 
 So the DCE still works end-to-end once all the inspection-only annotations are
 removed. One caveat: these listings come from an `rlib`, so the size of the
@@ -900,38 +1004,42 @@ The following results were measured on the current AArch64 macOS host using 1,00
 
 ##### Debug Mode (`-O0`)
 
-| Implementation | Forward mean ± std dev (min … max)       | Reverse mean ± std dev (min … max)        |
-| :------------- | :--------------------------------------- | :---------------------------------------- |
-| `cfg_gates`    | 127.54 ms ± 4.77 ms (120.90 … 144.01 ms) | 128.32 ms ± 5.26 ms (121.51 … 151.59 ms)  |
-| `is_supported` | 132.00 ms ± 4.99 ms (120.28 … 141.89 ms) | 129.62 ms ± 3.40 ms (123.19 … 135.81 ms)  |
-| `opt_result`   | 132.09 ms ± 3.34 ms (126.07 … 136.41 ms) | 135.74 ms ± 7.77 ms (125.98 … 162.52 ms)  |
-| `fn`           | 131.31 ms ± 3.44 ms (121.36 … 137.62 ms) | 148.04 ms ± 20.49 ms (123.29 … 209.06 ms) |
-| `traits`       | 132.58 ms ± 3.33 ms (126.52 … 137.73 ms) | 163.34 ms ± 24.75 ms (130.64 … 227.52 ms) |
-| `try_as_dyn`   | 139.52 ms ± 7.45 ms (126.62 … 164.04 ms) | 145.25 ms ± 13.42 ms (130.21 … 176.07 ms) |
+| Implementation | Forward mean ± std dev (min … max)       | Reverse mean ± std dev (min … max)       |
+| :------------- | :--------------------------------------- | :--------------------------------------- |
+| `cfg_gates`    | 113.06 ms ± 9.35 ms (105.42 … 138.80 ms) | 109.65 ms ± 4.38 ms (106.70 … 130.40 ms) |
+| `is_supported` | 108.93 ms ± 4.09 ms (106.04 … 125.76 ms) | 110.39 ms ± 2.61 ms (107.75 … 119.81 ms) |
+| `no_op`        | 132.38 ms ± 3.59 ms (129.38 … 145.03 ms) | 133.39 ms ± 5.99 ms (130.31 … 163.26 ms) |
+| `opt_result`   | 116.42 ms ± 8.32 ms (110.80 … 151.03 ms) | 114.57 ms ± 6.51 ms (110.78 … 142.03 ms) |
+| `fn`           | 115.18 ms ± 4.12 ms (110.72 … 128.70 ms) | 117.57 ms ± 6.30 ms (111.28 … 133.13 ms) |
+| `traits`       | 113.46 ms ± 5.93 ms (109.98 … 139.39 ms) | 112.75 ms ± 3.64 ms (109.07 … 126.98 ms) |
+| `try_as_dyn`   | 115.20 ms ± 2.77 ms (112.55 … 127.39 ms) | 116.43 ms ± 3.04 ms (113.58 … 128.43 ms) |
 
 ##### Release Mode (`-Os`)
 
 | Implementation | Forward mean ± std dev (min … max)    | Reverse mean ± std dev (min … max)    |
 | :------------- | :------------------------------------ | :------------------------------------ |
-| `cfg_gates`    | 17.06 ms ± 2.12 ms (15.08 … 22.05 ms) | 16.77 ms ± 1.69 ms (15.24 … 21.06 ms) |
-| `is_supported` | 16.98 ms ± 1.79 ms (14.88 … 20.57 ms) | 17.94 ms ± 5.98 ms (15.11 … 47.86 ms) |
-| `opt_result`   | 16.47 ms ± 1.94 ms (14.95 … 20.68 ms) | 16.83 ms ± 2.07 ms (14.86 … 21.43 ms) |
-| `fn`           | 16.73 ms ± 1.90 ms (14.99 … 20.58 ms) | 16.98 ms ± 2.35 ms (15.20 … 25.34 ms) |
-| `traits`       | 16.53 ms ± 1.91 ms (14.87 … 20.51 ms) | 16.18 ms ± 1.51 ms (14.66 … 20.20 ms) |
-| `try_as_dyn`   | 16.70 ms ± 2.07 ms (14.89 … 21.54 ms) | 16.86 ms ± 2.51 ms (14.76 … 25.30 ms) |
+| `cfg_gates`    | 16.62 ms ± 7.56 ms (13.77 … 56.28 ms) | 16.16 ms ± 1.62 ms (14.21 … 21.08 ms) |
+| `is_supported` | 15.23 ms ± 0.86 ms (13.98 … 17.12 ms) | 16.64 ms ± 3.26 ms (13.27 … 26.54 ms) |
+| `no_op`        | 15.48 ms ± 1.27 ms (13.96 … 18.42 ms) | 14.55 ms ± 1.35 ms (13.08 … 20.42 ms) |
+| `opt_result`   | 15.89 ms ± 1.55 ms (13.74 … 19.12 ms) | 14.56 ms ± 0.69 ms (13.43 … 16.23 ms) |
+| `fn`           | 14.93 ms ± 1.34 ms (12.97 … 20.13 ms) | 15.82 ms ± 5.62 ms (13.03 … 45.03 ms) |
+| `traits`       | 14.94 ms ± 0.79 ms (13.71 … 16.76 ms) | 14.57 ms ± 1.02 ms (13.21 … 19.09 ms) |
+| `try_as_dyn`   | 15.20 ms ± 1.39 ms (13.67 … 19.93 ms) | 14.84 ms ± 1.24 ms (12.41 … 19.50 ms) |
 
-Debug mode is fairly noisy. `cfg_gates` is fastest in both orders, but most of
-the forward means are within about 4% of it, while the reverse `fn`, IDET, and
-`try_as_dyn` runs have large outliers. That roughly lines up with the amount of
-unoptimized glue each approach needs, but this is still an end-to-end parser
-benchmark—I wouldn't pin the difference on any one call or branch.
+Debug mode is fairly noisy. `is_supported` and `cfg_gates` trade the lowest
+mean between orders, while the no-op approach is roughly 20% slower. That is
+consistent with repeatedly constructing and unpacking probe/invocation options
+when optimization cannot erase the protocol, but this is still an end-to-end
+parser benchmark—I wouldn't pin the difference on any one call or branch.
+Several runs also contain substantial outliers.
 
 Release mode is the more interesting result: it's basically a wash. LLVM
-reduces most approaches to nearly the same hot loop, the apparent winner flips
-from `opt_result` to IDETs when the order is reversed, and most of the
-distributions overlap. The reverse `is_supported` result also contains a large
-outlier. The stable result here is the codegen / DCE comparison above, not a
-claim that one approach is universally a few percent faster than another.
+reduces the approaches to nearly the same hot loop. The apparent winner shifts
+from function pointers in the forward order to no-op handlers in reverse, with
+`no_op`, `opt_result`, and IDETs separated by only hundredths of a millisecond
+there. The distributions overlap and several candidates have large outliers.
+The stable result here is the codegen / DCE comparison above, not a claim that
+one approach is universally a few percent faster than another.
 
 ## Conclusion
 

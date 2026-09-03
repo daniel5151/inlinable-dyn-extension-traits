@@ -16,6 +16,10 @@ core::cfg_select! {
         mod using_is_supported;
         use using_is_supported::*;
     }
+    feature = "using_no_op" => {
+        mod using_no_op;
+        use using_no_op::*;
+    }
     feature = "using_opt_result" => {
         mod using_opt_result;
         use using_opt_result::*;

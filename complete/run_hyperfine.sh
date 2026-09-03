@@ -43,7 +43,7 @@ result_dir="target/benchmark-results"
 mkdir -p "$result_dir"
 
 cargo build --locked --release --bin harness
-implementations=(cfg_gates is_supported opt_result fn traits try_as_dyn)
+implementations=(cfg_gates is_supported no_op opt_result fn traits try_as_dyn)
 
 run_profile() {
     local profile=$1

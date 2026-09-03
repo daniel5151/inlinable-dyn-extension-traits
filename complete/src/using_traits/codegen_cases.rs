@@ -1,6 +1,6 @@
 //! Focused codegen cases for the limits of IDET dead-code elimination.
 //!
-//! These are intentionally separate from the six-way static-target experiment
+//! These are intentionally separate from the seven-way static-target experiment
 //! and focus specifically on IDET behavior outside the static concrete cases.
 
 use super::controller::TargetController;
@@ -165,12 +165,7 @@ where
 #[unsafe(no_mangle)]
 pub fn run_static_basic_case(command: &[u8]) -> isize {
     let mut state = 0;
-    run_concrete_case(
-        ErasedBasicTarget {
-            state: &mut state,
-        },
-        command,
-    );
+    run_concrete_case(ErasedBasicTarget { state: &mut state }, command);
     state
 }
 
@@ -180,16 +175,12 @@ pub fn run_static_basic_case(command: &[u8]) -> isize {
 #[unsafe(no_mangle)]
 pub fn run_static_advanced_case(command: &[u8]) -> isize {
     let mut state = 0;
-    run_concrete_case(
-        ErasedAdvancedTarget {
-            state: &mut state,
-        },
-        command,
-    );
+    run_concrete_case(ErasedAdvancedTarget { state: &mut state }, command);
     state
 }
 
-/// Parse and handle one command after the caller has erased its concrete target.
+/// Parse and handle one command after the caller has erased its concrete
+/// target.
 ///
 /// Keeping the trait object at this exported function boundary prevents the
 /// optimizer from narrowing the experiment to a single locally constructed
