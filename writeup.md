@@ -1,5 +1,9 @@
 # An Exploration into Optional Trait Methods in Rust
 
+> NOTE: This is a _rough draft_ of what will hopefully, eventually, be a blog post on <https://prilik.com/blog>. It is not quite at the level of polish where I'd be comfortable formally publishing it, as not much effort has been put into tightening up the language (read: LLM-ese) and the "narrative" structure of this writeup. I'd say it's 80% there, but it's that last 20% that makes all the difference.
+>
+> Consider checking out my far more polished and well-organized [RustConf 2026 Talk "Replacing #[cfg] with Traits: The Inlinable Dyn Extension Trait Pattern"](https://rustconf2026.sched.com/event/2KHss/) for a guided introduction to some of the techniques presented in this writeup.
+
 **NOTE:** if you're in a hurry and just want to see a list of all the approaches + their pros and cons, skip ahead to the [Summary and Comparisons](#summary-and-comparisons) section
 
 ## A Motivating Example - An Extensible Protocol
@@ -654,7 +658,7 @@ if let Some(ops) = core::any::try_as_dyn_mut::<T, dyn TargetExtIncDec<Error = T:
 -   **`'static` Lifetime Requirement:** Currently requires `'static` bounds (`T: 'static` and `<T as Target>::Error: 'static`).
 -   **Nested Extension Hierarchy Ergonomics:** With IDETs, nested extensions can be hierarchically chained (`target.ext_mul().and_then(|ops| ops.ext_scale_factor())`). With `try_as_dyn_mut`, nested extension checks probe `try_as_dyn_mut::<T, dyn TargetExtScaleFactor<...>>(&mut target)` directly or enforce trait inheritance (`TargetExtScaleFactor: TargetExtMul`).
 -   **Incompatibility with Trait Objects (`dyn Target` / `Box<dyn Target>`):**
-    `try_as_dyn` operates strictly on the static type `T` known at the call site. If the target type is erased to a trait object reference (e.g. `target: &mut dyn Target` or `Box<dyn Target>`), calling `try_as_dyn_mut::<dyn Target, dyn TargetExtIncDec>(target)` checks if the trait object type `dyn Target` itself implements `TargetExtIncDec`—it **does NOT** perform dynamic vtable cross-casting or downcasting of the underlying concrete type (`MyTarget`). It returns `None`!
+    `try_as_dyn` operates strictly on the static type `T` known at the call site. If the target type is erased to a trait object reference (e.g. `target: &mut dyn Target` or `Box<dyn Target>`), calling `try_as_dyn_mut::<dyn Target, dyn TargetExtIncDec>(target)` checks if the trait object type `dyn Target` itself implements `TargetExtIncDec` - it **does NOT** perform dynamic vtable cross-casting or downcasting of the underlying concrete type (`MyTarget`). It returns `None`!
 
     By contrast, IDETs declare `ext_incdec(&mut self)` directly on the `Target` trait. Calling `target.ext_incdec()` on `&mut dyn Target` or `Box<dyn Target>` dispatches through `dyn Target`'s vtable to `MyTarget::ext_incdec()`, successfully returning `Some(&mut self as &mut dyn TargetExtIncDec)`. Thus, IDETs work seamlessly across both monomorphized generics (`T: Target`) AND dynamic trait objects (`dyn Target`), whereas `try_as_dyn` is strictly restricted to concrete types (`T: Target`).
 
@@ -739,11 +743,9 @@ Every technique except for `cargo` features, specialization, and pure `try_as_dy
 | -------------------------------------------------- | ---------------- | -------------- | -------------- | ----------- | ----------- | ----- | ------------ | -------------- |
 | Looks like a "typical" Rust API                    | ✔️                | ✔️              | ❌              | ✔️\*         | ❌           | ➖     | ✔️            | ✔️              |
 | Uses "standard" method signatures                  | ✔️                | ✔️              | ❌              | ❌           | ✔️           | ✔️     | ✔️            | ✔️              |
-| Single "source of truth" for method implementation | ✔️                | ❌              | ✔️              | ✔️           | ❌\*\*       | ❌\*\* | ✔️            | ✔️              |
+| Single "source of truth" for method implementation | ✔️                | ❌              | ✔️              | ✔️           | ❌           | ❌     | ✔️            | ✔️              |
 
 \* The `OptResult` type could be a source of confusion
-
-\*\* See [Future work](#future-work) for how this could be mitigated
 
 #### Easy for API authors to work with + maintain
 
@@ -856,8 +858,8 @@ layout and branch prediction.
 
 Erasing the target was much more noticeable: roughly 3x the enabled concrete
 case and 4x the disabled case in this microbenchmark. That isn't the cost of
-"one virtual call"—the erased path retains more parser code, performs several
-vtable lookups, and the benchmark includes a small runtime-selection wrapper—but
+"one virtual call" - the erased path retains more parser code, performs several
+vtable lookups, and the benchmark includes a small runtime-selection wrapper - but
 it does show where IDETs stop being zero-cost. Alternating the selected target
 on every call produced a similar gap: 3.15x forward (`196.3 ms` vs.
 `617.9 ms`) and 3.19x in reverse (`196.8 ms` vs. `628.2 ms`).
@@ -988,7 +990,7 @@ The readable listings include DCE markers, while the fully-inlined listings are
 marker-free. Passing `--dce-markers` also produces a marked inlined corpus under
 `target/dce-marker-asm` when I need to check exactly which paths survived.
 
-`asm_stats.py` counts textual instructions—not encoded bytes, and definitely
+`asm_stats.py` counts textual instructions - not encoded bytes, and definitely
 not runtime cost. Counts from the readable listings also include the marker
 overhead.
 
@@ -1030,7 +1032,7 @@ Debug mode is fairly noisy. `is_supported` and `cfg_gates` trade the lowest
 mean between orders, while the no-op approach is roughly 20% slower. That is
 consistent with repeatedly constructing and unpacking probe/invocation options
 when optimization cannot erase the protocol, but this is still an end-to-end
-parser benchmark—I wouldn't pin the difference on any one call or branch.
+parser benchmark - I wouldn't pin the difference on any one call or branch.
 Several runs also contain substantial outliers.
 
 Release mode is the more interesting result: it's basically a wash. LLVM
@@ -1051,47 +1053,3 @@ For "dynamic" optional methods, I think IDETs the cleanest of the bunch (hence w
 
 -   Results in the cleanest `Controller` implementation
 -   While the API is a _bit_ unorthodox, it's not too difficult to grok / implement, and comes with major benefits
-
-## Future work
-
--   Creating a proc macro to simplify declaring and implementing IDETs
-
-Just spit-balling here:
-
-```rust
-#[optional_trait_methods]
-pub trait Target {
-    type Error;
-
-    fn get_state(&self) -> isize;
-    fn set_state(&mut self, n: isize) -> Result<(), Self::Error>;
-
-    #[optional(group = "incdec")]
-    fn inc(&mut self) -> Result<(), Self::Error>;
-
-    #[optional(group = "incdec")]
-    fn dec(&mut self) -> Result<(), Self::Error>;
-
-    #[optional(group = "mul")]
-    fn mul(&mut self, n: isize) -> Result<(), Self::Error>;
-}
-
-#[optional_trait_methods]
-impl Target for AdvancedTarget {
-    type Error;
-
-    fn get_state(&self) -> isize { /* ... */ }
-    fn set_state(&mut self, n: isize) -> Result<(), Self::Error> { /* ... */ }
-
-    // Would it be possible to omit these annotations, and have the proc macro
-    // infer groups from the original declaration?
-
-    #[optional(group = "incdec")]
-    fn inc(&mut self) -> Result<(), Self::Error> { /* ... */ }
-    #[optional(group = "incdec")]
-    fn dec(&mut self) -> Result<(), Self::Error> { /* ... */ }
-
-    #[optional(group = "mul")]
-    fn mul(&mut self, n: isize) -> Result<(), Self::Error> { /* ... */ }
-}
-```

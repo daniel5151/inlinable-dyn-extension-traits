@@ -10,9 +10,11 @@ This repository compares seven ways to model optional groups of trait methods:
 - Inlineable dyn extension traits (IDETs)
 - Nightly `try_as_dyn`
 
-The main discussion and qualified conclusions are in [writeup.md](writeup.md).
+A *rough draft* discussing the various approaches, their tradeoffs, and various conclusions is in [writeup.md](writeup.md).
 
 Runnable experiments are under [`complete/`](complete/).
+
+Also see my 2026 RustConf talk, in which I present a few different approaches documented in this repo, and why IDETs really are the "best of all worlds" for many use-cases: https://rustconf2026.sched.com/event/2KHss/
 
 ## Reproducing experiments
 
