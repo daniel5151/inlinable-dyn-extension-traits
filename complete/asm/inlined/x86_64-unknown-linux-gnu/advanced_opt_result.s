@@ -1,4 +1,4 @@
-	.file	"optional_trait_methods.8a1cbcd4d8d0868d-cgu.0"
+	.file	"optional_trait_methods.55e18b966e7c1b52-cgu.0"
 	.section	.text.<[u8]>::strip_prefix::<[u8; 2]>,"ax",@progbits
 	.globl	<[u8]>::strip_prefix::<[u8; 2]>
 	.type	<[u8]>::strip_prefix::<[u8; 2]>,@function
@@ -156,7 +156,7 @@ optional_trait_methods::print_macros::write_line:
 	pushq	%rax
 	.cfi_def_cfa_offset 16
 	callq	optional_trait_methods::print_macros::write_all
-	leaq	.Lanon.58d60646bb498b4dae1b5f42e7355e91.4(%rip), %rdi
+	leaq	.Lanon.d2e4615760c4eb9aa6258dd83bb1b055.4(%rip), %rdi
 	movl	$1, %esi
 	popq	%rax
 	.cfi_def_cfa_offset 8
@@ -214,13 +214,13 @@ optional_trait_methods::print_macros::write_isize_line:
 	retq
 .LBB4_5:
 	.cfi_def_cfa_offset 48
-	leaq	.Lanon.58d60646bb498b4dae1b5f42e7355e91.6(%rip), %rdx
+	leaq	.Lanon.d2e4615760c4eb9aa6258dd83bb1b055.6(%rip), %rdx
 .LBB4_6:
 	movl	$32, %esi
 	movq	$-1, %rdi
 	callq	*core::panicking::panic_bounds_check@GOTPCREL(%rip)
 .LBB4_10:
-	leaq	.Lanon.58d60646bb498b4dae1b5f42e7355e91.7(%rip), %rdx
+	leaq	.Lanon.d2e4615760c4eb9aa6258dd83bb1b055.7(%rip), %rdx
 	jmp	.LBB4_6
 .Lfunc_end4:
 	.size	optional_trait_methods::print_macros::write_isize_line, .Lfunc_end4-optional_trait_methods::print_macros::write_isize_line
@@ -266,7 +266,7 @@ optional_trait_methods::print_macros::write_all:
 	retq
 .LBB5_6:
 	.cfi_def_cfa_offset 32
-	leaq	.Lanon.58d60646bb498b4dae1b5f42e7355e91.8(%rip), %rcx
+	leaq	.Lanon.d2e4615760c4eb9aa6258dd83bb1b055.8(%rip), %rcx
 	movq	%rax, %rdi
 	movq	%rbx, %rsi
 	movq	%rbx, %rdx
@@ -295,54 +295,54 @@ optional_trait_methods::print_macros::write_all:
 	.size	<optional_trait_methods::line_reader::LineReader as core::default::Default>::default, .Lfunc_end6-<optional_trait_methods::line_reader::LineReader as core::default::Default>::default
 	.cfi_endproc
 
-	.section	.text.<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::scale_factor,"ax",@progbits
-	.globl	<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::scale_factor
-	.type	<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::scale_factor,@function
-<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::scale_factor:
+	.section	.text.<optional_trait_methods::using_opt_result::targets::advanced::AdvancedTarget as optional_trait_methods::using_opt_result::target::Target>::scale_factor,"ax",@progbits
+	.globl	<optional_trait_methods::using_opt_result::targets::advanced::AdvancedTarget as optional_trait_methods::using_opt_result::target::Target>::scale_factor
+	.type	<optional_trait_methods::using_opt_result::targets::advanced::AdvancedTarget as optional_trait_methods::using_opt_result::target::Target>::scale_factor,@function
+<optional_trait_methods::using_opt_result::targets::advanced::AdvancedTarget as optional_trait_methods::using_opt_result::target::Target>::scale_factor:
 	.cfi_startproc
 	movq	%rdi, %rax
 	movq	%rdx, 8(%rsi)
 	movq	$0, (%rdi)
 	retq
 .Lfunc_end7:
-	.size	<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::scale_factor, .Lfunc_end7-<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::scale_factor
+	.size	<optional_trait_methods::using_opt_result::targets::advanced::AdvancedTarget as optional_trait_methods::using_opt_result::target::Target>::scale_factor, .Lfunc_end7-<optional_trait_methods::using_opt_result::targets::advanced::AdvancedTarget as optional_trait_methods::using_opt_result::target::Target>::scale_factor
 	.cfi_endproc
 
-	.section	.text.<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::dec,"ax",@progbits
-	.globl	<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::dec
-	.type	<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::dec,@function
-<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::dec:
+	.section	.text.<optional_trait_methods::using_opt_result::targets::advanced::AdvancedTarget as optional_trait_methods::using_opt_result::target::Target>::dec,"ax",@progbits
+	.globl	<optional_trait_methods::using_opt_result::targets::advanced::AdvancedTarget as optional_trait_methods::using_opt_result::target::Target>::dec
+	.type	<optional_trait_methods::using_opt_result::targets::advanced::AdvancedTarget as optional_trait_methods::using_opt_result::target::Target>::dec,@function
+<optional_trait_methods::using_opt_result::targets::advanced::AdvancedTarget as optional_trait_methods::using_opt_result::target::Target>::dec:
 	.cfi_startproc
 	decq	(%rsi)
 	movq	%rdi, %rax
 	movq	$0, (%rdi)
 	retq
 .Lfunc_end8:
-	.size	<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::dec, .Lfunc_end8-<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::dec
+	.size	<optional_trait_methods::using_opt_result::targets::advanced::AdvancedTarget as optional_trait_methods::using_opt_result::target::Target>::dec, .Lfunc_end8-<optional_trait_methods::using_opt_result::targets::advanced::AdvancedTarget as optional_trait_methods::using_opt_result::target::Target>::dec
 	.cfi_endproc
 
-	.section	.text.<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::inc,"ax",@progbits
-	.globl	<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::inc
-	.type	<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::inc,@function
-<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::inc:
+	.section	.text.<optional_trait_methods::using_opt_result::targets::advanced::AdvancedTarget as optional_trait_methods::using_opt_result::target::Target>::inc,"ax",@progbits
+	.globl	<optional_trait_methods::using_opt_result::targets::advanced::AdvancedTarget as optional_trait_methods::using_opt_result::target::Target>::inc
+	.type	<optional_trait_methods::using_opt_result::targets::advanced::AdvancedTarget as optional_trait_methods::using_opt_result::target::Target>::inc,@function
+<optional_trait_methods::using_opt_result::targets::advanced::AdvancedTarget as optional_trait_methods::using_opt_result::target::Target>::inc:
 	.cfi_startproc
 	incq	(%rsi)
 	movq	%rdi, %rax
 	movq	$0, (%rdi)
 	retq
 .Lfunc_end9:
-	.size	<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::inc, .Lfunc_end9-<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::inc
+	.size	<optional_trait_methods::using_opt_result::targets::advanced::AdvancedTarget as optional_trait_methods::using_opt_result::target::Target>::inc, .Lfunc_end9-<optional_trait_methods::using_opt_result::targets::advanced::AdvancedTarget as optional_trait_methods::using_opt_result::target::Target>::inc
 	.cfi_endproc
 
-	.section	.text.<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::mul,"ax",@progbits
-	.globl	<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::mul
-	.type	<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::mul,@function
-<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::mul:
+	.section	.text.<optional_trait_methods::using_opt_result::targets::advanced::AdvancedTarget as optional_trait_methods::using_opt_result::target::Target>::mul,"ax",@progbits
+	.globl	<optional_trait_methods::using_opt_result::targets::advanced::AdvancedTarget as optional_trait_methods::using_opt_result::target::Target>::mul
+	.type	<optional_trait_methods::using_opt_result::targets::advanced::AdvancedTarget as optional_trait_methods::using_opt_result::target::Target>::mul,@function
+<optional_trait_methods::using_opt_result::targets::advanced::AdvancedTarget as optional_trait_methods::using_opt_result::target::Target>::mul:
 	.cfi_startproc
 	movq	%rdi, %rax
 	cmpq	$7, %rdx
 	jne	.LBB10_2
-	leaq	.Lanon.58d60646bb498b4dae1b5f42e7355e91.9(%rip), %rcx
+	leaq	.Lanon.d2e4615760c4eb9aa6258dd83bb1b055.9(%rip), %rcx
 	movq	%rcx, 8(%rax)
 	movq	$28, 16(%rax)
 	movl	$1, %ecx
@@ -356,30 +356,30 @@ optional_trait_methods::print_macros::write_all:
 	movq	%rcx, (%rax)
 	retq
 .Lfunc_end10:
-	.size	<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::mul, .Lfunc_end10-<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::mul
+	.size	<optional_trait_methods::using_opt_result::targets::advanced::AdvancedTarget as optional_trait_methods::using_opt_result::target::Target>::mul, .Lfunc_end10-<optional_trait_methods::using_opt_result::targets::advanced::AdvancedTarget as optional_trait_methods::using_opt_result::target::Target>::mul
 	.cfi_endproc
 
-	.section	.text.<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::get_state,"ax",@progbits
-	.globl	<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::get_state
-	.type	<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::get_state,@function
-<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::get_state:
+	.section	.text.<optional_trait_methods::using_opt_result::targets::advanced::AdvancedTarget as optional_trait_methods::using_opt_result::target::Target>::get_state,"ax",@progbits
+	.globl	<optional_trait_methods::using_opt_result::targets::advanced::AdvancedTarget as optional_trait_methods::using_opt_result::target::Target>::get_state
+	.type	<optional_trait_methods::using_opt_result::targets::advanced::AdvancedTarget as optional_trait_methods::using_opt_result::target::Target>::get_state,@function
+<optional_trait_methods::using_opt_result::targets::advanced::AdvancedTarget as optional_trait_methods::using_opt_result::target::Target>::get_state:
 	.cfi_startproc
 	movq	(%rdi), %rax
 	retq
 .Lfunc_end11:
-	.size	<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::get_state, .Lfunc_end11-<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::get_state
+	.size	<optional_trait_methods::using_opt_result::targets::advanced::AdvancedTarget as optional_trait_methods::using_opt_result::target::Target>::get_state, .Lfunc_end11-<optional_trait_methods::using_opt_result::targets::advanced::AdvancedTarget as optional_trait_methods::using_opt_result::target::Target>::get_state
 	.cfi_endproc
 
-	.section	.text.<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::set_state,"ax",@progbits
-	.globl	<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::set_state
-	.type	<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::set_state,@function
-<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::set_state:
+	.section	.text.<optional_trait_methods::using_opt_result::targets::advanced::AdvancedTarget as optional_trait_methods::using_opt_result::target::Target>::set_state,"ax",@progbits
+	.globl	<optional_trait_methods::using_opt_result::targets::advanced::AdvancedTarget as optional_trait_methods::using_opt_result::target::Target>::set_state
+	.type	<optional_trait_methods::using_opt_result::targets::advanced::AdvancedTarget as optional_trait_methods::using_opt_result::target::Target>::set_state,@function
+<optional_trait_methods::using_opt_result::targets::advanced::AdvancedTarget as optional_trait_methods::using_opt_result::target::Target>::set_state:
 	.cfi_startproc
 	movq	%rsi, (%rdi)
 	xorl	%eax, %eax
 	retq
 .Lfunc_end12:
-	.size	<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::set_state, .Lfunc_end12-<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::set_state
+	.size	<optional_trait_methods::using_opt_result::targets::advanced::AdvancedTarget as optional_trait_methods::using_opt_result::target::Target>::set_state, .Lfunc_end12-<optional_trait_methods::using_opt_result::targets::advanced::AdvancedTarget as optional_trait_methods::using_opt_result::target::Target>::set_state
 	.cfi_endproc
 
 	.section	.text.run_optional_trait_methods,"ax",@progbits
@@ -659,19 +659,19 @@ run_optional_trait_methods:
 	testb	$1, %al
 	je	.LBB13_73
 	movq	%rbp, %rsi
-	callq	*<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::set_state@GOTPCREL(%rip)
+	callq	*<optional_trait_methods::using_opt_result::targets::advanced::AdvancedTarget as optional_trait_methods::using_opt_result::target::Target>::set_state@GOTPCREL(%rip)
 	jmp	.LBB13_1
 .LBB13_68:
 	leaq	8(%rsp), %rdi
 	movq	%rbx, %rsi
 	movq	%rbp, %rdx
-	callq	*<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::mul@GOTPCREL(%rip)
+	callq	*<optional_trait_methods::using_opt_result::targets::advanced::AdvancedTarget as optional_trait_methods::using_opt_result::target::Target>::mul@GOTPCREL(%rip)
 	jmp	.LBB13_75
 .LBB13_69:
 	leaq	8(%rsp), %rdi
 	movq	%rbx, %rsi
 	movq	%rbp, %rdx
-	callq	*<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::scale_factor@GOTPCREL(%rip)
+	callq	*<optional_trait_methods::using_opt_result::targets::advanced::AdvancedTarget as optional_trait_methods::using_opt_result::target::Target>::scale_factor@GOTPCREL(%rip)
 	jmp	.LBB13_75
 .LBB13_70:
 	testb	%bpl, %bpl
@@ -681,17 +681,17 @@ run_optional_trait_methods:
 	leaq	8(%rsp), %rdi
 	movq	%rbx, %rsi
 	jne	.LBB13_78
-	callq	*<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::dec@GOTPCREL(%rip)
+	callq	*<optional_trait_methods::using_opt_result::targets::advanced::AdvancedTarget as optional_trait_methods::using_opt_result::target::Target>::dec@GOTPCREL(%rip)
 	jmp	.LBB13_75
 .LBB13_73:
-	callq	*<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::get_state@GOTPCREL(%rip)
+	callq	*<optional_trait_methods::using_opt_result::targets::advanced::AdvancedTarget as optional_trait_methods::using_opt_result::target::Target>::get_state@GOTPCREL(%rip)
 	movq	%rax, %rdi
 	callq	optional_trait_methods::print_macros::write_isize_line
 	jmp	.LBB13_1
 .LBB13_74:
 	leaq	8(%rsp), %rdi
 	movq	%rbx, %rsi
-	callq	*<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::inc@GOTPCREL(%rip)
+	callq	*<optional_trait_methods::using_opt_result::targets::advanced::AdvancedTarget as optional_trait_methods::using_opt_result::target::Target>::inc@GOTPCREL(%rip)
 .LBB13_75:
 	cmpb	$0, 8(%rsp)
 	je	.LBB13_1
@@ -701,11 +701,11 @@ run_optional_trait_methods:
 	jne	.LBB13_83
 .LBB13_77:
 	movl	$16, %esi
-	leaq	.Lanon.58d60646bb498b4dae1b5f42e7355e91.3(%rip), %rdi
+	leaq	.Lanon.d2e4615760c4eb9aa6258dd83bb1b055.3(%rip), %rdi
 	callq	optional_trait_methods::print_macros::write_line
 	jmp	.LBB13_1
 .LBB13_78:
-	callq	*<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::inc@GOTPCREL(%rip)
+	callq	*<optional_trait_methods::using_opt_result::targets::advanced::AdvancedTarget as optional_trait_methods::using_opt_result::target::Target>::inc@GOTPCREL(%rip)
 	cmpl	$1, 8(%rsp)
 	jne	.LBB13_81
 	movq	16(%rsp), %rdi
@@ -713,14 +713,14 @@ run_optional_trait_methods:
 	jne	.LBB13_83
 	leaq	8(%rsp), %rdi
 	movq	%rbx, %rsi
-	callq	*<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::dec@GOTPCREL(%rip)
+	callq	*<optional_trait_methods::using_opt_result::targets::advanced::AdvancedTarget as optional_trait_methods::using_opt_result::target::Target>::dec@GOTPCREL(%rip)
 	cmpb	$0, 8(%rsp)
 	jne	.LBB13_76
 	jmp	.LBB13_87
 .LBB13_81:
 	leaq	8(%rsp), %rdi
 	movq	%rbx, %rsi
-	callq	*<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::dec@GOTPCREL(%rip)
+	callq	*<optional_trait_methods::using_opt_result::targets::advanced::AdvancedTarget as optional_trait_methods::using_opt_result::target::Target>::dec@GOTPCREL(%rip)
 	cmpb	$0, 8(%rsp)
 	je	.LBB13_1
 	movq	16(%rsp), %rdi
@@ -752,7 +752,7 @@ run_optional_trait_methods:
 	retq
 .LBB13_87:
 	.cfi_def_cfa_offset 1280
-	leaq	.Lanon.58d60646bb498b4dae1b5f42e7355e91.10(%rip), %rdi
+	leaq	.Lanon.d2e4615760c4eb9aa6258dd83bb1b055.10(%rip), %rdi
 	movl	$23, %esi
 	jmp	.LBB13_84
 .Lfunc_end13:
@@ -766,77 +766,77 @@ run_optional_trait_methods:
 	.long	.LBB13_68-.LJTI13_0
 	.long	.LBB13_69-.LJTI13_0
 
-	.type	.Lanon.58d60646bb498b4dae1b5f42e7355e91.0,@object
-	.section	.rodata..Lanon.58d60646bb498b4dae1b5f42e7355e91.0,"a",@progbits
-.Lanon.58d60646bb498b4dae1b5f42e7355e91.0:
+	.type	.Lanon.d2e4615760c4eb9aa6258dd83bb1b055.0,@object
+	.section	.rodata..Lanon.d2e4615760c4eb9aa6258dd83bb1b055.0,"a",@progbits
+.Lanon.d2e4615760c4eb9aa6258dd83bb1b055.0:
 	.ascii	"* "
-	.size	.Lanon.58d60646bb498b4dae1b5f42e7355e91.0, 2
+	.size	.Lanon.d2e4615760c4eb9aa6258dd83bb1b055.0, 2
 
-	.type	.Lanon.58d60646bb498b4dae1b5f42e7355e91.1,@object
-	.section	.rodata..Lanon.58d60646bb498b4dae1b5f42e7355e91.1,"a",@progbits
-.Lanon.58d60646bb498b4dae1b5f42e7355e91.1:
+	.type	.Lanon.d2e4615760c4eb9aa6258dd83bb1b055.1,@object
+	.section	.rodata..Lanon.d2e4615760c4eb9aa6258dd83bb1b055.1,"a",@progbits
+.Lanon.d2e4615760c4eb9aa6258dd83bb1b055.1:
 	.ascii	"*~ "
-	.size	.Lanon.58d60646bb498b4dae1b5f42e7355e91.1, 3
+	.size	.Lanon.d2e4615760c4eb9aa6258dd83bb1b055.1, 3
 
-	.type	.Lanon.58d60646bb498b4dae1b5f42e7355e91.2,@object
-	.section	.rodata..Lanon.58d60646bb498b4dae1b5f42e7355e91.2,"a",@progbits
-.Lanon.58d60646bb498b4dae1b5f42e7355e91.2:
+	.type	.Lanon.d2e4615760c4eb9aa6258dd83bb1b055.2,@object
+	.section	.rodata..Lanon.d2e4615760c4eb9aa6258dd83bb1b055.2,"a",@progbits
+.Lanon.d2e4615760c4eb9aa6258dd83bb1b055.2:
 	.ascii	"s "
-	.size	.Lanon.58d60646bb498b4dae1b5f42e7355e91.2, 2
+	.size	.Lanon.d2e4615760c4eb9aa6258dd83bb1b055.2, 2
 
-	.type	.Lanon.58d60646bb498b4dae1b5f42e7355e91.3,@object
+	.type	.Lanon.d2e4615760c4eb9aa6258dd83bb1b055.3,@object
 	.section	.rodata.cst16,"aM",@progbits,16
-.Lanon.58d60646bb498b4dae1b5f42e7355e91.3:
+.Lanon.d2e4615760c4eb9aa6258dd83bb1b055.3:
 	.ascii	"Unsupported cmd!"
-	.size	.Lanon.58d60646bb498b4dae1b5f42e7355e91.3, 16
+	.size	.Lanon.d2e4615760c4eb9aa6258dd83bb1b055.3, 16
 
-	.type	.Lanon.58d60646bb498b4dae1b5f42e7355e91.4,@object
-	.section	.rodata..Lanon.58d60646bb498b4dae1b5f42e7355e91.4,"a",@progbits
-.Lanon.58d60646bb498b4dae1b5f42e7355e91.4:
+	.type	.Lanon.d2e4615760c4eb9aa6258dd83bb1b055.4,@object
+	.section	.rodata..Lanon.d2e4615760c4eb9aa6258dd83bb1b055.4,"a",@progbits
+.Lanon.d2e4615760c4eb9aa6258dd83bb1b055.4:
 	.byte	10
-	.size	.Lanon.58d60646bb498b4dae1b5f42e7355e91.4, 1
+	.size	.Lanon.d2e4615760c4eb9aa6258dd83bb1b055.4, 1
 
-	.type	.Lanon.58d60646bb498b4dae1b5f42e7355e91.5,@object
+	.type	.Lanon.d2e4615760c4eb9aa6258dd83bb1b055.5,@object
 	.section	.rodata.str1.1,"aMS",@progbits,1
-.Lanon.58d60646bb498b4dae1b5f42e7355e91.5:
+.Lanon.d2e4615760c4eb9aa6258dd83bb1b055.5:
 	.asciz	"src/print_macros.rs"
-	.size	.Lanon.58d60646bb498b4dae1b5f42e7355e91.5, 20
+	.size	.Lanon.d2e4615760c4eb9aa6258dd83bb1b055.5, 20
 
-	.type	.Lanon.58d60646bb498b4dae1b5f42e7355e91.6,@object
-	.section	.data.rel.ro..Lanon.58d60646bb498b4dae1b5f42e7355e91.6,"aw",@progbits
+	.type	.Lanon.d2e4615760c4eb9aa6258dd83bb1b055.6,@object
+	.section	.data.rel.ro..Lanon.d2e4615760c4eb9aa6258dd83bb1b055.6,"aw",@progbits
 	.p2align	3, 0x0
-.Lanon.58d60646bb498b4dae1b5f42e7355e91.6:
-	.quad	.Lanon.58d60646bb498b4dae1b5f42e7355e91.5
+.Lanon.d2e4615760c4eb9aa6258dd83bb1b055.6:
+	.quad	.Lanon.d2e4615760c4eb9aa6258dd83bb1b055.5
 	.asciz	"\023\000\000\000\000\000\000\000\037\000\000\000\t\000\000"
-	.size	.Lanon.58d60646bb498b4dae1b5f42e7355e91.6, 24
+	.size	.Lanon.d2e4615760c4eb9aa6258dd83bb1b055.6, 24
 
-	.type	.Lanon.58d60646bb498b4dae1b5f42e7355e91.7,@object
-	.section	.data.rel.ro..Lanon.58d60646bb498b4dae1b5f42e7355e91.7,"aw",@progbits
+	.type	.Lanon.d2e4615760c4eb9aa6258dd83bb1b055.7,@object
+	.section	.data.rel.ro..Lanon.d2e4615760c4eb9aa6258dd83bb1b055.7,"aw",@progbits
 	.p2align	3, 0x0
-.Lanon.58d60646bb498b4dae1b5f42e7355e91.7:
-	.quad	.Lanon.58d60646bb498b4dae1b5f42e7355e91.5
+.Lanon.d2e4615760c4eb9aa6258dd83bb1b055.7:
+	.quad	.Lanon.d2e4615760c4eb9aa6258dd83bb1b055.5
 	.asciz	"\023\000\000\000\000\000\000\000(\000\000\000\t\000\000"
-	.size	.Lanon.58d60646bb498b4dae1b5f42e7355e91.7, 24
+	.size	.Lanon.d2e4615760c4eb9aa6258dd83bb1b055.7, 24
 
-	.type	.Lanon.58d60646bb498b4dae1b5f42e7355e91.8,@object
-	.section	.data.rel.ro..Lanon.58d60646bb498b4dae1b5f42e7355e91.8,"aw",@progbits
+	.type	.Lanon.d2e4615760c4eb9aa6258dd83bb1b055.8,@object
+	.section	.data.rel.ro..Lanon.d2e4615760c4eb9aa6258dd83bb1b055.8,"aw",@progbits
 	.p2align	3, 0x0
-.Lanon.58d60646bb498b4dae1b5f42e7355e91.8:
-	.quad	.Lanon.58d60646bb498b4dae1b5f42e7355e91.5
+.Lanon.d2e4615760c4eb9aa6258dd83bb1b055.8:
+	.quad	.Lanon.d2e4615760c4eb9aa6258dd83bb1b055.5
 	.asciz	"\023\000\000\000\000\000\000\000\t\000\000\000\027\000\000"
-	.size	.Lanon.58d60646bb498b4dae1b5f42e7355e91.8, 24
+	.size	.Lanon.d2e4615760c4eb9aa6258dd83bb1b055.8, 24
 
-	.type	.Lanon.58d60646bb498b4dae1b5f42e7355e91.9,@object
-	.section	.rodata..Lanon.58d60646bb498b4dae1b5f42e7355e91.9,"a",@progbits
-.Lanon.58d60646bb498b4dae1b5f42e7355e91.9:
+	.type	.Lanon.d2e4615760c4eb9aa6258dd83bb1b055.9,@object
+	.section	.rodata..Lanon.d2e4615760c4eb9aa6258dd83bb1b055.9,"a",@progbits
+.Lanon.d2e4615760c4eb9aa6258dd83bb1b055.9:
 	.ascii	"multiplying by 7 is unlucky!"
-	.size	.Lanon.58d60646bb498b4dae1b5f42e7355e91.9, 28
+	.size	.Lanon.d2e4615760c4eb9aa6258dd83bb1b055.9, 28
 
-	.type	.Lanon.58d60646bb498b4dae1b5f42e7355e91.10,@object
-	.section	.rodata..Lanon.58d60646bb498b4dae1b5f42e7355e91.10,"a",@progbits
-.Lanon.58d60646bb498b4dae1b5f42e7355e91.10:
+	.type	.Lanon.d2e4615760c4eb9aa6258dd83bb1b055.10,@object
+	.section	.rodata..Lanon.d2e4615760c4eb9aa6258dd83bb1b055.10,"a",@progbits
+.Lanon.d2e4615760c4eb9aa6258dd83bb1b055.10:
 	.ascii	"Invalid implementation!"
-	.size	.Lanon.58d60646bb498b4dae1b5f42e7355e91.10, 23
+	.size	.Lanon.d2e4615760c4eb9aa6258dd83bb1b055.10, 23
 
 	.ident	"rustc version 1.97.0-nightly (9ec5d5f32 2026-04-21)"
 	.section	".note.GNU-stack","",@progbits

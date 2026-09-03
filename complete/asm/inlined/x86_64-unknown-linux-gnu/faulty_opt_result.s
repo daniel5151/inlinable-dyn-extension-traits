@@ -1,4 +1,4 @@
-	.file	"optional_trait_methods.536167489baa6f95-cgu.0"
+	.file	"optional_trait_methods.e3a6360e22c8d67b-cgu.0"
 	.section	.text.<[u8]>::strip_prefix::<[u8; 2]>,"ax",@progbits
 	.globl	<[u8]>::strip_prefix::<[u8; 2]>
 	.type	<[u8]>::strip_prefix::<[u8; 2]>,@function
@@ -156,7 +156,7 @@ optional_trait_methods::print_macros::write_line:
 	pushq	%rax
 	.cfi_def_cfa_offset 16
 	callq	optional_trait_methods::print_macros::write_all
-	leaq	.Lanon.e1b5db914fe3a57d7d2dc395a5eecb23.4(%rip), %rdi
+	leaq	.Lanon.f4f97c4ad9ffb22f4a5beca49d7641b1.4(%rip), %rdi
 	movl	$1, %esi
 	popq	%rax
 	.cfi_def_cfa_offset 8
@@ -214,13 +214,13 @@ optional_trait_methods::print_macros::write_isize_line:
 	retq
 .LBB4_5:
 	.cfi_def_cfa_offset 48
-	leaq	.Lanon.e1b5db914fe3a57d7d2dc395a5eecb23.6(%rip), %rdx
+	leaq	.Lanon.f4f97c4ad9ffb22f4a5beca49d7641b1.6(%rip), %rdx
 .LBB4_6:
 	movl	$32, %esi
 	movq	$-1, %rdi
 	callq	*core::panicking::panic_bounds_check@GOTPCREL(%rip)
 .LBB4_10:
-	leaq	.Lanon.e1b5db914fe3a57d7d2dc395a5eecb23.7(%rip), %rdx
+	leaq	.Lanon.f4f97c4ad9ffb22f4a5beca49d7641b1.7(%rip), %rdx
 	jmp	.LBB4_6
 .Lfunc_end4:
 	.size	optional_trait_methods::print_macros::write_isize_line, .Lfunc_end4-optional_trait_methods::print_macros::write_isize_line
@@ -266,7 +266,7 @@ optional_trait_methods::print_macros::write_all:
 	retq
 .LBB5_6:
 	.cfi_def_cfa_offset 32
-	leaq	.Lanon.e1b5db914fe3a57d7d2dc395a5eecb23.8(%rip), %rcx
+	leaq	.Lanon.f4f97c4ad9ffb22f4a5beca49d7641b1.8(%rip), %rcx
 	movq	%rax, %rdi
 	movq	%rbx, %rsi
 	movq	%rbx, %rdx
@@ -295,66 +295,66 @@ optional_trait_methods::print_macros::write_all:
 	.size	<optional_trait_methods::line_reader::LineReader as core::default::Default>::default, .Lfunc_end6-<optional_trait_methods::line_reader::LineReader as core::default::Default>::default
 	.cfi_endproc
 
-	.section	.text.<optional_trait_methods::using_options::targets::faulty::FaultyTarget as optional_trait_methods::using_options::target::Target>::inc,"ax",@progbits
-	.globl	<optional_trait_methods::using_options::targets::faulty::FaultyTarget as optional_trait_methods::using_options::target::Target>::inc
-	.type	<optional_trait_methods::using_options::targets::faulty::FaultyTarget as optional_trait_methods::using_options::target::Target>::inc,@function
-<optional_trait_methods::using_options::targets::faulty::FaultyTarget as optional_trait_methods::using_options::target::Target>::inc:
+	.section	.text.<optional_trait_methods::using_opt_result::targets::faulty::FaultyTarget as optional_trait_methods::using_opt_result::target::Target>::inc,"ax",@progbits
+	.globl	<optional_trait_methods::using_opt_result::targets::faulty::FaultyTarget as optional_trait_methods::using_opt_result::target::Target>::inc
+	.type	<optional_trait_methods::using_opt_result::targets::faulty::FaultyTarget as optional_trait_methods::using_opt_result::target::Target>::inc,@function
+<optional_trait_methods::using_opt_result::targets::faulty::FaultyTarget as optional_trait_methods::using_opt_result::target::Target>::inc:
 	.cfi_startproc
 	incq	(%rsi)
 	movq	%rdi, %rax
 	movq	$0, (%rdi)
 	retq
 .Lfunc_end7:
-	.size	<optional_trait_methods::using_options::targets::faulty::FaultyTarget as optional_trait_methods::using_options::target::Target>::inc, .Lfunc_end7-<optional_trait_methods::using_options::targets::faulty::FaultyTarget as optional_trait_methods::using_options::target::Target>::inc
+	.size	<optional_trait_methods::using_opt_result::targets::faulty::FaultyTarget as optional_trait_methods::using_opt_result::target::Target>::inc, .Lfunc_end7-<optional_trait_methods::using_opt_result::targets::faulty::FaultyTarget as optional_trait_methods::using_opt_result::target::Target>::inc
 	.cfi_endproc
 
-	.section	.text.<optional_trait_methods::using_options::targets::faulty::FaultyTarget as optional_trait_methods::using_options::target::Target>::get_state,"ax",@progbits
-	.globl	<optional_trait_methods::using_options::targets::faulty::FaultyTarget as optional_trait_methods::using_options::target::Target>::get_state
-	.type	<optional_trait_methods::using_options::targets::faulty::FaultyTarget as optional_trait_methods::using_options::target::Target>::get_state,@function
-<optional_trait_methods::using_options::targets::faulty::FaultyTarget as optional_trait_methods::using_options::target::Target>::get_state:
+	.section	.text.<optional_trait_methods::using_opt_result::targets::faulty::FaultyTarget as optional_trait_methods::using_opt_result::target::Target>::get_state,"ax",@progbits
+	.globl	<optional_trait_methods::using_opt_result::targets::faulty::FaultyTarget as optional_trait_methods::using_opt_result::target::Target>::get_state
+	.type	<optional_trait_methods::using_opt_result::targets::faulty::FaultyTarget as optional_trait_methods::using_opt_result::target::Target>::get_state,@function
+<optional_trait_methods::using_opt_result::targets::faulty::FaultyTarget as optional_trait_methods::using_opt_result::target::Target>::get_state:
 	.cfi_startproc
 	movq	(%rdi), %rax
 	retq
 .Lfunc_end8:
-	.size	<optional_trait_methods::using_options::targets::faulty::FaultyTarget as optional_trait_methods::using_options::target::Target>::get_state, .Lfunc_end8-<optional_trait_methods::using_options::targets::faulty::FaultyTarget as optional_trait_methods::using_options::target::Target>::get_state
+	.size	<optional_trait_methods::using_opt_result::targets::faulty::FaultyTarget as optional_trait_methods::using_opt_result::target::Target>::get_state, .Lfunc_end8-<optional_trait_methods::using_opt_result::targets::faulty::FaultyTarget as optional_trait_methods::using_opt_result::target::Target>::get_state
 	.cfi_endproc
 
-	.section	.text.<optional_trait_methods::using_options::targets::faulty::FaultyTarget as optional_trait_methods::using_options::target::Target>::set_state,"ax",@progbits
-	.globl	<optional_trait_methods::using_options::targets::faulty::FaultyTarget as optional_trait_methods::using_options::target::Target>::set_state
-	.type	<optional_trait_methods::using_options::targets::faulty::FaultyTarget as optional_trait_methods::using_options::target::Target>::set_state,@function
-<optional_trait_methods::using_options::targets::faulty::FaultyTarget as optional_trait_methods::using_options::target::Target>::set_state:
+	.section	.text.<optional_trait_methods::using_opt_result::targets::faulty::FaultyTarget as optional_trait_methods::using_opt_result::target::Target>::set_state,"ax",@progbits
+	.globl	<optional_trait_methods::using_opt_result::targets::faulty::FaultyTarget as optional_trait_methods::using_opt_result::target::Target>::set_state
+	.type	<optional_trait_methods::using_opt_result::targets::faulty::FaultyTarget as optional_trait_methods::using_opt_result::target::Target>::set_state,@function
+<optional_trait_methods::using_opt_result::targets::faulty::FaultyTarget as optional_trait_methods::using_opt_result::target::Target>::set_state:
 	.cfi_startproc
 	movq	%rsi, (%rdi)
 	xorl	%eax, %eax
 	retq
 .Lfunc_end9:
-	.size	<optional_trait_methods::using_options::targets::faulty::FaultyTarget as optional_trait_methods::using_options::target::Target>::set_state, .Lfunc_end9-<optional_trait_methods::using_options::targets::faulty::FaultyTarget as optional_trait_methods::using_options::target::Target>::set_state
+	.size	<optional_trait_methods::using_opt_result::targets::faulty::FaultyTarget as optional_trait_methods::using_opt_result::target::Target>::set_state, .Lfunc_end9-<optional_trait_methods::using_opt_result::targets::faulty::FaultyTarget as optional_trait_methods::using_opt_result::target::Target>::set_state
 	.cfi_endproc
 
-	.section	.text.<optional_trait_methods::using_options::targets::faulty::FaultyTarget as optional_trait_methods::using_options::target::Target>::scale_factor,"ax",@progbits
-	.globl	<optional_trait_methods::using_options::targets::faulty::FaultyTarget as optional_trait_methods::using_options::target::Target>::scale_factor
-	.type	<optional_trait_methods::using_options::targets::faulty::FaultyTarget as optional_trait_methods::using_options::target::Target>::scale_factor,@function
-<optional_trait_methods::using_options::targets::faulty::FaultyTarget as optional_trait_methods::using_options::target::Target>::scale_factor:
+	.section	.text.<optional_trait_methods::using_opt_result::targets::faulty::FaultyTarget as optional_trait_methods::using_opt_result::target::Target>::scale_factor,"ax",@progbits
+	.globl	<optional_trait_methods::using_opt_result::targets::faulty::FaultyTarget as optional_trait_methods::using_opt_result::target::Target>::scale_factor
+	.type	<optional_trait_methods::using_opt_result::targets::faulty::FaultyTarget as optional_trait_methods::using_opt_result::target::Target>::scale_factor,@function
+<optional_trait_methods::using_opt_result::targets::faulty::FaultyTarget as optional_trait_methods::using_opt_result::target::Target>::scale_factor:
 	.cfi_startproc
 	movq	%rdi, %rax
 	movq	$0, 8(%rdi)
 	movq	$1, (%rdi)
 	retq
 .Lfunc_end10:
-	.size	<optional_trait_methods::using_options::targets::faulty::FaultyTarget as optional_trait_methods::using_options::target::Target>::scale_factor, .Lfunc_end10-<optional_trait_methods::using_options::targets::faulty::FaultyTarget as optional_trait_methods::using_options::target::Target>::scale_factor
+	.size	<optional_trait_methods::using_opt_result::targets::faulty::FaultyTarget as optional_trait_methods::using_opt_result::target::Target>::scale_factor, .Lfunc_end10-<optional_trait_methods::using_opt_result::targets::faulty::FaultyTarget as optional_trait_methods::using_opt_result::target::Target>::scale_factor
 	.cfi_endproc
 
-	.section	.text.<optional_trait_methods::using_options::targets::faulty::FaultyTarget as optional_trait_methods::using_options::target::Target>::dec,"ax",@progbits
-	.globl	<optional_trait_methods::using_options::targets::faulty::FaultyTarget as optional_trait_methods::using_options::target::Target>::dec
-	.type	<optional_trait_methods::using_options::targets::faulty::FaultyTarget as optional_trait_methods::using_options::target::Target>::dec,@function
-<optional_trait_methods::using_options::targets::faulty::FaultyTarget as optional_trait_methods::using_options::target::Target>::dec:
+	.section	.text.<optional_trait_methods::using_opt_result::targets::faulty::FaultyTarget as optional_trait_methods::using_opt_result::target::Target>::dec,"ax",@progbits
+	.globl	<optional_trait_methods::using_opt_result::targets::faulty::FaultyTarget as optional_trait_methods::using_opt_result::target::Target>::dec
+	.type	<optional_trait_methods::using_opt_result::targets::faulty::FaultyTarget as optional_trait_methods::using_opt_result::target::Target>::dec,@function
+<optional_trait_methods::using_opt_result::targets::faulty::FaultyTarget as optional_trait_methods::using_opt_result::target::Target>::dec:
 	.cfi_startproc
 	movq	%rdi, %rax
 	movq	$0, 8(%rdi)
 	movq	$1, (%rdi)
 	retq
 .Lfunc_end11:
-	.size	<optional_trait_methods::using_options::targets::faulty::FaultyTarget as optional_trait_methods::using_options::target::Target>::dec, .Lfunc_end11-<optional_trait_methods::using_options::targets::faulty::FaultyTarget as optional_trait_methods::using_options::target::Target>::dec
+	.size	<optional_trait_methods::using_opt_result::targets::faulty::FaultyTarget as optional_trait_methods::using_opt_result::target::Target>::dec, .Lfunc_end11-<optional_trait_methods::using_opt_result::targets::faulty::FaultyTarget as optional_trait_methods::using_opt_result::target::Target>::dec
 	.cfi_endproc
 
 	.section	.text.run_optional_trait_methods,"ax",@progbits
@@ -401,7 +401,7 @@ run_optional_trait_methods:
 	movaps	%xmm0, (%r15)
 	movq	<optional_trait_methods::line_reader::LineReader>::read_line@GOTPCREL(%rip), %r12
 	leaq	.LJTI12_0(%rip), %rbx
-	leaq	.Lanon.e1b5db914fe3a57d7d2dc395a5eecb23.3(%rip), %r13
+	leaq	.Lanon.f4f97c4ad9ffb22f4a5beca49d7641b1.3(%rip), %r13
 .LBB12_1:
 	movl	$128, %edx
 	movq	%r14, %rdi
@@ -634,7 +634,7 @@ run_optional_trait_methods:
 	testb	$1, %al
 	je	.LBB12_71
 	movq	%rbp, %rsi
-	callq	*<optional_trait_methods::using_options::targets::faulty::FaultyTarget as optional_trait_methods::using_options::target::Target>::set_state@GOTPCREL(%rip)
+	callq	*<optional_trait_methods::using_opt_result::targets::faulty::FaultyTarget as optional_trait_methods::using_opt_result::target::Target>::set_state@GOTPCREL(%rip)
 	jmp	.LBB12_1
 .LBB12_68:
 	testb	%bpl, %bpl
@@ -644,19 +644,19 @@ run_optional_trait_methods:
 	je	.LBB12_74
 	leaq	8(%rsp), %rdi
 	movq	%rsp, %rsi
-	callq	*<optional_trait_methods::using_options::targets::faulty::FaultyTarget as optional_trait_methods::using_options::target::Target>::inc@GOTPCREL(%rip)
+	callq	*<optional_trait_methods::using_opt_result::targets::faulty::FaultyTarget as optional_trait_methods::using_opt_result::target::Target>::inc@GOTPCREL(%rip)
 	cmpl	$1, 8(%rsp)
 	je	.LBB12_73
 	jmp	.LBB12_78
 .LBB12_71:
-	callq	*<optional_trait_methods::using_options::targets::faulty::FaultyTarget as optional_trait_methods::using_options::target::Target>::get_state@GOTPCREL(%rip)
+	callq	*<optional_trait_methods::using_opt_result::targets::faulty::FaultyTarget as optional_trait_methods::using_opt_result::target::Target>::get_state@GOTPCREL(%rip)
 	movq	%rax, %rdi
 	callq	optional_trait_methods::print_macros::write_isize_line
 	jmp	.LBB12_1
 .LBB12_72:
 	leaq	8(%rsp), %rdi
 	movq	%rsp, %rsi
-	callq	*<optional_trait_methods::using_options::targets::faulty::FaultyTarget as optional_trait_methods::using_options::target::Target>::inc@GOTPCREL(%rip)
+	callq	*<optional_trait_methods::using_opt_result::targets::faulty::FaultyTarget as optional_trait_methods::using_opt_result::target::Target>::inc@GOTPCREL(%rip)
 	cmpb	$0, 8(%rsp)
 	je	.LBB12_1
 .LBB12_73:
@@ -691,7 +691,7 @@ run_optional_trait_methods:
 	movq	24(%rsp), %rsi
 	jmp	.LBB12_79
 .LBB12_78:
-	leaq	.Lanon.e1b5db914fe3a57d7d2dc395a5eecb23.9(%rip), %rdi
+	leaq	.Lanon.f4f97c4ad9ffb22f4a5beca49d7641b1.9(%rip), %rdi
 	movl	$23, %esi
 .LBB12_79:
 	callq	optional_trait_methods::print_macros::write_line
@@ -708,74 +708,74 @@ run_optional_trait_methods:
 	.long	.LBB12_74-.LJTI12_0
 	.long	.LBB12_74-.LJTI12_0
 
-	.type	.Lanon.e1b5db914fe3a57d7d2dc395a5eecb23.0,@object
-	.section	.rodata..Lanon.e1b5db914fe3a57d7d2dc395a5eecb23.0,"a",@progbits
-.Lanon.e1b5db914fe3a57d7d2dc395a5eecb23.0:
+	.type	.Lanon.f4f97c4ad9ffb22f4a5beca49d7641b1.0,@object
+	.section	.rodata..Lanon.f4f97c4ad9ffb22f4a5beca49d7641b1.0,"a",@progbits
+.Lanon.f4f97c4ad9ffb22f4a5beca49d7641b1.0:
 	.ascii	"* "
-	.size	.Lanon.e1b5db914fe3a57d7d2dc395a5eecb23.0, 2
+	.size	.Lanon.f4f97c4ad9ffb22f4a5beca49d7641b1.0, 2
 
-	.type	.Lanon.e1b5db914fe3a57d7d2dc395a5eecb23.1,@object
-	.section	.rodata..Lanon.e1b5db914fe3a57d7d2dc395a5eecb23.1,"a",@progbits
-.Lanon.e1b5db914fe3a57d7d2dc395a5eecb23.1:
+	.type	.Lanon.f4f97c4ad9ffb22f4a5beca49d7641b1.1,@object
+	.section	.rodata..Lanon.f4f97c4ad9ffb22f4a5beca49d7641b1.1,"a",@progbits
+.Lanon.f4f97c4ad9ffb22f4a5beca49d7641b1.1:
 	.ascii	"*~ "
-	.size	.Lanon.e1b5db914fe3a57d7d2dc395a5eecb23.1, 3
+	.size	.Lanon.f4f97c4ad9ffb22f4a5beca49d7641b1.1, 3
 
-	.type	.Lanon.e1b5db914fe3a57d7d2dc395a5eecb23.2,@object
-	.section	.rodata..Lanon.e1b5db914fe3a57d7d2dc395a5eecb23.2,"a",@progbits
-.Lanon.e1b5db914fe3a57d7d2dc395a5eecb23.2:
+	.type	.Lanon.f4f97c4ad9ffb22f4a5beca49d7641b1.2,@object
+	.section	.rodata..Lanon.f4f97c4ad9ffb22f4a5beca49d7641b1.2,"a",@progbits
+.Lanon.f4f97c4ad9ffb22f4a5beca49d7641b1.2:
 	.ascii	"s "
-	.size	.Lanon.e1b5db914fe3a57d7d2dc395a5eecb23.2, 2
+	.size	.Lanon.f4f97c4ad9ffb22f4a5beca49d7641b1.2, 2
 
-	.type	.Lanon.e1b5db914fe3a57d7d2dc395a5eecb23.3,@object
+	.type	.Lanon.f4f97c4ad9ffb22f4a5beca49d7641b1.3,@object
 	.section	.rodata.cst16,"aM",@progbits,16
-.Lanon.e1b5db914fe3a57d7d2dc395a5eecb23.3:
+.Lanon.f4f97c4ad9ffb22f4a5beca49d7641b1.3:
 	.ascii	"Unsupported cmd!"
-	.size	.Lanon.e1b5db914fe3a57d7d2dc395a5eecb23.3, 16
+	.size	.Lanon.f4f97c4ad9ffb22f4a5beca49d7641b1.3, 16
 
-	.type	.Lanon.e1b5db914fe3a57d7d2dc395a5eecb23.4,@object
-	.section	.rodata..Lanon.e1b5db914fe3a57d7d2dc395a5eecb23.4,"a",@progbits
-.Lanon.e1b5db914fe3a57d7d2dc395a5eecb23.4:
+	.type	.Lanon.f4f97c4ad9ffb22f4a5beca49d7641b1.4,@object
+	.section	.rodata..Lanon.f4f97c4ad9ffb22f4a5beca49d7641b1.4,"a",@progbits
+.Lanon.f4f97c4ad9ffb22f4a5beca49d7641b1.4:
 	.byte	10
-	.size	.Lanon.e1b5db914fe3a57d7d2dc395a5eecb23.4, 1
+	.size	.Lanon.f4f97c4ad9ffb22f4a5beca49d7641b1.4, 1
 
-	.type	.Lanon.e1b5db914fe3a57d7d2dc395a5eecb23.5,@object
+	.type	.Lanon.f4f97c4ad9ffb22f4a5beca49d7641b1.5,@object
 	.section	.rodata.str1.1,"aMS",@progbits,1
-.Lanon.e1b5db914fe3a57d7d2dc395a5eecb23.5:
+.Lanon.f4f97c4ad9ffb22f4a5beca49d7641b1.5:
 	.asciz	"src/print_macros.rs"
-	.size	.Lanon.e1b5db914fe3a57d7d2dc395a5eecb23.5, 20
+	.size	.Lanon.f4f97c4ad9ffb22f4a5beca49d7641b1.5, 20
 
-	.type	.Lanon.e1b5db914fe3a57d7d2dc395a5eecb23.6,@object
-	.section	.data.rel.ro..Lanon.e1b5db914fe3a57d7d2dc395a5eecb23.6,"aw",@progbits
+	.type	.Lanon.f4f97c4ad9ffb22f4a5beca49d7641b1.6,@object
+	.section	.data.rel.ro..Lanon.f4f97c4ad9ffb22f4a5beca49d7641b1.6,"aw",@progbits
 	.p2align	3, 0x0
-.Lanon.e1b5db914fe3a57d7d2dc395a5eecb23.6:
-	.quad	.Lanon.e1b5db914fe3a57d7d2dc395a5eecb23.5
+.Lanon.f4f97c4ad9ffb22f4a5beca49d7641b1.6:
+	.quad	.Lanon.f4f97c4ad9ffb22f4a5beca49d7641b1.5
 	.asciz	"\023\000\000\000\000\000\000\000\037\000\000\000\t\000\000"
-	.size	.Lanon.e1b5db914fe3a57d7d2dc395a5eecb23.6, 24
+	.size	.Lanon.f4f97c4ad9ffb22f4a5beca49d7641b1.6, 24
 
-	.type	.Lanon.e1b5db914fe3a57d7d2dc395a5eecb23.7,@object
-	.section	.data.rel.ro..Lanon.e1b5db914fe3a57d7d2dc395a5eecb23.7,"aw",@progbits
+	.type	.Lanon.f4f97c4ad9ffb22f4a5beca49d7641b1.7,@object
+	.section	.data.rel.ro..Lanon.f4f97c4ad9ffb22f4a5beca49d7641b1.7,"aw",@progbits
 	.p2align	3, 0x0
-.Lanon.e1b5db914fe3a57d7d2dc395a5eecb23.7:
-	.quad	.Lanon.e1b5db914fe3a57d7d2dc395a5eecb23.5
+.Lanon.f4f97c4ad9ffb22f4a5beca49d7641b1.7:
+	.quad	.Lanon.f4f97c4ad9ffb22f4a5beca49d7641b1.5
 	.asciz	"\023\000\000\000\000\000\000\000(\000\000\000\t\000\000"
-	.size	.Lanon.e1b5db914fe3a57d7d2dc395a5eecb23.7, 24
+	.size	.Lanon.f4f97c4ad9ffb22f4a5beca49d7641b1.7, 24
 
-	.type	.Lanon.e1b5db914fe3a57d7d2dc395a5eecb23.8,@object
-	.section	.data.rel.ro..Lanon.e1b5db914fe3a57d7d2dc395a5eecb23.8,"aw",@progbits
+	.type	.Lanon.f4f97c4ad9ffb22f4a5beca49d7641b1.8,@object
+	.section	.data.rel.ro..Lanon.f4f97c4ad9ffb22f4a5beca49d7641b1.8,"aw",@progbits
 	.p2align	3, 0x0
-.Lanon.e1b5db914fe3a57d7d2dc395a5eecb23.8:
-	.quad	.Lanon.e1b5db914fe3a57d7d2dc395a5eecb23.5
+.Lanon.f4f97c4ad9ffb22f4a5beca49d7641b1.8:
+	.quad	.Lanon.f4f97c4ad9ffb22f4a5beca49d7641b1.5
 	.asciz	"\023\000\000\000\000\000\000\000\t\000\000\000\027\000\000"
-	.size	.Lanon.e1b5db914fe3a57d7d2dc395a5eecb23.8, 24
+	.size	.Lanon.f4f97c4ad9ffb22f4a5beca49d7641b1.8, 24
 
-	.type	.Lanon.e1b5db914fe3a57d7d2dc395a5eecb23.9,@object
-	.section	.rodata..Lanon.e1b5db914fe3a57d7d2dc395a5eecb23.9,"a",@progbits
-.Lanon.e1b5db914fe3a57d7d2dc395a5eecb23.9:
+	.type	.Lanon.f4f97c4ad9ffb22f4a5beca49d7641b1.9,@object
+	.section	.rodata..Lanon.f4f97c4ad9ffb22f4a5beca49d7641b1.9,"a",@progbits
+.Lanon.f4f97c4ad9ffb22f4a5beca49d7641b1.9:
 	.ascii	"Invalid implementation!"
-	.size	.Lanon.e1b5db914fe3a57d7d2dc395a5eecb23.9, 23
+	.size	.Lanon.f4f97c4ad9ffb22f4a5beca49d7641b1.9, 23
 
-	.globl	<optional_trait_methods::using_options::targets::faulty::FaultyTarget as optional_trait_methods::using_options::target::Target>::mul
-	.type	<optional_trait_methods::using_options::targets::faulty::FaultyTarget as optional_trait_methods::using_options::target::Target>::mul,@function
-<optional_trait_methods::using_options::targets::faulty::FaultyTarget as optional_trait_methods::using_options::target::Target>::mul = <optional_trait_methods::using_options::targets::faulty::FaultyTarget as optional_trait_methods::using_options::target::Target>::scale_factor
+	.globl	<optional_trait_methods::using_opt_result::targets::faulty::FaultyTarget as optional_trait_methods::using_opt_result::target::Target>::mul
+	.type	<optional_trait_methods::using_opt_result::targets::faulty::FaultyTarget as optional_trait_methods::using_opt_result::target::Target>::mul,@function
+<optional_trait_methods::using_opt_result::targets::faulty::FaultyTarget as optional_trait_methods::using_opt_result::target::Target>::mul = <optional_trait_methods::using_opt_result::targets::faulty::FaultyTarget as optional_trait_methods::using_opt_result::target::Target>::scale_factor
 	.ident	"rustc version 1.97.0-nightly (9ec5d5f32 2026-04-21)"
 	.section	".note.GNU-stack","",@progbits

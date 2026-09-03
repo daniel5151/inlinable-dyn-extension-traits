@@ -16,9 +16,9 @@ core::cfg_select! {
         mod using_is_supported;
         use using_is_supported::*;
     }
-    feature = "using_options" => {
-        mod using_options;
-        use using_options::*;
+    feature = "using_opt_result" => {
+        mod using_opt_result;
+        use using_opt_result::*;
     }
     feature = "using_fn" => {
         mod using_fn;
@@ -78,7 +78,7 @@ pub extern "C" fn run_optional_trait_methods() -> libc::c_int {
 
         if let Err(error) = result {
             core::cfg_select! {
-                feature = "using_options" => {
+                feature = "using_opt_result" => {
                     match error {
                         Error::Target(error) => crate::println_str!(error),
                         Error::InvalidImpl => crate::println_str!("Invalid implementation!"),

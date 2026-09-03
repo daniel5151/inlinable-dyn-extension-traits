@@ -84,7 +84,7 @@ if ((${#target_triples[@]} == 0)); then
     target_triples+=("$host_triple")
 fi
 
-implementations=(cfg_gates is_supported options fn traits try_as_dyn)
+implementations=(cfg_gates is_supported opt_result fn traits try_as_dyn)
 targets=(basic advanced faulty)
 modes=(noinline inlined)
 installed_targets=$(rustup target list --installed)

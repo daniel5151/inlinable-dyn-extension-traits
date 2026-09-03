@@ -212,7 +212,7 @@ It's biggest cons are that it lacks a lot of compile-time safety...
     -   if the `_supported` method is implemented, but the corresponding method isn't overwritten, there will be a error at runtime
         -   panic machinery is expensive on embedded systems, and is yucky
 
-## 2. Using Options
+## 2. Using `OptResult`
 
 ```rust
 pub trait Target {
@@ -228,13 +228,13 @@ pub trait Target {
 }
 ```
 
-### Using Bare `Option<Result<T, E>>`
+### Starting with Bare `Option<Result<T, E>>`
 
 i.e: call the method, and if it returns `None`, then it wasn't implemented.
 
 Biggest con: it's impossible to query if a method exists without invoking it. This makes "probing" operations on difficult, as operations need to have an "inverse"
 
-### Faking it with `OptResult<T, E>`
+### Encoding the Third State with `OptResult<T, E>`
 
 One con is that it uses a non-standard return type, which breaks the `?` operator in function body. With a bit of type-system shenanigans, this can be somewhat worked around:
 
@@ -656,11 +656,11 @@ Every technique except for `cargo` features, specialization, and pure `try_as_dy
 
 #### Easy for API consumers to understand + implement
 
-|                                                    | `cargo` Features | `is_supported` | Options | Fn Pointers | IDETs | `try_as_dyn` | Specialization |
-| -------------------------------------------------- | ---------------- | -------------- | ------- | ----------- | ----- | ------------ | -------------- |
-| Looks like a "typical" Rust API                    | ✔️                | ✔️              | ✔️\*     | ❌           | ➖     | ✔️            | ✔️              |
-| Uses "standard" method signatures                  | ✔️                | ✔️              | ❌       | ✔️           | ✔️     | ✔️            | ✔️              |
-| Single "source of truth" for method implementation | ✔️                | ❌              | ✔️       | ❌\*\*       | ❌\*\* | ✔️            | ✔️              |
+|                                                    | `cargo` Features | `is_supported` | `OptResult` | Fn Pointers | IDETs | `try_as_dyn` | Specialization |
+| -------------------------------------------------- | ---------------- | -------------- | ----------- | ----------- | ----- | ------------ | -------------- |
+| Looks like a "typical" Rust API                    | ✔️                | ✔️              | ✔️\*         | ❌           | ➖     | ✔️            | ✔️              |
+| Uses "standard" method signatures                  | ✔️                | ✔️              | ❌           | ✔️           | ✔️     | ✔️            | ✔️              |
+| Single "source of truth" for method implementation | ✔️                | ❌              | ✔️           | ❌\*\*       | ❌\*\* | ✔️            | ✔️              |
 
 \* The `OptResult` type could be a source of confusion
 
@@ -668,21 +668,21 @@ Every technique except for `cargo` features, specialization, and pure `try_as_dy
 
 #### Easy for API authors to work with + maintain
 
-|                                             | `cargo` Features | `is_supported` | Options | Fn Pointers | IDETs | `try_as_dyn` | Specialization |
-| ------------------------------------------- | ---------------- | -------------- | ------- | ----------- | ----- | ------------ | -------------- |
-| Minimal boilerplate to invoke a method      | ✔️                | ➖              | ❌       | ➖           | ➖     | ✔️            | ✔️              |
-| Check if method exists _before_ invoking it | N/A              | ✔️              | ❌       | ✔️           | ✔️     | ✔️            | N/A            |
-| Easy to handle the "missing method" case    | ✔️                | ✔️              | ❌       | ✔️           | ✔️     | ✔️            | ✔️              |
+|                                             | `cargo` Features | `is_supported` | `OptResult` | Fn Pointers | IDETs | `try_as_dyn` | Specialization |
+| ------------------------------------------- | ---------------- | -------------- | ----------- | ----------- | ----- | ------------ | -------------- |
+| Minimal boilerplate to invoke a method      | ✔️                | ➖              | ❌           | ➖           | ➖     | ✔️            | ✔️              |
+| Check if method exists _before_ invoking it | N/A              | ✔️              | ❌           | ✔️           | ✔️     | ✔️            | N/A            |
+| Easy to handle the "missing method" case    | ✔️                | ✔️              | ❌           | ✔️           | ✔️     | ✔️            | ✔️              |
 
 #### Compile-time safety + performance
 
 "If it compiles, it's a valid implementation"
 
-|                                         | `cargo` Features | `is_supported` | Options | Fn Pointers | IDETs | `try_as_dyn` | Specialization |
-| --------------------------------------- | ---------------- | -------------- | ------- | ----------- | ----- | ------------ | -------------- |
-| Compile-time Mutually-Dependent methods | ✔️                | ❌              | ❌       | ✔️           | ✔️     | ✔️            | ✔️              |
-| Compile-time Mutually-Exclusive methods | ✔️                | ❌              | ❌       | ✔️           | ✔️\*   | ✔️\*          | ❔              |
-| Ensures effective dead-code-elimination | ✔️++              | ✔️\*\*          | ❌       | ✔️\*\*       | ✔️\*\* | ✔️\*\*        | ✔️              |
+|                                         | `cargo` Features | `is_supported` | `OptResult` | Fn Pointers | IDETs | `try_as_dyn` | Specialization |
+| --------------------------------------- | ---------------- | -------------- | ----------- | ----------- | ----- | ------------ | -------------- |
+| Compile-time Mutually-Dependent methods | ✔️                | ❌              | ❌           | ✔️           | ✔️     | ✔️            | ✔️              |
+| Compile-time Mutually-Exclusive methods | ✔️                | ❌              | ❌           | ✔️           | ✔️\*   | ✔️\*          | ❔              |
+| Ensures effective dead-code-elimination | ✔️++              | ✔️\*\*          | ❌           | ✔️\*\*       | ✔️\*\* | ✔️\*\*        | ✔️              |
 
 \* Assuming the implementation adheres to conventions and is not "adversarial"
 
@@ -823,7 +823,7 @@ devirtualization turn that `is_some()` check into a constant `false`. At that
 point, LLVM can throw away the `+`, `-`, and `+-` parsing paths, along with the
 handlers they lead to.
 
-Bare `Option`s aren't so lucky. Since they can't report that a method is
+`OptResult` handlers aren't so lucky. Since they can't report that a method is
 missing until after it's invoked, the parser has to **speculatively parse**
 every command and discover the missing capability during dispatch. That means
 the unused parser paths stick around even when target support is statically
@@ -839,19 +839,19 @@ what LLVM throws away for each target:
 | **`parse_command`**                            |                                                                   |                                                             |                                        |
 | • `cfg_gates`                                  | **22 instrs**<br>• **100% DCE** of enum variants & parser         | **50 instrs**<br>• Selective DCE of `Mul` and `ScaleFactor` | **90 instrs**<br>• Full parser         |
 | • `is_supported` / `traits` / `fn` / `try_dyn` | **26 instrs**<br>• **100% DCE** of `IncDec`, `Mul`, `ScaleFactor` | **50 instrs**<br>• Selective DCE of `Mul` and `ScaleFactor` | **90–91 instrs**<br>• Full parser      |
-| • `options`                                    | **90 instrs**<br>• Zero DCE (speculative parse)                   | **90 instrs**<br>• Zero DCE (speculative parse)             | **90 instrs**<br>• Full parser         |
+| • `opt_result`                                 | **90 instrs**<br>• Zero DCE (speculative parse)                   | **90 instrs**<br>• Zero DCE (speculative parse)             | **90 instrs**<br>• Full parser         |
 | **`handle`**                                   |                                                                   |                                                             |                                        |
 | • `cfg_gates`                                  | **9 instrs**<br>• Omits unneeded match arms                       | **32 instrs**<br>• Selective DCE of handlers                | **58 instrs**<br>• Full handler        |
 | • `traits` / `fn` / `try_dyn`                  | **24 instrs**<br>• DCE of extension handlers                      | **42 instrs**<br>• Selective DCE of handlers                | **62 instrs**<br>• Full handler        |
 | • `is_supported`                               | **35 instrs**<br>• Retains more fallback handling                 | **50 instrs**<br>• Selective DCE of handlers                | **58 instrs**<br>• Full handler        |
-| • `options`                                    | **45 instrs**<br>• Retains extension branches                     | **73 instrs**<br>• Retains extension branches               | **107 instrs**<br>• Full handler       |
+| • `opt_result`                                 | **45 instrs**<br>• Retains extension branches                     | **73 instrs**<br>• Retains extension branches               | **107 instrs**<br>• Full handler       |
 
 The important bit: when support is known for a concrete target, every
 capability-gated approach lets LLVM remove both the unused parser and its
-handler. `using_options` can't check support before parsing, so it keeps the
+handler. `using_opt_result` can't check support before parsing, so it keeps the
 full 90-instruction parser even for `BasicTarget`.
 
-Why does `using_options` also have such a large `handle`? Its `OptResult`
+Why does `using_opt_result` also have such a large `handle`? Its `OptResult`
 return values still need to be unpacked and checked at runtime, including the
 `InvalidImpl` case for the `(inc, dec)` pair. That leaves it with 107 x86
 instructions on `AdvancedTarget`, versus 58–62 for the capability-gated
@@ -869,7 +869,7 @@ are disabled. This lets us check that the inspection helpers aren't somehow
 "faking" the DCE result:
 
 - **`basic_traits.s` / `basic_fn.s` (Inlined)**: LLVM completely deletes all parsing byte checks for `+`, `-`, `+-`, `*`, `*~`, and their associated parser paths. The selected x86 run loop is **114 instructions**.
-- **`basic_options.s` (Inlined)**: Lacking capability pre-checks, LLVM retains speculative parsing branches. The selected x86 run loop is **246 instructions**.
+- **`basic_opt_result.s` (Inlined)**: Lacking capability pre-checks, LLVM retains speculative parsing branches. The selected x86 run loop is **246 instructions**.
 
 So the DCE still works end-to-end once all the inspection-only annotations are
 removed. One caveat: these listings come from an `rlib`, so the size of the
@@ -904,7 +904,7 @@ The following results were measured on the current AArch64 macOS host using 1,00
 | :------------- | :--------------------------------------- | :---------------------------------------- |
 | `cfg_gates`    | 127.54 ms ± 4.77 ms (120.90 … 144.01 ms) | 128.32 ms ± 5.26 ms (121.51 … 151.59 ms)  |
 | `is_supported` | 132.00 ms ± 4.99 ms (120.28 … 141.89 ms) | 129.62 ms ± 3.40 ms (123.19 … 135.81 ms)  |
-| `options`      | 132.09 ms ± 3.34 ms (126.07 … 136.41 ms) | 135.74 ms ± 7.77 ms (125.98 … 162.52 ms)  |
+| `opt_result`   | 132.09 ms ± 3.34 ms (126.07 … 136.41 ms) | 135.74 ms ± 7.77 ms (125.98 … 162.52 ms)  |
 | `fn`           | 131.31 ms ± 3.44 ms (121.36 … 137.62 ms) | 148.04 ms ± 20.49 ms (123.29 … 209.06 ms) |
 | `traits`       | 132.58 ms ± 3.33 ms (126.52 … 137.73 ms) | 163.34 ms ± 24.75 ms (130.64 … 227.52 ms) |
 | `try_as_dyn`   | 139.52 ms ± 7.45 ms (126.62 … 164.04 ms) | 145.25 ms ± 13.42 ms (130.21 … 176.07 ms) |
@@ -915,7 +915,7 @@ The following results were measured on the current AArch64 macOS host using 1,00
 | :------------- | :------------------------------------ | :------------------------------------ |
 | `cfg_gates`    | 17.06 ms ± 2.12 ms (15.08 … 22.05 ms) | 16.77 ms ± 1.69 ms (15.24 … 21.06 ms) |
 | `is_supported` | 16.98 ms ± 1.79 ms (14.88 … 20.57 ms) | 17.94 ms ± 5.98 ms (15.11 … 47.86 ms) |
-| `options`      | 16.47 ms ± 1.94 ms (14.95 … 20.68 ms) | 16.83 ms ± 2.07 ms (14.86 … 21.43 ms) |
+| `opt_result`   | 16.47 ms ± 1.94 ms (14.95 … 20.68 ms) | 16.83 ms ± 2.07 ms (14.86 … 21.43 ms) |
 | `fn`           | 16.73 ms ± 1.90 ms (14.99 … 20.58 ms) | 16.98 ms ± 2.35 ms (15.20 … 25.34 ms) |
 | `traits`       | 16.53 ms ± 1.91 ms (14.87 … 20.51 ms) | 16.18 ms ± 1.51 ms (14.66 … 20.20 ms) |
 | `try_as_dyn`   | 16.70 ms ± 2.07 ms (14.89 … 21.54 ms) | 16.86 ms ± 2.51 ms (14.76 … 25.30 ms) |
@@ -928,7 +928,7 @@ benchmark—I wouldn't pin the difference on any one call or branch.
 
 Release mode is the more interesting result: it's basically a wash. LLVM
 reduces most approaches to nearly the same hot loop, the apparent winner flips
-from `options` to IDETs when the order is reversed, and most of the
+from `opt_result` to IDETs when the order is reversed, and most of the
 distributions overlap. The reverse `is_supported` result also contains a large
 outlier. The stable result here is the codegen / DCE comparison above, not a
 claim that one approach is universally a few percent faster than another.

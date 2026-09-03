@@ -29,9 +29,9 @@ impl<T: Target> TargetController<T> {
     // symbol in `asm/noinline/<target-triple>/`.
     //
     // Unlike IDETs (`using_traits`) and Fn Pointers (`using_fn`), the
-    // `using_options` pattern does NOT provide capability-query methods on
+    // `using_opt_result` pattern does NOT provide capability-query methods on
     // `Target` (e.g. `target.ext_incdec()`). Instead, methods return
-    // `Option`/`OptResult` directly when invoked.
+    // `OptResult` directly when invoked.
     //
     // As a result, packet parsing CANNOT be guarded on target feature support
     // before parsing. The parser MUST speculatively parse all incoming packets,

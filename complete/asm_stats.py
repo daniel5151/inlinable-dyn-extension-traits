@@ -20,7 +20,7 @@ from pathlib import Path
 IMPLEMENTATIONS = (
     "cfg_gates",
     "is_supported",
-    "options",
+    "opt_result",
     "fn",
     "traits",
     "try_as_dyn",

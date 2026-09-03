@@ -6,7 +6,7 @@ cd "$script_dir"
 
 cargo fmt --all --check
 
-implementations=(cfg_gates is_supported options fn traits try_as_dyn)
+implementations=(cfg_gates is_supported opt_result fn traits try_as_dyn)
 targets=(basic advanced faulty)
 
 sanity_dir=$(mktemp -d "${TMPDIR:-/tmp}/optional-trait-methods-sanity.XXXXXX")

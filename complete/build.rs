@@ -23,7 +23,7 @@ fn main() {
 
     let using_cfg_gates = feature_enabled("CARGO_FEATURE_USING_CFG_GATES");
     let using_is_supported = feature_enabled("CARGO_FEATURE_USING_IS_SUPPORTED");
-    let using_options = feature_enabled("CARGO_FEATURE_USING_OPTIONS");
+    let using_opt_result = feature_enabled("CARGO_FEATURE_USING_OPT_RESULT");
     let using_fn = feature_enabled("CARGO_FEATURE_USING_FN");
     let using_traits = feature_enabled("CARGO_FEATURE_USING_TRAITS");
     let using_try_as_dyn = feature_enabled("CARGO_FEATURE_USING_TRY_AS_DYN");
@@ -37,7 +37,7 @@ fn main() {
         &[
             using_cfg_gates,
             using_is_supported,
-            using_options,
+            using_opt_result,
             using_fn,
             using_traits,
             using_try_as_dyn,

@@ -107,9 +107,9 @@ _optional_trait_methods::print_macros::write_line:
 	mov	x29, sp
 	bl	_optional_trait_methods::print_macros::write_all
 Lloh0:
-	adrp	x0, l_anon.840f49e50aaf92573d45c9604e9b0f53.4@PAGE
+	adrp	x0, l_anon.5b857e6d40c72107e9f7f4ae5ba06420.4@PAGE
 Lloh1:
-	add	x0, x0, l_anon.840f49e50aaf92573d45c9604e9b0f53.4@PAGEOFF
+	add	x0, x0, l_anon.5b857e6d40c72107e9f7f4ae5ba06420.4@PAGEOFF
 	mov	w1, #1
 	ldp	x29, x30, [sp], #16
 	b	_optional_trait_methods::print_macros::write_all
@@ -163,18 +163,18 @@ LBB4_7:
 	ret
 LBB4_8:
 Lloh2:
-	adrp	x2, l_anon.840f49e50aaf92573d45c9604e9b0f53.6@PAGE
+	adrp	x2, l_anon.5b857e6d40c72107e9f7f4ae5ba06420.6@PAGE
 Lloh3:
-	add	x2, x2, l_anon.840f49e50aaf92573d45c9604e9b0f53.6@PAGEOFF
+	add	x2, x2, l_anon.5b857e6d40c72107e9f7f4ae5ba06420.6@PAGEOFF
 LBB4_9:
 	mov	x0, #-1
 	mov	w1, #32
 	bl	_core::panicking::panic_bounds_check
 LBB4_10:
 Lloh4:
-	adrp	x2, l_anon.840f49e50aaf92573d45c9604e9b0f53.7@PAGE
+	adrp	x2, l_anon.5b857e6d40c72107e9f7f4ae5ba06420.7@PAGE
 Lloh5:
-	add	x2, x2, l_anon.840f49e50aaf92573d45c9604e9b0f53.7@PAGEOFF
+	add	x2, x2, l_anon.5b857e6d40c72107e9f7f4ae5ba06420.7@PAGEOFF
 	b	LBB4_9
 	.loh AdrpAdd	Lloh2, Lloh3
 	.loh AdrpAdd	Lloh4, Lloh5
@@ -205,9 +205,9 @@ LBB5_5:
 	ret
 LBB5_6:
 Lloh6:
-	adrp	x3, l_anon.840f49e50aaf92573d45c9604e9b0f53.8@PAGE
+	adrp	x3, l_anon.5b857e6d40c72107e9f7f4ae5ba06420.8@PAGE
 Lloh7:
-	add	x3, x3, l_anon.840f49e50aaf92573d45c9604e9b0f53.8@PAGEOFF
+	add	x3, x3, l_anon.5b857e6d40c72107e9f7f4ae5ba06420.8@PAGEOFF
 	mov	x1, x19
 	mov	x2, x19
 	bl	_core::slice::index::slice_index_fail
@@ -220,66 +220,40 @@ _<optional_trait_methods::line_reader::LineReader as core::default::Default>::de
 	mov	w1, #1040
 	b	_bzero
 
-	.globl	_<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::scale_factor
+	.globl	_<optional_trait_methods::using_opt_result::targets::faulty::FaultyTarget as optional_trait_methods::using_opt_result::target::Target>::inc
 	.p2align	2
-_<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::scale_factor:
-	str	x1, [x0, #8]
-	str	xzr, [x8]
-	ret
-
-	.globl	_<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::dec
-	.p2align	2
-_<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::dec:
-	ldr	x9, [x0]
-	sub	x9, x9, #1
-	str	x9, [x0]
-	str	xzr, [x8]
-	ret
-
-	.globl	_<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::inc
-	.p2align	2
-_<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::inc:
+_<optional_trait_methods::using_opt_result::targets::faulty::FaultyTarget as optional_trait_methods::using_opt_result::target::Target>::inc:
 	ldr	x9, [x0]
 	add	x9, x9, #1
 	str	x9, [x0]
 	str	xzr, [x8]
 	ret
 
-	.globl	_<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::mul
+	.globl	_<optional_trait_methods::using_opt_result::targets::faulty::FaultyTarget as optional_trait_methods::using_opt_result::target::Target>::get_state
 	.p2align	2
-_<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::mul:
-	cmp	x1, #7
-	b.ne	LBB10_2
-Lloh8:
-	adrp	x9, l_anon.840f49e50aaf92573d45c9604e9b0f53.9@PAGE
-Lloh9:
-	add	x9, x9, l_anon.840f49e50aaf92573d45c9604e9b0f53.9@PAGEOFF
-	mov	w10, #28
-	stp	x9, x10, [x8, #8]
-	mov	w9, #1
-	b	LBB10_3
-LBB10_2:
-	mov	x9, #0
-	ldp	x11, x10, [x0]
-	mul	x10, x10, x1
-	mul	x10, x10, x11
-	str	x10, [x0]
-LBB10_3:
-	str	x9, [x8]
-	ret
-	.loh AdrpAdd	Lloh8, Lloh9
-
-	.globl	_<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::get_state
-	.p2align	2
-_<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::get_state:
+_<optional_trait_methods::using_opt_result::targets::faulty::FaultyTarget as optional_trait_methods::using_opt_result::target::Target>::get_state:
 	ldr	x0, [x0]
 	ret
 
-	.globl	_<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::set_state
+	.globl	_<optional_trait_methods::using_opt_result::targets::faulty::FaultyTarget as optional_trait_methods::using_opt_result::target::Target>::set_state
 	.p2align	2
-_<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::set_state:
+_<optional_trait_methods::using_opt_result::targets::faulty::FaultyTarget as optional_trait_methods::using_opt_result::target::Target>::set_state:
 	str	x1, [x0]
 	mov	x0, #0
+	ret
+
+	.globl	_<optional_trait_methods::using_opt_result::targets::faulty::FaultyTarget as optional_trait_methods::using_opt_result::target::Target>::scale_factor
+	.p2align	2
+_<optional_trait_methods::using_opt_result::targets::faulty::FaultyTarget as optional_trait_methods::using_opt_result::target::Target>::scale_factor:
+	mov	w9, #1
+	stp	x9, xzr, [x8]
+	ret
+
+	.globl	_<optional_trait_methods::using_opt_result::targets::faulty::FaultyTarget as optional_trait_methods::using_opt_result::target::Target>::dec
+	.p2align	2
+_<optional_trait_methods::using_opt_result::targets::faulty::FaultyTarget as optional_trait_methods::using_opt_result::target::Target>::dec:
+	mov	w9, #1
+	stp	x9, xzr, [x8]
 	ret
 
 	.globl	_run_optional_trait_methods
@@ -293,153 +267,148 @@ _run_optional_trait_methods:
 	add	x29, sp, #64
 	sub	sp, sp, #1216
 	str	xzr, [sp]
-	mov	w8, #1
-	stp	xzr, x8, [sp]
+	sub	x20, x29, #224
+	str	xzr, [sp, #8]
 	add	x0, sp, #16
 	mov	w1, #1040
 	bl	_bzero
 	movi.2d	v0, #0000000000000000
-	stp	q0, q0, [x29, #-128]
-	stp	q0, q0, [x29, #-160]
-	stp	q0, q0, [x29, #-192]
+	stp	q0, q0, [x20, #96]
+	stp	q0, q0, [x20, #64]
+	stp	q0, q0, [x20, #32]
 	mov	w21, #11563
-Lloh10:
-	adrp	x19, l_anon.840f49e50aaf92573d45c9604e9b0f53.3@PAGE
-Lloh11:
-	add	x19, x19, l_anon.840f49e50aaf92573d45c9604e9b0f53.3@PAGEOFF
+Lloh8:
+	adrp	x19, l_anon.5b857e6d40c72107e9f7f4ae5ba06420.3@PAGE
+Lloh9:
+	add	x19, x19, l_anon.5b857e6d40c72107e9f7f4ae5ba06420.3@PAGEOFF
 	mov	w22, #8234
 	mov	w23, #32298
 	mov	w24, #10
 	mov	w25, #8307
-	stp	q0, q0, [x29, #-224]
-LBB13_1:
+	stp	q0, q0, [x20]
+LBB12_1:
 	add	x0, sp, #16
 	sub	x1, x29, #224
 	mov	w2, #128
 	bl	_<optional_trait_methods::line_reader::LineReader>::read_line
-	cbz	x0, LBB13_86
-	cbz	x1, LBB13_1
+	cbz	x0, LBB12_79
+	cbz	x1, LBB12_1
 	subs	x8, x1, #2
-	b.eq	LBB13_9
+	b.eq	LBB12_9
 	cmp	x1, #1
-	b.ne	LBB13_11
+	b.ne	LBB12_11
 	ldrb	w8, [x0]
 	cmp	w8, #112
-	b.eq	LBB13_28
+	b.eq	LBB12_26
 	cmp	w8, #45
-	b.eq	LBB13_16
+	b.eq	LBB12_16
 	cmp	w8, #43
-	b.ne	LBB13_66
+	b.ne	LBB12_63
 	and	x20, x20, #0xffffffffffffff00
-	b	LBB13_17
-LBB13_9:
+	b	LBB12_17
+LBB12_9:
 	ldrh	w9, [x0]
 	cmp	w9, w21
-	b.ne	LBB13_11
+	b.ne	LBB12_11
 	and	x8, x20, #0xffffffffffffff00
 	orr	x20, x8, #0x2
-	b	LBB13_17
-LBB13_11:
+	b	LBB12_17
+LBB12_11:
 	ldrh	w9, [x0]
 	cmp	w9, w22
 	ccmp	x8, #0, #4, eq
-	b.ne	LBB13_13
-LBB13_12:
+	b.ne	LBB12_13
+LBB12_12:
 	subs	x9, x1, #3
-	b.hs	LBB13_43
-	b	LBB13_44
-LBB13_13:
+	b.hs	LBB12_41
+	b	LBB12_42
+LBB12_13:
 	mov	x9, x0
 	ldrb	w10, [x9, #2]!
 	cmp	w10, #45
-	b.eq	LBB13_29
+	b.eq	LBB12_27
 	cmp	w10, #43
-	b.ne	LBB13_32
+	b.ne	LBB12_30
 	mov	w10, #0
-	b	LBB13_30
-LBB13_16:
+	b	LBB12_28
+LBB12_16:
 	and	x8, x20, #0xffffffffffffff00
 	orr	x20, x8, #0x1
-LBB13_17:
+LBB12_17:
 	mov	w8, #2
-LBB13_18:
+LBB12_18:
 	cmp	x8, #0
 	cset	w9, ne
 	sub	x9, x8, x9
 	cmp	x9, #1
-	b.gt	LBB13_22
-	cbnz	x9, LBB13_24
-	mov	x0, sp
-	tbz	w8, #0, LBB13_41
+	b.gt	LBB12_22
+	cbnz	x9, LBB12_23
+	add	x0, sp, #8
+	tbz	w8, #0, LBB12_39
 	mov	x1, x20
-	bl	_<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::set_state
-	b	LBB13_1
-LBB13_22:
-	sub	x8, x29, #88
-	mov	x0, sp
-	mov	x1, x20
+	bl	_<optional_trait_methods::using_opt_result::targets::faulty::FaultyTarget as optional_trait_methods::using_opt_result::target::Target>::set_state
+	b	LBB12_1
+LBB12_22:
 	cmp	x9, #2
-	b.ne	LBB13_27
-	bl	_<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::mul
-	b	LBB13_64
-LBB13_24:
+	b	LBB12_63
+LBB12_23:
 	ands	w8, w20, #0xff
-	b.eq	LBB13_63
+	b.eq	LBB12_61
 	cmp	w8, #1
-	b.ne	LBB13_67
+	b.eq	LBB12_63
 	sub	x8, x29, #88
-	mov	x0, sp
-	bl	_<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::dec
-	b	LBB13_64
-LBB13_27:
-	bl	_<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::scale_factor
-	b	LBB13_64
-LBB13_28:
+	add	x0, sp, #8
+	bl	_<optional_trait_methods::using_opt_result::targets::faulty::FaultyTarget as optional_trait_methods::using_opt_result::target::Target>::inc
+	ldur	x8, [x29, #-88]
+	cmp	x8, #1
+	b.eq	LBB12_62
+	b	LBB12_77
+LBB12_26:
 	mov	x8, #0
-	b	LBB13_18
-LBB13_29:
+	b	LBB12_18
+LBB12_27:
 	mov	w10, #1
-LBB13_30:
+LBB12_28:
 	sub	x11, x1, #3
-	cbz	x11, LBB13_42
+	cbz	x11, LBB12_40
 	add	x9, x9, #1
-	b	LBB13_33
-LBB13_32:
+	b	LBB12_31
+LBB12_30:
 	mov	w10, #0
 	mov	x11, x8
-LBB13_33:
+LBB12_31:
 	mov	x12, #0
-LBB13_34:
+LBB12_32:
 	ldrb	w13, [x9], #1
 	sub	w13, w13, #48
 	cmp	w13, #9
-	b.hi	LBB13_12
+	b.hi	LBB12_12
 	smulh	x14, x12, x24
 	add	x12, x12, x12, lsl #2
 	lsl	x12, x12, #1
 	cmp	x14, x12, asr #63
-	b.ne	LBB13_12
+	b.ne	LBB12_12
 	and	x13, x13, #0xff
-	tbz	w10, #0, LBB13_38
+	tbz	w10, #0, LBB12_36
 	subs	x12, x12, x13
-	b.vs	LBB13_12
-	b	LBB13_39
-LBB13_38:
+	b.vs	LBB12_12
+	b	LBB12_37
+LBB12_36:
 	adds	x12, x12, x13
-	b.vs	LBB13_12
-LBB13_39:
+	b.vs	LBB12_12
+LBB12_37:
 	subs	x11, x11, #1
-	b.ne	LBB13_34
+	b.ne	LBB12_32
 	mov	x20, x12
 	mov	w8, #3
-	b	LBB13_18
-LBB13_41:
-	bl	_<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::get_state
+	b	LBB12_18
+LBB12_39:
+	bl	_<optional_trait_methods::using_opt_result::targets::faulty::FaultyTarget as optional_trait_methods::using_opt_result::target::Target>::get_state
 	bl	_optional_trait_methods::print_macros::write_isize_line
-	b	LBB13_1
-LBB13_42:
+	b	LBB12_1
+LBB12_40:
 	mov	x9, #0
-LBB13_43:
+LBB12_41:
 	ldrh	w10, [x0]
 	eor	w10, w10, w23
 	ldrb	w11, [x0, #2]
@@ -447,142 +416,125 @@ LBB13_43:
 	orr	w10, w10, w11
 	cmp	w10, #0
 	ccmp	x9, #0, #4, eq
-	b.ne	LBB13_48
-LBB13_44:
+	b.ne	LBB12_46
+LBB12_42:
 	ldrh	w9, [x0]
 	cmp	w9, w25
 	ccmp	x8, #0, #4, eq
-	b.eq	LBB13_66
+	b.eq	LBB12_63
 	ldrb	w9, [x0, #2]!
 	cmp	w9, #45
-	b.eq	LBB13_51
+	b.eq	LBB12_49
 	cmp	w9, #43
-	b.ne	LBB13_54
+	b.ne	LBB12_52
 	mov	w9, #0
-	b	LBB13_52
-LBB13_48:
+	b	LBB12_50
+LBB12_46:
 	mov	x10, x0
 	ldrb	w11, [x10, #3]!
 	cmp	w11, #45
-	b.eq	LBB13_70
+	b.eq	LBB12_64
 	cmp	w11, #43
-	b.ne	LBB13_73
+	b.ne	LBB12_67
 	mov	w11, #0
-	b	LBB13_71
-LBB13_51:
+	b	LBB12_65
+LBB12_49:
 	mov	w9, #1
-LBB13_52:
+LBB12_50:
 	sub	x8, x1, #3
-	cbz	x8, LBB13_66
+	cbz	x8, LBB12_63
 	add	x0, x0, #1
-	b	LBB13_55
-LBB13_54:
+	b	LBB12_53
+LBB12_52:
 	mov	w9, #0
-LBB13_55:
+LBB12_53:
 	mov	x10, #0
-LBB13_56:
+LBB12_54:
 	ldrb	w11, [x0], #1
 	sub	w11, w11, #48
 	cmp	w11, #9
-	b.hi	LBB13_66
+	b.hi	LBB12_63
 	smulh	x12, x10, x24
 	add	x10, x10, x10, lsl #2
 	lsl	x10, x10, #1
 	cmp	x12, x10, asr #63
-	b.ne	LBB13_66
+	b.ne	LBB12_63
 	and	x11, x11, #0xff
-	tbz	w9, #0, LBB13_60
+	tbz	w9, #0, LBB12_58
 	subs	x10, x10, x11
-	b.vs	LBB13_66
-	b	LBB13_61
-LBB13_60:
+	b.vs	LBB12_63
+	b	LBB12_59
+LBB12_58:
 	adds	x10, x10, x11
-	b.vs	LBB13_66
-LBB13_61:
+	b.vs	LBB12_63
+LBB12_59:
 	subs	x8, x8, #1
-	b.ne	LBB13_56
+	b.ne	LBB12_54
 	mov	x20, x10
 	mov	w8, #1
-	b	LBB13_18
-LBB13_63:
+	b	LBB12_18
+LBB12_61:
 	sub	x8, x29, #88
-	mov	x0, sp
-	bl	_<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::inc
-LBB13_64:
+	add	x0, sp, #8
+	bl	_<optional_trait_methods::using_opt_result::targets::faulty::FaultyTarget as optional_trait_methods::using_opt_result::target::Target>::inc
 	ldur	w8, [x29, #-88]
-	tbz	w8, #0, LBB13_1
-LBB13_65:
+	tbz	w8, #0, LBB12_1
+LBB12_62:
 	ldur	x0, [x29, #-80]
-	cbnz	x0, LBB13_84
-LBB13_66:
+	cbnz	x0, LBB12_76
+LBB12_63:
 	mov	x0, x19
 	mov	w1, #16
 	bl	_optional_trait_methods::print_macros::write_line
-	b	LBB13_1
-LBB13_67:
-	sub	x8, x29, #88
-	mov	x0, sp
-	bl	_<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::inc
-	ldur	x8, [x29, #-88]
-	cmp	x8, #1
-	b.ne	LBB13_82
-	ldur	x0, [x29, #-80]
-	cbnz	x0, LBB13_84
-	sub	x8, x29, #88
-	mov	x0, sp
-	bl	_<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::dec
-	ldur	w8, [x29, #-88]
-	tbnz	w8, #0, LBB13_65
-	b	LBB13_87
-LBB13_70:
+	b	LBB12_1
+LBB12_64:
 	mov	w11, #1
-LBB13_71:
+LBB12_65:
 	sub	x9, x1, #4
-	cbz	x9, LBB13_44
+	cbz	x9, LBB12_42
 	add	x10, x10, #1
-	b	LBB13_74
-LBB13_73:
+	b	LBB12_68
+LBB12_67:
 	mov	w11, #0
-LBB13_74:
+LBB12_68:
 	mov	x12, #0
-LBB13_75:
+LBB12_69:
 	ldrb	w13, [x10], #1
 	sub	w13, w13, #48
 	cmp	w13, #9
-	b.hi	LBB13_44
+	b.hi	LBB12_42
 	smulh	x14, x12, x24
 	add	x12, x12, x12, lsl #2
 	lsl	x12, x12, #1
 	cmp	x14, x12, asr #63
-	b.ne	LBB13_44
+	b.ne	LBB12_42
 	and	x13, x13, #0xff
-	tbz	w11, #0, LBB13_79
+	tbz	w11, #0, LBB12_73
 	subs	x12, x12, x13
-	b.vs	LBB13_44
-	b	LBB13_80
-LBB13_79:
+	b.vs	LBB12_42
+	b	LBB12_74
+LBB12_73:
 	adds	x12, x12, x13
-	b.vs	LBB13_44
-LBB13_80:
+	b.vs	LBB12_42
+LBB12_74:
 	subs	x9, x9, #1
-	b.ne	LBB13_75
+	b.ne	LBB12_69
 	mov	x20, x12
 	mov	w8, #4
-	b	LBB13_18
-LBB13_82:
-	sub	x8, x29, #88
-	mov	x0, sp
-	bl	_<optional_trait_methods::using_options::targets::advanced::AdvancedTarget as optional_trait_methods::using_options::target::Target>::dec
-	ldur	w8, [x29, #-88]
-	tbz	w8, #0, LBB13_1
-	ldur	x0, [x29, #-80]
-	cbz	x0, LBB13_87
-LBB13_84:
+	b	LBB12_18
+LBB12_76:
 	ldur	x1, [x29, #-72]
-LBB13_85:
+	b	LBB12_78
+LBB12_77:
+Lloh10:
+	adrp	x0, l_anon.5b857e6d40c72107e9f7f4ae5ba06420.9@PAGE
+Lloh11:
+	add	x0, x0, l_anon.5b857e6d40c72107e9f7f4ae5ba06420.9@PAGEOFF
+	mov	w1, #23
+LBB12_78:
 	bl	_optional_trait_methods::print_macros::write_line
 	mov	w0, #1
-LBB13_86:
+LBB12_79:
 	add	sp, sp, #1216
 	ldp	x29, x30, [sp, #64]
 	ldp	x20, x19, [sp, #48]
@@ -590,59 +542,51 @@ LBB13_86:
 	ldp	x24, x23, [sp, #16]
 	ldp	x26, x25, [sp], #80
 	ret
-LBB13_87:
-Lloh12:
-	adrp	x0, l_anon.840f49e50aaf92573d45c9604e9b0f53.10@PAGE
-Lloh13:
-	add	x0, x0, l_anon.840f49e50aaf92573d45c9604e9b0f53.10@PAGEOFF
-	mov	w1, #23
-	b	LBB13_85
+	.loh AdrpAdd	Lloh8, Lloh9
 	.loh AdrpAdd	Lloh10, Lloh11
-	.loh AdrpAdd	Lloh12, Lloh13
 
 	.section	__TEXT,__const
-l_anon.840f49e50aaf92573d45c9604e9b0f53.0:
+l_anon.5b857e6d40c72107e9f7f4ae5ba06420.0:
 	.ascii	"* "
 
-l_anon.840f49e50aaf92573d45c9604e9b0f53.1:
+l_anon.5b857e6d40c72107e9f7f4ae5ba06420.1:
 	.ascii	"*~ "
 
-l_anon.840f49e50aaf92573d45c9604e9b0f53.2:
+l_anon.5b857e6d40c72107e9f7f4ae5ba06420.2:
 	.ascii	"s "
 
 	.section	__TEXT,__literal16,16byte_literals
-l_anon.840f49e50aaf92573d45c9604e9b0f53.3:
+l_anon.5b857e6d40c72107e9f7f4ae5ba06420.3:
 	.ascii	"Unsupported cmd!"
 
 	.section	__TEXT,__const
-l_anon.840f49e50aaf92573d45c9604e9b0f53.4:
+l_anon.5b857e6d40c72107e9f7f4ae5ba06420.4:
 	.byte	10
 
 	.section	__TEXT,__cstring,cstring_literals
-l_anon.840f49e50aaf92573d45c9604e9b0f53.5:
+l_anon.5b857e6d40c72107e9f7f4ae5ba06420.5:
 	.asciz	"src/print_macros.rs"
 
 	.section	__DATA,__const
 	.p2align	3, 0x0
-l_anon.840f49e50aaf92573d45c9604e9b0f53.6:
-	.quad	l_anon.840f49e50aaf92573d45c9604e9b0f53.5
+l_anon.5b857e6d40c72107e9f7f4ae5ba06420.6:
+	.quad	l_anon.5b857e6d40c72107e9f7f4ae5ba06420.5
 	.asciz	"\023\000\000\000\000\000\000\000\037\000\000\000\t\000\000"
 
 	.p2align	3, 0x0
-l_anon.840f49e50aaf92573d45c9604e9b0f53.7:
-	.quad	l_anon.840f49e50aaf92573d45c9604e9b0f53.5
+l_anon.5b857e6d40c72107e9f7f4ae5ba06420.7:
+	.quad	l_anon.5b857e6d40c72107e9f7f4ae5ba06420.5
 	.asciz	"\023\000\000\000\000\000\000\000(\000\000\000\t\000\000"
 
 	.p2align	3, 0x0
-l_anon.840f49e50aaf92573d45c9604e9b0f53.8:
-	.quad	l_anon.840f49e50aaf92573d45c9604e9b0f53.5
+l_anon.5b857e6d40c72107e9f7f4ae5ba06420.8:
+	.quad	l_anon.5b857e6d40c72107e9f7f4ae5ba06420.5
 	.asciz	"\023\000\000\000\000\000\000\000\t\000\000\000\027\000\000"
 
 	.section	__TEXT,__const
-l_anon.840f49e50aaf92573d45c9604e9b0f53.9:
-	.ascii	"multiplying by 7 is unlucky!"
-
-l_anon.840f49e50aaf92573d45c9604e9b0f53.10:
+l_anon.5b857e6d40c72107e9f7f4ae5ba06420.9:
 	.ascii	"Invalid implementation!"
 
+	.globl	_<optional_trait_methods::using_opt_result::targets::faulty::FaultyTarget as optional_trait_methods::using_opt_result::target::Target>::mul
+_<optional_trait_methods::using_opt_result::targets::faulty::FaultyTarget as optional_trait_methods::using_opt_result::target::Target>::mul = _<optional_trait_methods::using_opt_result::targets::faulty::FaultyTarget as optional_trait_methods::using_opt_result::target::Target>::scale_factor
 .subsections_via_symbols

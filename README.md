@@ -4,7 +4,7 @@ This repository compares six ways to model optional groups of trait methods:
 
 - Cargo feature gates
 - Boolean `is_supported` methods
-- Optional method results
+- `OptResult`-encoded optional methods
 - Function-pointer operation tables
 - Inlineable dyn extension traits (IDETs)
 - Nightly `try_as_dyn`

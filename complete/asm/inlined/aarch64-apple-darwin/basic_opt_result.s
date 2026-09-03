@@ -107,9 +107,9 @@ _optional_trait_methods::print_macros::write_line:
 	mov	x29, sp
 	bl	_optional_trait_methods::print_macros::write_all
 Lloh0:
-	adrp	x0, l_anon.5bce0c01b1d4fa089b10560a89146c18.4@PAGE
+	adrp	x0, l_anon.9b171fd70c4c3843a046040d9bd6ae1a.4@PAGE
 Lloh1:
-	add	x0, x0, l_anon.5bce0c01b1d4fa089b10560a89146c18.4@PAGEOFF
+	add	x0, x0, l_anon.9b171fd70c4c3843a046040d9bd6ae1a.4@PAGEOFF
 	mov	w1, #1
 	ldp	x29, x30, [sp], #16
 	b	_optional_trait_methods::print_macros::write_all
@@ -163,18 +163,18 @@ LBB4_7:
 	ret
 LBB4_8:
 Lloh2:
-	adrp	x2, l_anon.5bce0c01b1d4fa089b10560a89146c18.6@PAGE
+	adrp	x2, l_anon.9b171fd70c4c3843a046040d9bd6ae1a.6@PAGE
 Lloh3:
-	add	x2, x2, l_anon.5bce0c01b1d4fa089b10560a89146c18.6@PAGEOFF
+	add	x2, x2, l_anon.9b171fd70c4c3843a046040d9bd6ae1a.6@PAGEOFF
 LBB4_9:
 	mov	x0, #-1
 	mov	w1, #32
 	bl	_core::panicking::panic_bounds_check
 LBB4_10:
 Lloh4:
-	adrp	x2, l_anon.5bce0c01b1d4fa089b10560a89146c18.7@PAGE
+	adrp	x2, l_anon.9b171fd70c4c3843a046040d9bd6ae1a.7@PAGE
 Lloh5:
-	add	x2, x2, l_anon.5bce0c01b1d4fa089b10560a89146c18.7@PAGEOFF
+	add	x2, x2, l_anon.9b171fd70c4c3843a046040d9bd6ae1a.7@PAGEOFF
 	b	LBB4_9
 	.loh AdrpAdd	Lloh2, Lloh3
 	.loh AdrpAdd	Lloh4, Lloh5
@@ -205,9 +205,9 @@ LBB5_5:
 	ret
 LBB5_6:
 Lloh6:
-	adrp	x3, l_anon.5bce0c01b1d4fa089b10560a89146c18.8@PAGE
+	adrp	x3, l_anon.9b171fd70c4c3843a046040d9bd6ae1a.8@PAGE
 Lloh7:
-	add	x3, x3, l_anon.5bce0c01b1d4fa089b10560a89146c18.8@PAGEOFF
+	add	x3, x3, l_anon.9b171fd70c4c3843a046040d9bd6ae1a.8@PAGEOFF
 	mov	x1, x19
 	mov	x2, x19
 	bl	_core::slice::index::slice_index_fail
@@ -220,29 +220,29 @@ _<optional_trait_methods::line_reader::LineReader as core::default::Default>::de
 	mov	w1, #1040
 	b	_bzero
 
-	.globl	_<optional_trait_methods::using_options::targets::basic::BasicTarget as optional_trait_methods::using_options::target::Target>::get_state
+	.globl	_<optional_trait_methods::using_opt_result::targets::basic::BasicTarget as optional_trait_methods::using_opt_result::target::Target>::get_state
 	.p2align	2
-_<optional_trait_methods::using_options::targets::basic::BasicTarget as optional_trait_methods::using_options::target::Target>::get_state:
+_<optional_trait_methods::using_opt_result::targets::basic::BasicTarget as optional_trait_methods::using_opt_result::target::Target>::get_state:
 	ldr	x0, [x0]
 	ret
 
-	.globl	_<optional_trait_methods::using_options::targets::basic::BasicTarget as optional_trait_methods::using_options::target::Target>::set_state
+	.globl	_<optional_trait_methods::using_opt_result::targets::basic::BasicTarget as optional_trait_methods::using_opt_result::target::Target>::set_state
 	.p2align	2
-_<optional_trait_methods::using_options::targets::basic::BasicTarget as optional_trait_methods::using_options::target::Target>::set_state:
+_<optional_trait_methods::using_opt_result::targets::basic::BasicTarget as optional_trait_methods::using_opt_result::target::Target>::set_state:
 	str	x1, [x0]
 	mov	x0, #0
 	ret
 
-	.globl	_<optional_trait_methods::using_options::targets::basic::BasicTarget as optional_trait_methods::using_options::target::Target>::scale_factor
+	.globl	_<optional_trait_methods::using_opt_result::targets::basic::BasicTarget as optional_trait_methods::using_opt_result::target::Target>::scale_factor
 	.p2align	2
-_<optional_trait_methods::using_options::targets::basic::BasicTarget as optional_trait_methods::using_options::target::Target>::scale_factor:
+_<optional_trait_methods::using_opt_result::targets::basic::BasicTarget as optional_trait_methods::using_opt_result::target::Target>::scale_factor:
 	mov	w9, #1
 	stp	x9, xzr, [x8]
 	ret
 
-	.globl	_<optional_trait_methods::using_options::targets::basic::BasicTarget as optional_trait_methods::using_options::target::Target>::dec
+	.globl	_<optional_trait_methods::using_opt_result::targets::basic::BasicTarget as optional_trait_methods::using_opt_result::target::Target>::dec
 	.p2align	2
-_<optional_trait_methods::using_options::targets::basic::BasicTarget as optional_trait_methods::using_options::target::Target>::dec:
+_<optional_trait_methods::using_opt_result::targets::basic::BasicTarget as optional_trait_methods::using_opt_result::target::Target>::dec:
 	mov	w9, #1
 	stp	x9, xzr, [x8]
 	ret
@@ -270,9 +270,9 @@ _run_optional_trait_methods:
 	stp	q0, q0, [x20, #32]
 	mov	w21, #11563
 Lloh8:
-	adrp	x19, l_anon.5bce0c01b1d4fa089b10560a89146c18.3@PAGE
+	adrp	x19, l_anon.9b171fd70c4c3843a046040d9bd6ae1a.3@PAGE
 Lloh9:
-	add	x19, x19, l_anon.5bce0c01b1d4fa089b10560a89146c18.3@PAGEOFF
+	add	x19, x19, l_anon.9b171fd70c4c3843a046040d9bd6ae1a.3@PAGEOFF
 	mov	w22, #8234
 	mov	w23, #32298
 	mov	w24, #10
@@ -484,7 +484,7 @@ LBB11_65:
 	add	x0, sp, #8
 	tbz	w8, #0, LBB11_71
 	mov	x1, x20
-	bl	_<optional_trait_methods::using_options::targets::basic::BasicTarget as optional_trait_methods::using_options::target::Target>::set_state
+	bl	_<optional_trait_methods::using_opt_result::targets::basic::BasicTarget as optional_trait_methods::using_opt_result::target::Target>::set_state
 	mov	x26, x20
 	b	LBB11_1
 LBB11_69:
@@ -496,7 +496,7 @@ LBB11_70:
 	mov	x26, x20
 	b	LBB11_1
 LBB11_71:
-	bl	_<optional_trait_methods::using_options::targets::basic::BasicTarget as optional_trait_methods::using_options::target::Target>::get_state
+	bl	_<optional_trait_methods::using_opt_result::targets::basic::BasicTarget as optional_trait_methods::using_opt_result::target::Target>::get_state
 	bl	_optional_trait_methods::print_macros::write_isize_line
 	mov	x26, x20
 	b	LBB11_1
@@ -512,45 +512,45 @@ LBB11_72:
 	.loh AdrpAdd	Lloh8, Lloh9
 
 	.section	__TEXT,__const
-l_anon.5bce0c01b1d4fa089b10560a89146c18.0:
+l_anon.9b171fd70c4c3843a046040d9bd6ae1a.0:
 	.ascii	"* "
 
-l_anon.5bce0c01b1d4fa089b10560a89146c18.1:
+l_anon.9b171fd70c4c3843a046040d9bd6ae1a.1:
 	.ascii	"*~ "
 
-l_anon.5bce0c01b1d4fa089b10560a89146c18.2:
+l_anon.9b171fd70c4c3843a046040d9bd6ae1a.2:
 	.ascii	"s "
 
 	.section	__TEXT,__literal16,16byte_literals
-l_anon.5bce0c01b1d4fa089b10560a89146c18.3:
+l_anon.9b171fd70c4c3843a046040d9bd6ae1a.3:
 	.ascii	"Unsupported cmd!"
 
 	.section	__TEXT,__const
-l_anon.5bce0c01b1d4fa089b10560a89146c18.4:
+l_anon.9b171fd70c4c3843a046040d9bd6ae1a.4:
 	.byte	10
 
 	.section	__TEXT,__cstring,cstring_literals
-l_anon.5bce0c01b1d4fa089b10560a89146c18.5:
+l_anon.9b171fd70c4c3843a046040d9bd6ae1a.5:
 	.asciz	"src/print_macros.rs"
 
 	.section	__DATA,__const
 	.p2align	3, 0x0
-l_anon.5bce0c01b1d4fa089b10560a89146c18.6:
-	.quad	l_anon.5bce0c01b1d4fa089b10560a89146c18.5
+l_anon.9b171fd70c4c3843a046040d9bd6ae1a.6:
+	.quad	l_anon.9b171fd70c4c3843a046040d9bd6ae1a.5
 	.asciz	"\023\000\000\000\000\000\000\000\037\000\000\000\t\000\000"
 
 	.p2align	3, 0x0
-l_anon.5bce0c01b1d4fa089b10560a89146c18.7:
-	.quad	l_anon.5bce0c01b1d4fa089b10560a89146c18.5
+l_anon.9b171fd70c4c3843a046040d9bd6ae1a.7:
+	.quad	l_anon.9b171fd70c4c3843a046040d9bd6ae1a.5
 	.asciz	"\023\000\000\000\000\000\000\000(\000\000\000\t\000\000"
 
 	.p2align	3, 0x0
-l_anon.5bce0c01b1d4fa089b10560a89146c18.8:
-	.quad	l_anon.5bce0c01b1d4fa089b10560a89146c18.5
+l_anon.9b171fd70c4c3843a046040d9bd6ae1a.8:
+	.quad	l_anon.9b171fd70c4c3843a046040d9bd6ae1a.5
 	.asciz	"\023\000\000\000\000\000\000\000\t\000\000\000\027\000\000"
 
-	.globl	_<optional_trait_methods::using_options::targets::basic::BasicTarget as optional_trait_methods::using_options::target::Target>::inc
-_<optional_trait_methods::using_options::targets::basic::BasicTarget as optional_trait_methods::using_options::target::Target>::inc = _<optional_trait_methods::using_options::targets::basic::BasicTarget as optional_trait_methods::using_options::target::Target>::dec
-	.globl	_<optional_trait_methods::using_options::targets::basic::BasicTarget as optional_trait_methods::using_options::target::Target>::mul
-_<optional_trait_methods::using_options::targets::basic::BasicTarget as optional_trait_methods::using_options::target::Target>::mul = _<optional_trait_methods::using_options::targets::basic::BasicTarget as optional_trait_methods::using_options::target::Target>::scale_factor
+	.globl	_<optional_trait_methods::using_opt_result::targets::basic::BasicTarget as optional_trait_methods::using_opt_result::target::Target>::inc
+_<optional_trait_methods::using_opt_result::targets::basic::BasicTarget as optional_trait_methods::using_opt_result::target::Target>::inc = _<optional_trait_methods::using_opt_result::targets::basic::BasicTarget as optional_trait_methods::using_opt_result::target::Target>::dec
+	.globl	_<optional_trait_methods::using_opt_result::targets::basic::BasicTarget as optional_trait_methods::using_opt_result::target::Target>::mul
+_<optional_trait_methods::using_opt_result::targets::basic::BasicTarget as optional_trait_methods::using_opt_result::target::Target>::mul = _<optional_trait_methods::using_opt_result::targets::basic::BasicTarget as optional_trait_methods::using_opt_result::target::Target>::scale_factor
 .subsections_via_symbols
