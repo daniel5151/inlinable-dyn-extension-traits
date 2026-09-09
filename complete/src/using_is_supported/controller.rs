@@ -12,6 +12,13 @@ pub struct TargetController<T: Target> {
     target: T,
 }
 
+#[derive(Clone, Copy)]
+struct SupportedExtensions {
+    incdec: bool,
+    mul: bool,
+    mul_scale_factor: bool,
+}
+
 impl<T: Target> TargetController<T> {
     pub fn new(target: T) -> TargetController<T> {
         TargetController { target }
@@ -22,6 +29,24 @@ impl<T: Target> TargetController<T> {
         Ok(())
     }
 
+    #[cfg_attr(feature = "always_inline", inline(always))]
+    fn supported_extensions(&self) -> SupportedExtensions {
+        let incdec = self.target.ext_incdec_supported();
+        let mul = self.target.ext_mul_supported();
+        let mul_scale_factor = self.target.ext_scale_factor_supported();
+
+        assert!(
+            !mul_scale_factor || mul,
+            "the nested MulScaleFactor extension requires Mul"
+        );
+
+        SupportedExtensions {
+            incdec,
+            mul,
+            mul_scale_factor,
+        }
+    }
+
     // NOTE: `#[inline(never)]` is used here specifically for pedagogical/assembly
     // inspection purposes, ensuring `parse_command` is emitted as a standalone
     // symbol in `asm/noinline/<target-triple>/`.
@@ -30,8 +55,10 @@ impl<T: Target> TargetController<T> {
     // enabling DCE for target types that return false for extension support.
     #[cfg_attr(feature = "interpretable_asm", inline(never))]
     pub fn parse_command(&mut self, buf: &[u8]) -> Option<Command> {
+        let supported = self.supported_extensions();
+
         /* IncDec extension parsing */
-        if self.target.ext_incdec_supported() {
+        if supported.incdec {
             crate::__dead_code_marker!("Parse IncDec extension");
             if buf == b"+" {
                 return Some(Command::IncDec(ext::IncDecCommand::Inc));
@@ -45,7 +72,7 @@ impl<T: Target> TargetController<T> {
         }
 
         /* Mul extension parsing */
-        if self.target.ext_mul_supported() {
+        if supported.mul {
             crate::__dead_code_marker!("Parse Mul extension");
             if let Some(n) = buf.strip_prefix(b"* ").and_then(parse_isize) {
                 return Some(Command::Mul(ext::MulCommand::Mul(n)));
@@ -53,7 +80,7 @@ impl<T: Target> TargetController<T> {
         }
 
         /* ScaleFactor nested extension parsing */
-        if self.target.ext_mul_supported() && self.target.ext_scale_factor_supported() {
+        if supported.mul_scale_factor {
             crate::__dead_code_marker!("Parse ScaleFactor extension");
             if let Some(n) = buf.strip_prefix(b"*~ ").and_then(parse_isize) {
                 return Some(Command::MulScaleFactor(
@@ -78,6 +105,8 @@ impl<T: Target> TargetController<T> {
     // `asm/noinline/<target-triple>/`.
     #[cfg_attr(feature = "interpretable_asm", inline(never))]
     pub fn handle(&mut self, cmd: &Command) -> Result<(), Error<T::Error>> {
+        let supported = self.supported_extensions();
+
         match cmd {
             /* Base protocol */
             Command::Base(base_cmd) => match base_cmd {
@@ -90,7 +119,7 @@ impl<T: Target> TargetController<T> {
             /* IncDec extension */
             Command::IncDec(incdec_cmd) => {
                 crate::__dead_code_marker!("IncDec extension");
-                if !self.target.ext_incdec_supported() {
+                if !supported.incdec {
                     self.unsupported_cmd()?;
                 } else {
                     match incdec_cmd {
@@ -108,7 +137,7 @@ impl<T: Target> TargetController<T> {
             Command::Mul(mul_cmd) => match mul_cmd {
                 ext::MulCommand::Mul(n) => {
                     crate::__dead_code_marker!("Mul extension");
-                    if !self.target.ext_mul_supported() {
+                    if !supported.mul {
                         self.unsupported_cmd()?;
                     } else {
                         self.target.mul(*n).map_err(Error::Target)?;
@@ -120,9 +149,7 @@ impl<T: Target> TargetController<T> {
             Command::MulScaleFactor(scale_factor_cmd) => match scale_factor_cmd {
                 ext::MulScaleFactorCommand::ScaleFactor(n) => {
                     crate::__dead_code_marker!("ScaleFactor extension");
-                    if !self.target.ext_mul_supported()
-                        || !self.target.ext_scale_factor_supported()
-                    {
+                    if !supported.mul_scale_factor {
                         self.unsupported_cmd()?;
                     } else {
                         self.target.scale_factor(*n).map_err(Error::Target)?;
@@ -132,5 +159,35 @@ impl<T: Target> TargetController<T> {
         }
 
         Ok(())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    struct InvalidNestedExtensionTarget;
+
+    impl Target for InvalidNestedExtensionTarget {
+        type Error = ();
+
+        fn get_state(&self) -> isize {
+            0
+        }
+
+        fn set_state(&mut self, _n: isize) -> Result<(), Self::Error> {
+            Ok(())
+        }
+
+        fn ext_scale_factor_supported(&self) -> bool {
+            true
+        }
+    }
+
+    #[test]
+    #[should_panic(expected = "the nested MulScaleFactor extension requires Mul")]
+    fn rejects_mul_scale_factor_without_mul() {
+        let mut controller = TargetController::new(InvalidNestedExtensionTarget);
+        let _ = controller.parse_command(b"p");
     }
 }

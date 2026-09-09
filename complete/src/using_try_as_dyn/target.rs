@@ -18,7 +18,7 @@ pub trait TargetExtMul: Target {
     fn mul(&mut self, n: isize) -> Result<(), Self::Error>;
 }
 
-pub trait TargetExtScaleFactor: Target {
+pub trait TargetExtScaleFactor: TargetExtMul {
     fn scale_factor(&mut self, factor: isize) -> Result<(), Self::Error>;
 }
 

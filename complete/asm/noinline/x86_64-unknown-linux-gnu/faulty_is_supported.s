@@ -66,56 +66,57 @@
 	#APP
 	#NO_APP
 	testq	%rdx, %rdx
-	je	.LBB2_15
+	je	.LBB2_13
 	cmpq	$2, %rdx
-	je	.LBB2_11
+	je	.LBB2_9
 	cmpq	$1, %rdx
-	jne	.LBB2_12
+	jne	.LBB2_10
 	movzbl	(%rsi), %eax
-	cmpl	$43, %eax
-	je	.LBB2_7
+	cmpl	$112, %eax
+	je	.LBB2_15
 	cmpl	$45, %eax
-	jne	.LBB2_5
+	je	.LBB2_7
+	cmpl	$43, %eax
+	jne	.LBB2_13
 	movq	$2, (%rbx)
-	movb	$1, 8(%rbx)
-	jmp	.LBB2_10
-.LBB2_11:
+	movb	$0, 8(%rbx)
+	jmp	.LBB2_14
+.LBB2_9:
 	cmpw	$11563, (%rsi)
-	jne	.LBB2_12
+	jne	.LBB2_10
 	movq	$2, (%rbx)
 	movb	$2, 8(%rbx)
-	jmp	.LBB2_10
-.LBB2_12:
+	jmp	.LBB2_14
+.LBB2_10:
 	cmpw	$8307, (%rsi)
-	jne	.LBB2_15
+	jne	.LBB2_13
 	addq	$-2, %rdx
 	addq	$2, %rsi
 	movq	%rsi, %rdi
 	movq	%rdx, %rsi
 	callq	optional_trait_methods::commands::parse_isize
 	testb	$1, %al
-	je	.LBB2_15
+	je	.LBB2_13
 	movq	$1, (%rbx)
 	movq	%rdx, 8(%rbx)
-	jmp	.LBB2_10
-.LBB2_7:
-	movq	$2, (%rbx)
-	movb	$0, 8(%rbx)
-	jmp	.LBB2_10
-.LBB2_5:
-	cmpb	$112, (%rsi)
-	jne	.LBB2_15
-	movq	$0, (%rbx)
-	jmp	.LBB2_10
-.LBB2_15:
+	jmp	.LBB2_14
+.LBB2_13:
 	movq	$5, (%rbx)
-.LBB2_10:
+.LBB2_14:
 	movq	%rbx, %rax
 	addq	$16, %rsp
 	.cfi_def_cfa_offset 16
 	popq	%rbx
 	.cfi_def_cfa_offset 8
 	retq
+.LBB2_7:
+	.cfi_def_cfa_offset 32
+	movq	$2, (%rbx)
+	movb	$1, 8(%rbx)
+	jmp	.LBB2_14
+.LBB2_15:
+	movq	$0, (%rbx)
+	jmp	.LBB2_14
 .Lfunc_end2:
 	.size	<optional_trait_methods::using_is_supported::controller::TargetController<optional_trait_methods::using_is_supported::targets::faulty::FaultyTarget>>::parse_command, .Lfunc_end2-<optional_trait_methods::using_is_supported::controller::TargetController<optional_trait_methods::using_is_supported::targets::faulty::FaultyTarget>>::parse_command
 	.cfi_endproc
@@ -142,7 +143,7 @@
 	je	.LBB3_9
 	movq	8(%rsi), %rsi
 	callq	*<optional_trait_methods::using_is_supported::targets::faulty::FaultyTarget as optional_trait_methods::using_is_supported::target::Target>::set_state@GOTPCREL(%rip)
-	jmp	.LBB3_10
+	jmp	.LBB3_11
 .LBB3_4:
 	leaq	.Lanon.c1ad8355ceb7720f9856b0a25203f56b.4(%rip), %rax
 	movq	%rsp, %rcx
@@ -162,9 +163,9 @@
 	leaq	.Lanon.c1ad8355ceb7720f9856b0a25203f56b.2(%rip), %rdi
 	movl	$16, %esi
 	callq	optional_trait_methods::print_macros::write_line
-.LBB3_10:
-	xorl	%ebx, %ebx
 .LBB3_11:
+	xorl	%ebx, %ebx
+.LBB3_12:
 	movq	%rbx, %rax
 	addq	$16, %rsp
 	.cfi_def_cfa_offset 16
@@ -181,20 +182,20 @@
 	#NO_APP
 	movzbl	8(%rsi), %eax
 	testl	%eax, %eax
-	je	.LBB3_12
+	je	.LBB3_10
 	leaq	.Lanon.c1ad8355ceb7720f9856b0a25203f56b.11(%rip), %rbx
 	cmpl	$1, %eax
-	je	.LBB3_11
+	je	.LBB3_12
 	callq	*<optional_trait_methods::using_is_supported::targets::faulty::FaultyTarget as optional_trait_methods::using_is_supported::target::Target>::inc@GOTPCREL(%rip)
-	jmp	.LBB3_11
+	jmp	.LBB3_12
 .LBB3_9:
 	callq	*<optional_trait_methods::using_is_supported::targets::faulty::FaultyTarget as optional_trait_methods::using_is_supported::target::Target>::get_state@GOTPCREL(%rip)
 	movq	%rax, %rdi
 	callq	optional_trait_methods::print_macros::write_isize_line
-	jmp	.LBB3_10
-.LBB3_12:
+	jmp	.LBB3_11
+.LBB3_10:
 	callq	*<optional_trait_methods::using_is_supported::targets::faulty::FaultyTarget as optional_trait_methods::using_is_supported::target::Target>::inc@GOTPCREL(%rip)
-	jmp	.LBB3_10
+	jmp	.LBB3_11
 .Lfunc_end3:
 	.size	<optional_trait_methods::using_is_supported::controller::TargetController<optional_trait_methods::using_is_supported::targets::faulty::FaultyTarget>>::handle, .Lfunc_end3-<optional_trait_methods::using_is_supported::controller::TargetController<optional_trait_methods::using_is_supported::targets::faulty::FaultyTarget>>::handle
 	.cfi_endproc

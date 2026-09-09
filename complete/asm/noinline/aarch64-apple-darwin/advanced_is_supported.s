@@ -56,14 +56,13 @@ Lloh1:
 	cmp	x1, #1
 	b.ne	LBB2_4
 	ldrb	w8, [x20]
-	cmp	w8, #43
-	b.eq	LBB2_18
 	cmp	w8, #45
+	b.eq	LBB2_18
+	cmp	w8, #43
 	b.ne	LBB2_7
 	mov	w8, #2
 	str	x8, [x19]
-	mov	w8, #1
-	strb	w8, [x19, #8]
+	strb	wzr, [x19, #8]
 	b	LBB2_25
 LBB2_4:
 	cmp	x21, #2
@@ -95,7 +94,8 @@ Lloh3:
 	add	x0, x20, #2
 	mov	x1, x22
 	bl	_optional_trait_methods::commands::parse_isize
-	tbz	w0, #0, LBB2_11
+	cmp	x0, #1
+	b.ne	LBB2_11
 	mov	w8, #3
 	b	LBB2_23
 LBB2_11:
@@ -119,7 +119,8 @@ Lloh5:
 	b.ne	LBB2_20
 	add	x0, x20, #3
 	bl	_optional_trait_methods::commands::parse_isize
-	tbz	w0, #0, LBB2_20
+	cmp	x0, #1
+	b.ne	LBB2_20
 	mov	w8, #4
 	b	LBB2_23
 LBB2_15:
@@ -133,7 +134,8 @@ LBB2_15:
 LBB2_18:
 	mov	w8, #2
 	str	x8, [x19]
-	strb	wzr, [x19, #8]
+	mov	w8, #1
+	strb	w8, [x19, #8]
 	b	LBB2_25
 LBB2_19:
 	cmp	x21, #2

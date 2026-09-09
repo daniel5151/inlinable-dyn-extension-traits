@@ -3,6 +3,10 @@ core::cfg_select! {
         mod basic;
         pub use basic::BasicTarget;
     }
+    feature = "target_mul_only" => {
+        mod mul_only;
+        pub use mul_only::MulOnlyTarget;
+    }
     feature = "target_advanced" => {
         mod advanced;
         pub use advanced::AdvancedTarget;

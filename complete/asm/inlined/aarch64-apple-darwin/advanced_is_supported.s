@@ -322,21 +322,21 @@ LBB13_1:
 	cmp	x1, #1
 	b.ne	LBB13_11
 	ldrb	w8, [x0]
-	cmp	w8, #43
-	b.eq	LBB13_17
+	cmp	w8, #112
+	b.eq	LBB13_28
 	cmp	w8, #45
 	b.eq	LBB13_16
-	cmp	w8, #112
-	b.ne	LBB13_46
-	mov	x8, #0
-	b	LBB13_19
+	cmp	w8, #43
+	b.ne	LBB13_45
+	and	x20, x20, #0xffffffffffffff00
+	b	LBB13_17
 LBB13_9:
 	ldrh	w9, [x0]
 	cmp	w9, w21
 	b.ne	LBB13_11
 	and	x8, x20, #0xffffffffffffff00
 	orr	x20, x8, #0x2
-	b	LBB13_18
+	b	LBB13_17
 LBB13_11:
 	ldrh	w9, [x0]
 	cmp	w9, w22
@@ -344,72 +344,71 @@ LBB13_11:
 	b.ne	LBB13_13
 LBB13_12:
 	subs	x9, x1, #3
-	b.hs	LBB13_44
-	b	LBB13_45
+	b.hs	LBB13_43
+	b	LBB13_44
 LBB13_13:
 	mov	x9, x0
 	ldrb	w10, [x9, #2]!
 	cmp	w10, #45
-	b.eq	LBB13_30
+	b.eq	LBB13_29
 	cmp	w10, #43
-	b.ne	LBB13_33
+	b.ne	LBB13_32
 	mov	w10, #0
-	b	LBB13_31
+	b	LBB13_30
 LBB13_16:
 	and	x8, x20, #0xffffffffffffff00
 	orr	x20, x8, #0x1
-	b	LBB13_18
 LBB13_17:
-	and	x20, x20, #0xffffffffffffff00
-LBB13_18:
 	mov	w8, #2
-LBB13_19:
+LBB13_18:
 	cmp	x8, #0
 	cset	w9, ne
 	sub	x9, x8, x9
 	cmp	x9, #1
-	b.gt	LBB13_23
-	cbnz	x9, LBB13_25
+	b.gt	LBB13_22
+	cbnz	x9, LBB13_24
 	mov	x0, sp
-	tbz	w8, #0, LBB13_42
+	cmp	x8, #1
+	b.ne	LBB13_41
 	mov	x1, x20
 	bl	_<optional_trait_methods::using_is_supported::targets::advanced::AdvancedTarget as optional_trait_methods::using_is_supported::target::Target>::set_state
-	b	LBB13_47
-LBB13_23:
+	b	LBB13_46
+LBB13_22:
 	mov	x0, sp
 	mov	x1, x20
 	cmp	x9, #2
-	b.ne	LBB13_29
+	b.ne	LBB13_27
 	bl	_<optional_trait_methods::using_is_supported::targets::advanced::AdvancedTarget as optional_trait_methods::using_is_supported::target::Target>::mul
 	cbz	x0, LBB13_1
 	b	LBB13_79
-LBB13_25:
-	ands	w8, w20, #0xff
-	b.eq	LBB13_66
+LBB13_24:
+	and	w8, w20, #0xff
+	cmp	w8, #2
+	b.eq	LBB13_65
 	cmp	w8, #1
-	b.eq	LBB13_28
+	b.eq	LBB13_66
 	mov	x0, sp
 	bl	_<optional_trait_methods::using_is_supported::targets::advanced::AdvancedTarget as optional_trait_methods::using_is_supported::target::Target>::inc
-LBB13_28:
-	mov	x0, sp
-	bl	_<optional_trait_methods::using_is_supported::targets::advanced::AdvancedTarget as optional_trait_methods::using_is_supported::target::Target>::dec
-	b	LBB13_47
-LBB13_29:
+	b	LBB13_46
+LBB13_27:
 	bl	_<optional_trait_methods::using_is_supported::targets::advanced::AdvancedTarget as optional_trait_methods::using_is_supported::target::Target>::scale_factor
-	b	LBB13_47
-LBB13_30:
+	b	LBB13_46
+LBB13_28:
+	mov	x8, #0
+	b	LBB13_18
+LBB13_29:
 	mov	w10, #1
-LBB13_31:
+LBB13_30:
 	sub	x11, x1, #3
-	cbz	x11, LBB13_43
+	cbz	x11, LBB13_42
 	add	x9, x9, #1
-	b	LBB13_34
-LBB13_33:
+	b	LBB13_33
+LBB13_32:
 	mov	w10, #0
 	mov	x11, x8
-LBB13_34:
+LBB13_33:
 	mov	x12, #0
-LBB13_35:
+LBB13_34:
 	ldrb	w13, [x9], #1
 	sub	w13, w13, #48
 	cmp	w13, #9
@@ -420,26 +419,26 @@ LBB13_35:
 	cmp	x14, x12, asr #63
 	b.ne	LBB13_12
 	and	x13, x13, #0xff
-	tbz	w10, #0, LBB13_39
+	tbz	w10, #0, LBB13_38
 	subs	x12, x12, x13
 	b.vs	LBB13_12
-	b	LBB13_40
-LBB13_39:
+	b	LBB13_39
+LBB13_38:
 	adds	x12, x12, x13
 	b.vs	LBB13_12
-LBB13_40:
+LBB13_39:
 	subs	x11, x11, #1
-	b.ne	LBB13_35
+	b.ne	LBB13_34
 	mov	x20, x12
 	mov	w8, #3
-	b	LBB13_19
-LBB13_42:
+	b	LBB13_18
+LBB13_41:
 	bl	_<optional_trait_methods::using_is_supported::targets::advanced::AdvancedTarget as optional_trait_methods::using_is_supported::target::Target>::get_state
 	bl	_optional_trait_methods::print_macros::write_isize_line
-	b	LBB13_47
-LBB13_43:
+	b	LBB13_46
+LBB13_42:
 	mov	x9, #0
-LBB13_44:
+LBB13_43:
 	ldrh	w10, [x0]
 	eor	w10, w10, w23
 	ldrb	w11, [x0, #2]
@@ -447,29 +446,29 @@ LBB13_44:
 	orr	w10, w10, w11
 	cmp	w10, #0
 	ccmp	x9, #0, #4, eq
-	b.ne	LBB13_51
-LBB13_45:
+	b.ne	LBB13_50
+LBB13_44:
 	ldrh	w9, [x0]
 	cmp	w9, w25
 	ccmp	x8, #0, #4, eq
-	b.ne	LBB13_48
-LBB13_46:
+	b.ne	LBB13_47
+LBB13_45:
 	mov	x0, x19
 	mov	w1, #16
 	bl	_optional_trait_methods::print_macros::write_line
-LBB13_47:
+LBB13_46:
 	mov	x0, #0
 	cbz	x0, LBB13_1
 	b	LBB13_79
-LBB13_48:
+LBB13_47:
 	ldrb	w9, [x0, #2]!
 	cmp	w9, #45
-	b.eq	LBB13_54
+	b.eq	LBB13_53
 	cmp	w9, #43
-	b.ne	LBB13_57
+	b.ne	LBB13_56
 	mov	w9, #0
-	b	LBB13_55
-LBB13_51:
+	b	LBB13_54
+LBB13_50:
 	mov	x10, x0
 	ldrb	w11, [x10, #3]!
 	cmp	w11, #45
@@ -478,50 +477,53 @@ LBB13_51:
 	b.ne	LBB13_70
 	mov	w11, #0
 	b	LBB13_68
-LBB13_54:
+LBB13_53:
 	mov	w9, #1
-LBB13_55:
+LBB13_54:
 	sub	x8, x1, #3
-	cbz	x8, LBB13_46
+	cbz	x8, LBB13_45
 	add	x0, x0, #1
-	b	LBB13_58
-LBB13_57:
+	b	LBB13_57
+LBB13_56:
 	mov	w9, #0
-LBB13_58:
+LBB13_57:
 	mov	x10, #0
-LBB13_59:
+LBB13_58:
 	ldrb	w11, [x0], #1
 	sub	w11, w11, #48
 	cmp	w11, #9
-	b.hi	LBB13_46
+	b.hi	LBB13_45
 	smulh	x12, x10, x24
 	add	x10, x10, x10, lsl #2
 	lsl	x10, x10, #1
 	cmp	x12, x10, asr #63
-	b.ne	LBB13_46
+	b.ne	LBB13_45
 	and	x11, x11, #0xff
-	tbz	w9, #0, LBB13_63
+	tbz	w9, #0, LBB13_62
 	subs	x10, x10, x11
-	b.vs	LBB13_46
-	b	LBB13_64
-LBB13_63:
+	b.vs	LBB13_45
+	b	LBB13_63
+LBB13_62:
 	adds	x10, x10, x11
-	b.vs	LBB13_46
-LBB13_64:
+	b.vs	LBB13_45
+LBB13_63:
 	subs	x8, x8, #1
-	b.ne	LBB13_59
+	b.ne	LBB13_58
 	mov	x20, x10
 	mov	w8, #1
-	b	LBB13_19
-LBB13_66:
+	b	LBB13_18
+LBB13_65:
 	mov	x0, sp
 	bl	_<optional_trait_methods::using_is_supported::targets::advanced::AdvancedTarget as optional_trait_methods::using_is_supported::target::Target>::inc
-	b	LBB13_47
+LBB13_66:
+	mov	x0, sp
+	bl	_<optional_trait_methods::using_is_supported::targets::advanced::AdvancedTarget as optional_trait_methods::using_is_supported::target::Target>::dec
+	b	LBB13_46
 LBB13_67:
 	mov	w11, #1
 LBB13_68:
 	sub	x9, x1, #4
-	cbz	x9, LBB13_45
+	cbz	x9, LBB13_44
 	add	x10, x10, #1
 	b	LBB13_71
 LBB13_70:
@@ -532,26 +534,26 @@ LBB13_72:
 	ldrb	w13, [x10], #1
 	sub	w13, w13, #48
 	cmp	w13, #9
-	b.hi	LBB13_45
+	b.hi	LBB13_44
 	smulh	x14, x12, x24
 	add	x12, x12, x12, lsl #2
 	lsl	x12, x12, #1
 	cmp	x14, x12, asr #63
-	b.ne	LBB13_45
+	b.ne	LBB13_44
 	and	x13, x13, #0xff
 	tbz	w11, #0, LBB13_76
 	subs	x12, x12, x13
-	b.vs	LBB13_45
+	b.vs	LBB13_44
 	b	LBB13_77
 LBB13_76:
 	adds	x12, x12, x13
-	b.vs	LBB13_45
+	b.vs	LBB13_44
 LBB13_77:
 	subs	x9, x9, #1
 	b.ne	LBB13_72
 	mov	x20, x12
 	mov	w8, #4
-	b	LBB13_19
+	b	LBB13_18
 LBB13_79:
 	mov	w1, #28
 	bl	_optional_trait_methods::print_macros::write_line

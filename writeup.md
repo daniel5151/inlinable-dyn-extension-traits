@@ -115,6 +115,18 @@ It's got a lot of things we care about:
 
 For simplicity, I didn't include mutually-exclusive commands in this example protocol, but I will touch upon this use-case when discussing the various approaches.
 
+The runnable comparison uses four target configurations:
+
+| Target | Base | IncDec | Mul | MulScaleFactor |
+| :----- | :--: | :----: | :-: | :------------: |
+| `BasicTarget` | yes | no | no | no |
+| `MulOnlyTarget` | yes | no | yes | no |
+| `FaultyTarget` | yes | yes, but `dec` returns an error | no | no |
+| `AdvancedTarget` | yes | yes | yes | yes |
+
+`MulOnlyTarget` is especially important: it proves that the nested extension
+can be absent while its parent remains available.
+
 So, how can we write a library to run this protocol over an incoming byte stream (e.g., lines from standard input)? Well, let's start off with a controller:
 
 ```rust
@@ -220,7 +232,25 @@ pub trait Target {
 }
 ```
 
-Its biggest pro is that it's immediately understandable to _anyone_. Because `ext_*_supported()` methods allow capability pre-checks, LLVM can achieve Dead-Code Elimination during packet parsing similar to Fn Pointers and IDETs.
+The controller can validate an inter-extension dependency before it uses the
+reported capability set:
+
+```rust
+let mul = target.ext_mul_supported();
+let mul_scale_factor = target.ext_scale_factor_supported();
+
+assert!(
+    !mul_scale_factor || mul,
+    "the nested MulScaleFactor extension requires Mul",
+);
+```
+
+Its biggest pro is that it's immediately understandable to _anyone_. Because
+`ext_*_supported()` methods allow capability pre-checks, LLVM can achieve Dead-Code
+Elimination during packet parsing similar to Fn Pointers and IDETs. The library
+can reject inconsistent relationships such as `MulScaleFactor` without `Mul`
+at runtime, but it cannot prove those relationships from the implementation's
+type alone.
 
 It's biggest cons are that it lacks a lot of compile-time safety...
 
@@ -520,8 +550,9 @@ pub trait TargetExtMul: Target {
     }
 }
 
-// The MulScaleFactor extension trait.
-pub trait TargetExtScaleFactor: Target {
+// The MulScaleFactor extension trait. Its supertrait enforces the parent
+// extension dependency at compile time.
+pub trait TargetExtScaleFactor: TargetExtMul {
     fn scale_factor(&mut self, factor: isize) -> Result<(), Self::Error>;
 }
 
@@ -681,7 +712,7 @@ if let Some(ops) = core::any::try_as_dyn_mut::<T, dyn TargetExtIncDec<Error = T:
 
 -   **Nightly Only:** Currently an unstable feature gated behind `#![feature(try_as_dyn)]`.
 -   **`'static` Lifetime Requirement:** Currently requires `'static` bounds (`T: 'static` and `<T as Target>::Error: 'static`).
--   **Nested Extension Hierarchy Ergonomics:** With IDETs, the nested `MulScaleFactor` extension can be hierarchically chained (`target.ext_mul().and_then(|ops| ops.ext_scale_factor())`). With `try_as_dyn_mut`, the same extension is probed directly with `try_as_dyn_mut::<T, dyn TargetExtScaleFactor<...>>(&mut target)`, or represented through trait inheritance (`TargetExtScaleFactor: TargetExtMul`).
+-   **Nested Extension Hierarchy Ergonomics:** With IDETs, the nested `MulScaleFactor` extension can be hierarchically chained (`target.ext_mul().and_then(|ops| ops.ext_scale_factor())`). With `try_as_dyn_mut`, the same extension is probed directly with `try_as_dyn_mut::<T, dyn TargetExtScaleFactor<...>>(&mut target)`. The `TargetExtScaleFactor: TargetExtMul` supertrait bound still enforces the parent dependency at compile time.
 -   **Incompatibility with Trait Objects (`dyn Target` / `Box<dyn Target>`):**
     `try_as_dyn` operates strictly on the static type `T` known at the call site. If the target type is erased to a trait object reference (e.g. `target: &mut dyn Target` or `Box<dyn Target>`), calling `try_as_dyn_mut::<dyn Target, dyn TargetExtIncDec>(target)` checks if the trait object type `dyn Target` itself implements `TargetExtIncDec` - it **does NOT** perform dynamic vtable cross-casting or downcasting of the underlying concrete type (`MyTarget`). It returns `None`!
 
@@ -787,6 +818,7 @@ Every technique except for `cargo` features, specialization, and pure `try_as_dy
 |                                         | `cargo` Features | `is_supported` | No-op Handlers | `OptResult` | Fn Pointers | IDETs | `try_as_dyn` | Specialization |
 | --------------------------------------- | ---------------- | -------------- | -------------- | ----------- | ----------- | ----- | ------------ | -------------- |
 | Compile-time Mutually-Dependent methods | ✔️                | ❌              | ❌              | ❌           | ✔️           | ✔️     | ✔️            | ✔️              |
+| Compile-time Inter-Extension dependencies | ✔️              | ❌              | ❌              | ❌           | ✔️           | ✔️     | ✔️            | ❔              |
 | Compile-time Mutually-Exclusive methods | ✔️                | ❌              | ❌              | ❌           | ✔️           | ✔️\*   | ✔️\*          | ❔              |
 | Ensures effective dead-code-elimination | ✔️++              | ✔️\*\*          | ✔️\*\*          | ❌           | ✔️\*\*       | ✔️\*\* | ✔️\*\*        | ✔️              |
 
@@ -797,6 +829,12 @@ Every technique except for `cargo` features, specialization, and pure `try_as_dy
 ### Performance Analysis
 
 [daniel5151/inlinable-dyn-extension-traits](https://github.com/daniel5151/inlinable-dyn-extension-traits) contains sample code for many of these methods, and includes assembly listings.
+
+The end-to-end sanity matrix exercises all seven implementations with all four
+targets, including `MulOnlyTarget`. The checked-in assembly comparison retains
+the original three representative targets (`BasicTarget`, `FaultyTarget`, and
+`AdvancedTarget`) so the historical instruction-count tables remain directly
+comparable.
 
 So, does all of this actually optimize away?
 

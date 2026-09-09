@@ -18,6 +18,7 @@ fn main() {
     println!("cargo:rustc-check-cfg=cfg(cmd_incdec, cmd_mul, cmd_mul_scale_factor)");
 
     let has_target_basic = feature_enabled("CARGO_FEATURE_TARGET_BASIC");
+    let has_target_mul_only = feature_enabled("CARGO_FEATURE_TARGET_MUL_ONLY");
     let has_target_advanced = feature_enabled("CARGO_FEATURE_TARGET_ADVANCED");
     let has_target_faulty = feature_enabled("CARGO_FEATURE_TARGET_FAULTY");
 
@@ -31,7 +32,12 @@ fn main() {
 
     require_exactly_one(
         "target_*",
-        &[has_target_basic, has_target_advanced, has_target_faulty],
+        &[
+            has_target_basic,
+            has_target_mul_only,
+            has_target_advanced,
+            has_target_faulty,
+        ],
     );
     require_exactly_one(
         "using_*",
@@ -48,7 +54,7 @@ fn main() {
 
     // Target extension support flags (pre-computed any(...) directives)
     let ext_incdec = has_target_advanced || has_target_faulty;
-    let ext_mul = has_target_advanced;
+    let ext_mul = has_target_mul_only || has_target_advanced;
     let ext_mul_scale_factor = has_target_advanced;
     assert!(
         !ext_mul_scale_factor || ext_mul,

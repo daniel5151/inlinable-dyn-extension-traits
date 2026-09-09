@@ -58,29 +58,29 @@
 	.cfi_offset %rbx, -16
 	movq	%rdi, %rbx
 	testq	%rdx, %rdx
-	je	.LBB2_8
+	je	.LBB2_7
 	cmpq	$1, %rdx
-	jne	.LBB2_5
+	jne	.LBB2_4
 	cmpb	$112, (%rsi)
-	jne	.LBB2_8
+	jne	.LBB2_7
 	movq	$0, (%rbx)
-	jmp	.LBB2_4
-.LBB2_5:
+	jmp	.LBB2_8
+.LBB2_4:
 	cmpw	$8307, (%rsi)
-	jne	.LBB2_8
+	jne	.LBB2_7
 	addq	$-2, %rdx
 	addq	$2, %rsi
 	movq	%rsi, %rdi
 	movq	%rdx, %rsi
 	callq	optional_trait_methods::commands::parse_isize
 	testb	$1, %al
-	je	.LBB2_8
+	je	.LBB2_7
 	movq	$1, (%rbx)
 	movq	%rdx, 8(%rbx)
-	jmp	.LBB2_4
-.LBB2_8:
+	jmp	.LBB2_8
+.LBB2_7:
 	movq	$5, (%rbx)
-.LBB2_4:
+.LBB2_8:
 	movq	%rbx, %rax
 	popq	%rbx
 	.cfi_def_cfa_offset 8

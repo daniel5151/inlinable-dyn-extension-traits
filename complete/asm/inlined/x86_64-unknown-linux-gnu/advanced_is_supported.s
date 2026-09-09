@@ -434,14 +434,20 @@ run_optional_trait_methods:
 	cmpq	$1, %rdx
 	jne	.LBB13_11
 	movzbl	(%rax), %eax
-	cmpl	$43, %eax
+	cmpl	$112, %eax
 	je	.LBB13_18
 	cmpl	$45, %eax
 	je	.LBB13_17
-	cmpl	$112, %eax
+	cmpl	$43, %eax
 	jne	.LBB13_34
-	xorl	%eax, %eax
-	jmp	.LBB13_66
+	andq	$-256, %r13
+	movl	$2, %eax
+	cmpq	$1, %rax
+	movl	$2, %ecx
+	adcq	$-1, %rcx
+	movslq	(%r12,%rcx,4), %rcx
+	addq	%r12, %rcx
+	jmpq	*%rcx
 .LBB13_9:
 	cmpw	$11563, (%rax)
 	jne	.LBB13_11
@@ -486,14 +492,8 @@ run_optional_trait_methods:
 	addq	%r12, %rcx
 	jmpq	*%rcx
 .LBB13_18:
-	andq	$-256, %r13
-	movl	$2, %eax
-	cmpq	$1, %rax
-	movl	$2, %ecx
-	adcq	$-1, %rcx
-	movslq	(%r12,%rcx,4), %rcx
-	addq	%r12, %rcx
-	jmpq	*%rcx
+	xorl	%eax, %eax
+	jmp	.LBB13_66
 .LBB13_19:
 	movb	$1, %sil
 .LBB13_20:
@@ -655,8 +655,8 @@ run_optional_trait_methods:
 	jmpq	*%rcx
 .LBB13_67:
 	movq	%rbx, %rdi
-	testb	$1, %al
-	je	.LBB13_75
+	cmpl	$1, %eax
+	jne	.LBB13_74
 	movq	%r13, %rsi
 	callq	*<optional_trait_methods::using_is_supported::targets::advanced::AdvancedTarget as optional_trait_methods::using_is_supported::target::Target>::set_state@GOTPCREL(%rip)
 	jmp	.LBB13_77
@@ -671,25 +671,25 @@ run_optional_trait_methods:
 	callq	*<optional_trait_methods::using_is_supported::targets::advanced::AdvancedTarget as optional_trait_methods::using_is_supported::target::Target>::scale_factor@GOTPCREL(%rip)
 	jmp	.LBB13_77
 .LBB13_71:
-	testb	%r13b, %r13b
-	je	.LBB13_76
+	cmpb	$2, %r13b
+	je	.LBB13_75
 	movzbl	%r13b, %eax
 	cmpl	$1, %eax
-	je	.LBB13_74
+	je	.LBB13_76
 	movq	%rbx, %rdi
 	callq	*<optional_trait_methods::using_is_supported::targets::advanced::AdvancedTarget as optional_trait_methods::using_is_supported::target::Target>::inc@GOTPCREL(%rip)
-.LBB13_74:
-	movq	%rbx, %rdi
-	callq	*<optional_trait_methods::using_is_supported::targets::advanced::AdvancedTarget as optional_trait_methods::using_is_supported::target::Target>::dec@GOTPCREL(%rip)
 	jmp	.LBB13_77
-.LBB13_75:
+.LBB13_74:
 	callq	*<optional_trait_methods::using_is_supported::targets::advanced::AdvancedTarget as optional_trait_methods::using_is_supported::target::Target>::get_state@GOTPCREL(%rip)
 	movq	%rax, %rdi
 	callq	optional_trait_methods::print_macros::write_isize_line
 	jmp	.LBB13_77
-.LBB13_76:
+.LBB13_75:
 	movq	%rbx, %rdi
 	callq	*<optional_trait_methods::using_is_supported::targets::advanced::AdvancedTarget as optional_trait_methods::using_is_supported::target::Target>::inc@GOTPCREL(%rip)
+.LBB13_76:
+	movq	%rbx, %rdi
+	callq	*<optional_trait_methods::using_is_supported::targets::advanced::AdvancedTarget as optional_trait_methods::using_is_supported::target::Target>::dec@GOTPCREL(%rip)
 .LBB13_77:
 	xorl	%eax, %eax
 .LBB13_78:

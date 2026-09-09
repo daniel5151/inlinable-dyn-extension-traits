@@ -61,6 +61,7 @@ use controller::TargetController;
 pub extern "C" fn run_optional_trait_methods() -> libc::c_int {
     let target = core::cfg_select! {
         feature = "target_basic" => targets::BasicTarget::new(0),
+        feature = "target_mul_only" => targets::MulOnlyTarget::new(0),
         feature = "target_advanced" => targets::AdvancedTarget::new(0),
         feature = "target_faulty" => targets::FaultyTarget::new(0),
         _ => compile_error!("select exactly one `target_*` feature"),

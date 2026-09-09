@@ -50,60 +50,59 @@ Lloh1:
 	mov	x8, sp
 	; InlineAsm Start
 	; InlineAsm End
-	cbz	x1, LBB2_14
+	cbz	x1, LBB2_12
 	mov	x9, x1
 	subs	x1, x1, #2
-	b.eq	LBB2_6
+	b.eq	LBB2_7
 	cmp	x9, #1
-	b.ne	LBB2_8
+	b.ne	LBB2_9
 	ldrb	w8, [x0]
-	cmp	w8, #43
-	b.eq	LBB2_11
+	cmp	w8, #112
+	b.eq	LBB2_15
 	cmp	w8, #45
+	b.eq	LBB2_14
+	cmp	w8, #43
 	b.ne	LBB2_12
 	mov	w8, #2
 	str	x8, [x19]
-	mov	w8, #1
-	strb	w8, [x19, #8]
-	b	LBB2_15
-LBB2_6:
+	strb	wzr, [x19, #8]
+	b	LBB2_13
+LBB2_7:
 	ldrh	w8, [x0]
 	mov	w9, #11563
 	cmp	w8, w9
-	b.ne	LBB2_8
+	b.ne	LBB2_9
 	mov	w8, #2
 	str	x8, [x19]
 	strb	w8, [x19, #8]
-	b	LBB2_15
-LBB2_8:
+	b	LBB2_13
+LBB2_9:
 	ldrh	w8, [x0], #2
 	mov	w9, #8307
 	cmp	w8, w9
-	b.ne	LBB2_14
+	b.ne	LBB2_12
 	bl	_optional_trait_methods::commands::parse_isize
-	tbz	w0, #0, LBB2_14
+	tbz	w0, #0, LBB2_12
 	mov	w8, #1
 	stp	x8, x1, [x19]
-	b	LBB2_15
-LBB2_11:
-	mov	w8, #2
-	str	x8, [x19]
-	strb	wzr, [x19, #8]
-	b	LBB2_15
+	b	LBB2_13
 LBB2_12:
-	ldrb	w8, [x0]
-	cmp	w8, #112
-	b.ne	LBB2_14
-	str	xzr, [x19]
-	b	LBB2_15
-LBB2_14:
 	mov	w8, #5
 	str	x8, [x19]
-LBB2_15:
+LBB2_13:
 	ldp	x29, x30, [sp, #32]
 	ldp	x20, x19, [sp, #16]
 	add	sp, sp, #48
 	ret
+LBB2_14:
+	mov	w8, #2
+	str	x8, [x19]
+	mov	w8, #1
+	strb	w8, [x19, #8]
+	b	LBB2_13
+LBB2_15:
+	str	xzr, [x19]
+	b	LBB2_13
 	.loh AdrpAdd	Lloh0, Lloh1
 
 	.p2align	2

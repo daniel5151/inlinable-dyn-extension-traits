@@ -76,12 +76,12 @@
 	cmpq	$1, %rdx
 	jne	.LBB2_4
 	movzbl	(%r15), %eax
-	cmpl	$43, %eax
-	je	.LBB2_19
 	cmpl	$45, %eax
+	je	.LBB2_19
+	cmpl	$43, %eax
 	jne	.LBB2_7
 	movq	$2, (%rbx)
-	movb	$1, 8(%rbx)
+	movb	$0, 8(%rbx)
 	jmp	.LBB2_25
 .LBB2_4:
 	cmpq	$2, %r14
@@ -104,8 +104,8 @@
 	leaq	-2(%r14), %rsi
 	leaq	2(%r15), %rdi
 	callq	optional_trait_methods::commands::parse_isize
-	testb	$1, %al
-	je	.LBB2_12
+	cmpq	$1, %rax
+	jne	.LBB2_12
 	movq	$3, (%rbx)
 	jmp	.LBB2_11
 .LBB2_12:
@@ -126,8 +126,8 @@
 	leaq	-3(%r14), %rsi
 	leaq	3(%r15), %rdi
 	callq	optional_trait_methods::commands::parse_isize
-	testb	$1, %al
-	je	.LBB2_21
+	cmpq	$1, %rax
+	jne	.LBB2_21
 	movq	$4, (%rbx)
 	jmp	.LBB2_11
 .LBB2_16:
@@ -139,7 +139,7 @@
 	jmp	.LBB2_25
 .LBB2_19:
 	movq	$2, (%rbx)
-	movb	$0, 8(%rbx)
+	movb	$1, 8(%rbx)
 	jmp	.LBB2_25
 .LBB2_20:
 	jbe	.LBB2_24
@@ -192,14 +192,14 @@
 	movslq	(%rdx,%rcx,4), %rcx
 	addq	%rdx, %rcx
 	jmpq	*%rcx
-.LBB3_7:
+.LBB3_8:
 	testb	$1, %al
-	je	.LBB3_8
+	je	.LBB3_9
 	movq	8(%rsi), %rsi
 	movq	%rbx, %rdi
 	callq	*<optional_trait_methods::using_is_supported::targets::advanced::AdvancedTarget as optional_trait_methods::using_is_supported::target::Target>::set_state@GOTPCREL(%rip)
-	jmp	.LBB3_9
-.LBB3_4:
+	jmp	.LBB3_11
+.LBB3_5:
 	leaq	.Lanon.d347a9544c5c66e58b15243aa7c3d716.8(%rip), %rax
 	movq	%rsp, %rcx
 	movq	%rax, (%rcx)
@@ -209,8 +209,8 @@
 	movq	8(%rsi), %rsi
 	movq	%rbx, %rdi
 	callq	*<optional_trait_methods::using_is_supported::targets::advanced::AdvancedTarget as optional_trait_methods::using_is_supported::target::Target>::mul@GOTPCREL(%rip)
-	jmp	.LBB3_10
-.LBB3_5:
+	jmp	.LBB3_12
+.LBB3_6:
 	leaq	.Lanon.d347a9544c5c66e58b15243aa7c3d716.9(%rip), %rax
 	movq	%rsp, %rcx
 	movq	%rax, (%rcx)
@@ -220,7 +220,7 @@
 	movq	8(%rsi), %rsi
 	movq	%rbx, %rdi
 	callq	*<optional_trait_methods::using_is_supported::targets::advanced::AdvancedTarget as optional_trait_methods::using_is_supported::target::Target>::scale_factor@GOTPCREL(%rip)
-	jmp	.LBB3_9
+	jmp	.LBB3_11
 .LBB3_1:
 	leaq	.Lanon.d347a9544c5c66e58b15243aa7c3d716.7(%rip), %rax
 	movq	%rsp, %rcx
@@ -230,27 +230,27 @@
 	#NO_APP
 	movzbl	8(%rsi), %eax
 	testl	%eax, %eax
-	je	.LBB3_11
+	je	.LBB3_10
 	cmpl	$1, %eax
-	je	.LBB3_3
+	je	.LBB3_4
 	movq	%rbx, %rdi
 	callq	*<optional_trait_methods::using_is_supported::targets::advanced::AdvancedTarget as optional_trait_methods::using_is_supported::target::Target>::inc@GOTPCREL(%rip)
-.LBB3_3:
+.LBB3_4:
 	movq	%rbx, %rdi
 	callq	*<optional_trait_methods::using_is_supported::targets::advanced::AdvancedTarget as optional_trait_methods::using_is_supported::target::Target>::dec@GOTPCREL(%rip)
-	jmp	.LBB3_9
-.LBB3_8:
+	jmp	.LBB3_11
+.LBB3_9:
 	movq	%rbx, %rdi
 	callq	*<optional_trait_methods::using_is_supported::targets::advanced::AdvancedTarget as optional_trait_methods::using_is_supported::target::Target>::get_state@GOTPCREL(%rip)
 	movq	%rax, %rdi
 	callq	optional_trait_methods::print_macros::write_isize_line
-	jmp	.LBB3_9
-.LBB3_11:
+	jmp	.LBB3_11
+.LBB3_10:
 	movq	%rbx, %rdi
 	callq	*<optional_trait_methods::using_is_supported::targets::advanced::AdvancedTarget as optional_trait_methods::using_is_supported::target::Target>::inc@GOTPCREL(%rip)
-.LBB3_9:
+.LBB3_11:
 	xorl	%eax, %eax
-.LBB3_10:
+.LBB3_12:
 	addq	$16, %rsp
 	.cfi_def_cfa_offset 16
 	popq	%rbx
@@ -262,10 +262,10 @@
 	.section	.rodata.<optional_trait_methods::using_is_supported::controller::TargetController<optional_trait_methods::using_is_supported::targets::advanced::AdvancedTarget>>::handle,"a",@progbits
 	.p2align	2, 0x0
 .LJTI3_0:
-	.long	.LBB3_7-.LJTI3_0
+	.long	.LBB3_8-.LJTI3_0
 	.long	.LBB3_1-.LJTI3_0
-	.long	.LBB3_4-.LJTI3_0
 	.long	.LBB3_5-.LJTI3_0
+	.long	.LBB3_6-.LJTI3_0
 
 	.section	.text.<optional_trait_methods::line_reader::LineReader>::read_line,"ax",@progbits
 	.globl	<optional_trait_methods::line_reader::LineReader>::read_line

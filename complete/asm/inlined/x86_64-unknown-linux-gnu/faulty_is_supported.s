@@ -431,14 +431,14 @@ run_optional_trait_methods:
 	jne	.LBB13_12
 	movzbl	(%rax), %eax
 	cmpl	$112, %eax
-	je	.LBB13_34
-	cmpl	$45, %eax
 	je	.LBB13_29
+	cmpl	$45, %eax
+	je	.LBB13_30
 	cmpl	$43, %eax
 	jne	.LBB13_25
 	movq	(%rsp), %rax
 	andq	$-256, %rax
-	jmp	.LBB13_30
+	jmp	.LBB13_31
 .LBB13_11:
 	cmpw	$11563, (%rax)
 	je	.LBB13_10
@@ -463,7 +463,7 @@ run_optional_trait_methods:
 	jne	.LBB13_16
 	xorl	%esi, %esi
 	jmp	.LBB13_18
-.LBB13_34:
+.LBB13_29:
 	movq	%rbx, %rdi
 	callq	*<optional_trait_methods::using_is_supported::targets::faulty::FaultyTarget as optional_trait_methods::using_is_supported::target::Target>::get_state@GOTPCREL(%rip)
 	movq	%rax, %rdi
@@ -512,21 +512,21 @@ run_optional_trait_methods:
 	movq	(%rsp), %rax
 	andq	$-256, %rax
 	orq	$2, %rax
-	jmp	.LBB13_30
-.LBB13_29:
+	jmp	.LBB13_31
+.LBB13_30:
 	movq	(%rsp), %rax
 	andq	$-256, %rax
 	incq	%rax
-.LBB13_30:
+.LBB13_31:
 	testb	%al, %al
-	jne	.LBB13_32
+	jne	.LBB13_33
 	movq	%rax, (%rsp)
 	movq	%rbx, %rdi
 	callq	*<optional_trait_methods::using_is_supported::targets::faulty::FaultyTarget as optional_trait_methods::using_is_supported::target::Target>::inc@GOTPCREL(%rip)
 	jmp	.LBB13_1
 .LBB13_2:
 	xorl	%eax, %eax
-.LBB13_33:
+.LBB13_34:
 	addq	$1192, %rsp
 	.cfi_def_cfa_offset 56
 	popq	%rbx
@@ -542,13 +542,13 @@ run_optional_trait_methods:
 	popq	%rbp
 	.cfi_def_cfa_offset 8
 	retq
-.LBB13_32:
+.LBB13_33:
 	.cfi_def_cfa_offset 1248
 	leaq	.Lanon.fbebf1d6be2aa9712a8fc24462aecec3.7(%rip), %rdi
 	movl	$38, %esi
 	callq	optional_trait_methods::print_macros::write_line
 	movl	$1, %eax
-	jmp	.LBB13_33
+	jmp	.LBB13_34
 .Lfunc_end13:
 	.size	run_optional_trait_methods, .Lfunc_end13-run_optional_trait_methods
 	.cfi_endproc

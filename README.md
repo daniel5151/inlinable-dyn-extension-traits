@@ -23,8 +23,9 @@ order to experiment with `try_as_dyn`, which, at the time of writing (July 28,
 2026) is not stable.
 
 `sanity_check.sh` tests, lints, release-builds, and runs end-to-end checks for
-all 21 combinations of three target types and seven optional-method
-implementations.
+all 28 combinations of four target types and seven optional-method
+implementations. The target matrix includes a `MulOnlyTarget` to exercise a
+parent extension without its nested `MulScaleFactor` extension.
 
 ```sh
 cd complete
