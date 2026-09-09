@@ -1,10 +1,12 @@
 # An Exploration into Optional Trait Methods in Rust
 
-> NOTE: This is a _rough draft_ of what will hopefully, eventually, be a blog post on <https://prilik.com/blog>. It is not quite at the level of polish where I'd be comfortable formally publishing it, as not much effort has been put into tightening up the language (read: LLM-ese) and the "narrative" structure of this writeup. I'd say it's 80% there, but it's that last 20% that makes all the difference.
+> [!NOTE]
 >
-> Consider checking out my far more polished and well-organized [RustConf 2026 Talk "Replacing #[cfg] with Traits: The Inlinable Dyn Extension Trait Pattern"](https://rustconf2026.sched.com/event/2KHss/) for a guided introduction to some of the techniques presented in this writeup.
-
-**NOTE:** if you're in a hurry and just want to see a list of all the approaches + their pros and cons, skip ahead to the [Summary and Comparisons](#summary-and-comparisons) section
+> This is a _rough draft_ of what will hopefully, eventually, be a blog post on <https://prilik.com/blog>. It is not quite at the level of polish where I'd be comfortable formally publishing it, as not much effort has been put into tightening up the narrative structure / language of this writeup. I'd say it's 80% there, but it's that last 20% that makes all the difference.
+>
+> Consider checking out my far more polished and well-organized RustConf 2026 Talk ["Replacing #[cfg] with Traits: The Inlinable Dyn Extension Trait Pattern"](https://rustconf2026.sched.com/event/2KHss/) for a guided introduction to some of the techniques presented in this writeup.
+>
+> And of course, full disclosure - while the _majority_ of this writeup was written way back in ~2019, several new sections were added with the aide of LLMs (you'll be able to tell which ones). Like I said - rough draft!
 
 ## A Motivating Example - An Extensible Protocol
 
@@ -117,12 +119,12 @@ For simplicity, I didn't include mutually-exclusive commands in this example pro
 
 The runnable comparison uses four target configurations:
 
-| Target | Base | IncDec | Mul | MulScaleFactor |
-| :----- | :--: | :----: | :-: | :------------: |
-| `BasicTarget` | yes | no | no | no |
-| `MulOnlyTarget` | yes | no | yes | no |
-| `FaultyTarget` | yes | yes, but `dec` returns an error | no | no |
-| `AdvancedTarget` | yes | yes | yes | yes |
+| Target           | Base  |             IncDec              |  Mul  | MulScaleFactor |
+| :--------------- | :---: | :-----------------------------: | :---: | :------------: |
+| `BasicTarget`    |  yes  |               no                |  no   |       no       |
+| `MulOnlyTarget`  |  yes  |               no                |  yes  |       no       |
+| `FaultyTarget`   |  yes  | yes, but `dec` returns an error |  no   |       no       |
+| `AdvancedTarget` |  yes  |               yes               |  yes  |      yes       |
 
 `MulOnlyTarget` is especially important: it proves that the nested extension
 can be absent while its parent remains available.
@@ -815,12 +817,12 @@ Every technique except for `cargo` features, specialization, and pure `try_as_dy
 
 "If it compiles, it's a valid implementation"
 
-|                                         | `cargo` Features | `is_supported` | No-op Handlers | `OptResult` | Fn Pointers | IDETs | `try_as_dyn` | Specialization |
-| --------------------------------------- | ---------------- | -------------- | -------------- | ----------- | ----------- | ----- | ------------ | -------------- |
-| Compile-time Mutually-Dependent methods | ✔️                | ❌              | ❌              | ❌           | ✔️           | ✔️     | ✔️            | ✔️              |
-| Compile-time Inter-Extension dependencies | ✔️              | ❌              | ❌              | ❌           | ✔️           | ✔️     | ✔️            | ❔              |
-| Compile-time Mutually-Exclusive methods | ✔️                | ❌              | ❌              | ❌           | ✔️           | ✔️\*   | ✔️\*          | ❔              |
-| Ensures effective dead-code-elimination | ✔️++              | ✔️\*\*          | ✔️\*\*          | ❌           | ✔️\*\*       | ✔️\*\* | ✔️\*\*        | ✔️              |
+|                                           | `cargo` Features | `is_supported` | No-op Handlers | `OptResult` | Fn Pointers | IDETs | `try_as_dyn` | Specialization |
+| ----------------------------------------- | ---------------- | -------------- | -------------- | ----------- | ----------- | ----- | ------------ | -------------- |
+| Compile-time Mutually-Dependent methods   | ✔️                | ❌              | ❌              | ❌           | ✔️           | ✔️     | ✔️            | ✔️              |
+| Compile-time Inter-Extension dependencies | ✔️                | ❌              | ❌              | ❌           | ✔️           | ✔️     | ✔️            | ❔              |
+| Compile-time Mutually-Exclusive methods   | ✔️                | ❌              | ❌              | ❌           | ✔️           | ✔️\*   | ✔️\*          | ❔              |
+| Ensures effective dead-code-elimination   | ✔️++              | ✔️\*\*          | ✔️\*\*          | ❌           | ✔️\*\*       | ✔️\*\* | ✔️\*\*        | ✔️              |
 
 \* Assuming the implementation adheres to conventions and is not "adversarial"
 
